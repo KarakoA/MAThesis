@@ -8,6 +8,7 @@ module.exports = {
       element.loc.end.line +
       ":" +
       element.loc.end.column;
-    return element.name + locId;
+    return `${element.name}[${locId}]`;
   },
 };
+//TODO filter template util method
