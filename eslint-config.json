@@ -1,0 +1,6 @@
+{
+    "rules": {
+        "if-curly-formatting": 1,
+        "sample-rule":1
+    }
+}
