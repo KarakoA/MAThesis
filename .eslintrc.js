@@ -1,20 +1,17 @@
 module.exports = {
-    "env": {
-        "browser": true,
-        "commonjs": true,
-        "es2021": true
-    },
-    "extends": [
-        "eslint:recommended",
-        "plugin:vue/essential"
-    ],
-    "parserOptions": {
-        "ecmaVersion": 12
-    },
-    "plugins": [
-        "vue"
-    ],
-    "rules": {
-        "data-bindings":1
-    }
+  env: {
+    browser: true,
+    commonjs: true,
+    es2021: true,
+  },
+  extends: ["eslint:recommended", "plugin:vue/essential"],
+
+  parser: "vue-eslint-parser",
+   plugins: ["vue"],
+  rules: {
+    // "component-scripts":1,
+    "template-bindings":1,
+    //"top-level": 1,
+    //"function-reads-writes":1
+  },
 };
