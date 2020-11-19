@@ -1,5 +1,6 @@
 let utils = require("../utils");
 //TODO delete me, logging not crampled
+const { TopLevel } = require("../models/visitors");
 require("util").inspect.defaultOptions.depth = null;
 
 let methods = [];
@@ -27,11 +28,12 @@ module.exports = {
         "Property[key.name = created] CallExpression[callee.type=MemberExpression] > MemberExpression[object.type=ThisExpression]"(
           node
         ) {
-          init.push({ method: "init", property: node.property.name });
+          init.push(node.property.name );
         },
         //returned back to the top of the parsing tree
-        "ExportDefaultDeclaration:exit"() {
-          console.log({methods,init,variables});
+        "ExportDefaultDeclaration:exit"(node) {
+          let result = new TopLevel(methods, init, variables);
+          context.report({ node: node, message: JSON.stringify(result) });
         },
       }
     );
