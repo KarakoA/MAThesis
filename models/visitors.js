@@ -19,7 +19,7 @@ class TemplateBindings {
 }
 
 class TopLevel {
-  constructor(methodNames, variableNames, calledInInit) {
+  constructor(variableNames,methodNames, calledInInit) {
     this.variableNames = variableNames;
     this.methodNames = methodNames;
     this.calledInInit = calledInInit;

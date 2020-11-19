@@ -67,8 +67,8 @@ module.exports = {
               (name) =>
                 new Method(
                   name,
-                  f(name, writes),
                   f(name, reads),
+                  f(name, writes),
                   f(name, calls)
                 )
             )

@@ -28,11 +28,11 @@ module.exports = {
         "Property[key.name = created] CallExpression[callee.type=MemberExpression] > MemberExpression[object.type=ThisExpression]"(
           node
         ) {
-          init.push(node.property.name );
+          init.push(node.property.name);
         },
         //returned back to the top of the parsing tree
         "ExportDefaultDeclaration:exit"(node) {
-          let result = new TopLevel(methods, init, variables);
+          let result = new TopLevel(variables, methods, init);
           context.report({ node: node, message: JSON.stringify(result) });
         },
       }
