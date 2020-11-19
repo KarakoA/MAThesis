@@ -6,7 +6,7 @@ require("util").inspect.defaultOptions.depth = null;
 let methodName = undefined;
 let writes = [];
 let all = [];
-let called = [];
+let calls = [];
 
 module.exports = {
   create(context) {
@@ -32,7 +32,7 @@ module.exports = {
         "Property[key.name = methods] CallExpression[callee.type=MemberExpression] > MemberExpression[object.type=ThisExpression]"(
           node
         ) {
-          called.push({ method: methodName, property: node.property.name });
+          calls.push({ method: methodName, property: node.property.name });
         },
         //all calls
         "Property[key.name = methods] MemberExpression[object.type=ThisExpression]"(
@@ -42,9 +42,9 @@ module.exports = {
         },
         //returned back to the top of the parsing tree
         "ExportDefaultDeclaration:exit"() {
-          // reads equalts to  all except write and called
+          // reads equalts to  all except write and calls
           let reads = [...all]
-          writes.concat(called).forEach((el) => {
+          writes.concat(calls).forEach((el) => {
             let found = reads.find(
               (x) => x.method === el.method && x.property == el.property
             );
@@ -54,13 +54,7 @@ module.exports = {
             reads.splice(i, 1);
           });
 
-          console.log(writes);
-          console.log(reads);
-          console.log(called)
-
-          //TODO convert them to sets probably
-
-          console.log("fin");
+          console.log({writes,reads,calls});
         },
       }
     );

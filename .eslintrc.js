@@ -9,9 +9,8 @@ module.exports = {
   parser: "vue-eslint-parser",
    plugins: ["vue"],
   rules: {
-    // "component-scripts":1,
     "template-bindings":1,
-    //"top-level": 1,
-    //"function-reads-writes":1
+    "top-level": 1,
+    "function-reads-writes":1
   },
 };

@@ -31,8 +31,7 @@ module.exports = {
         bindings.push({ source: node.name, target: currentId });
       },
       "VElement[name=template]:exit"() {
-        console.log(bindings);
-        console.log(names)
+        console.log({bindings,names});
       },
     });
   },

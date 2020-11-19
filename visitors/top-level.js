@@ -31,12 +31,7 @@ module.exports = {
         },
         //returned back to the top of the parsing tree
         "ExportDefaultDeclaration:exit"() {
-          console.log("METHODS");
-          console.log(methods);
-          console.log("INIT");
-          console.log(init);
-          console.log("VARS");
-          console.log(variables);
+          console.log({methods,init,variables});
         },
       }
     );
