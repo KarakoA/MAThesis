@@ -1,0 +1,166 @@
+[
+  {
+    "name": "test.vue",
+    "bindings": [
+      {
+        "source": "a",
+        "target": "span_5_8_5_28"
+      },
+      {
+        "source": "b",
+        "target": "span_5_31_5_52"
+      },
+      {
+        "source": "answer",
+        "target": "input_6_14_6_56"
+      },
+      {
+        "source": "input_6_14_6_56",
+        "target": "answer"
+      },
+      {
+        "source": "may_check",
+        "target": "button_7_8_15_17"
+      },
+      {
+        "source": "check_answer",
+        "target": "button_7_8_15_17"
+      },
+      {
+        "source": "right",
+        "target": "button_16_8_23_17"
+      },
+      {
+        "source": "right",
+        "target": "button_24_8_31_17"
+      },
+      {
+        "source": "new_problem",
+        "target": "button_32_8_38_17"
+      },
+      {
+        "source": "count_right",
+        "target": "span_52_12_52_43"
+      },
+      {
+        "source": "count_wrong",
+        "target": "span_55_12_55_43"
+      }
+    ],
+    "boundTagsToNames": [
+      {
+        "id": "span_5_8_5_28",
+        "name": "a"
+      },
+      {
+        "id": "span_5_31_5_52",
+        "name": "b"
+      },
+      {
+        "id": "button_7_8_15_17",
+        "name": "Check"
+      },
+      {
+        "id": "button_16_8_23_17",
+        "name": "Right"
+      },
+      {
+        "id": "button_24_8_31_17",
+        "name": "Wrong"
+      },
+      {
+        "id": "button_32_8_38_17",
+        "name": "New Problem"
+      },
+      {
+        "id": "span_52_12_52_43",
+        "name": "count_right"
+      },
+      {
+        "id": "span_55_12_55_43",
+        "name": "count_wrong"
+      }
+    ],
+    "variableNames": [
+      "a",
+      "b",
+      "c",
+      "answer",
+      "right",
+      "count_right",
+      "count_wrong",
+      "topLevel",
+      "otherLevel"
+    ],
+    "methodNames": [
+      "add_problem",
+      "check_answer",
+      "may_check",
+      "new_problem"
+    ],
+    "calledInInit": [
+      "add_problem"
+    ],
+    "methods": [
+      {
+        "name": "add_problem",
+        "writes": [
+          "c",
+          "a",
+          "b",
+          "answer",
+          "right"
+        ],
+        "reads": [
+          "c",
+          "a"
+        ],
+        "calls": []
+      },
+      {
+        "name": "check_answer",
+        "writes": [
+          "right",
+          "count_right",
+          "count_wrong"
+        ],
+        "reads": [
+          "c",
+          "answer",
+          "right"
+        ],
+        "calls": []
+      },
+      {
+        "name": "may_check",
+        "writes": [],
+        "reads": [
+          "answer",
+          "right"
+        ],
+        "calls": []
+      },
+      {
+        "name": "new_problem",
+        "writes": [],
+        "reads": [],
+        "calls": [
+          "add_problem"
+        ]
+      }
+    ],
+    "boundVariables": [
+      "a",
+      "b",
+      "answer",
+      "right",
+      "count_right",
+      "count_wrong"
+    ],
+    "boundMethods": [
+      "check_answer",
+      "may_check",
+      "new_problem"
+    ]
+  }
+]

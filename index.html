@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<body>
+    <script src="//d3js.org/d3.v5.min.js"></script>
+    <script src="https://unpkg.com/@hpcc-js/wasm@0.3.11/dist/index.min.js"></script>
+    <script src="https://unpkg.com/d3-graphviz@3.0.5/build/d3-graphviz.js"></script>
+    <div id="graph" style="text-align: center;"></div>
+    <script>
+
+        function scoped(x) {
+            return `${x}[label="$scope.${x}"];`
+        }
+        function htmlTag(x) {
+            label = x.name ? x.name : x.id
+            return `${x.id}[label="${label}"];`
+        }
+        function reads({ name, reads }) {
+            return !reads ? [] : reads.map(r => `${r}-> ${name};`)
+        }
+        function writes({ name, writes }) {
+            return !writes ? [] : writes.map(r => `${name} -> ${r};`)
+        }
+        function calls({ name, calls }) {
+            return !writes ? [] : calls.map(r => `${name} -> ${r};`)
+        }
+        function binding({ source, target, isMethod }) {
+            if (isMethod)
+                //TODO not so nice semantically
+                return `${target} -> ${source}[style=solids];`
+            else
+                return `${source} -> ${target};`
+        }
+        fetch("./data.json")
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                //todo only for 1 file currently
+                data = data[0]
+
+                let scopedVarsDot = data.boundVariables.map(scoped).join("\n")
+                let scopedMethodsDot = data.boundMethods.map(scoped).join("\n")
+
+                let htmlTagsDot = data.boundTagsToNames.map(htmlTag).join("\n")
+
+                let boundMethodsWithInfo = data.boundMethods.map(
+                    methodName => data.methods.find(m => m.name == methodName))
+
+
+                let called = boundMethodsWithInfo.map(x => x.calls).flat().map(calledName =>
+                    data.methods.find(m => m.name == calledName)
+                )
+
+                let boundMethodsWithInfoAndCalled = boundMethodsWithInfo.concat(called)
+                let methodReadsDot = boundMethodsWithInfoAndCalled.map(reads).flat().join("\n")
+                let methodWritesDot = boundMethodsWithInfoAndCalled.map(writes).flat().join("\n")
+                let methodCallsDot = boundMethodsWithInfoAndCalled.map(calls).flat().join("\n")
+
+                let bindings = data.bindings.map(binding => { return { ...binding, isMethod: data.boundMethods.find(m => m == binding.source) } })
+
+                let bindingsDot = bindings.map(binding).join("\n")
+                console.log(bindingsDot)
+                //TODO how to handle call depth ? a(b) b(c) etc
+
+                //TODO INIT
+
+                d3.select("#graph").graphviz()
+                    .renderDot(
+                        `digraph graphname {
+                            node[shape=box]
+                            edge [style=dashed,arrowhead=empty];
+                            size="16,32";
+                            nodesep=0.6;
+                            ${bindingsDot}
+                            subgraph cluster_0 {
+                                ${scopedVarsDot}
+                                ${scopedMethodsDot}
+                            }
+                            subgraph cluster_1 {
+                                ${htmlTagsDot}
+                            }
+                            ${methodReadsDot}
+                            ${methodWritesDot}
+                            ${methodCallsDot}   
+                        }`
+
+                        // // This attribute applies to the graph itself
+                        // size="8,8";
+                        // // The label attribute can be used to change the label of a node
+
+
+                        // // Here, the node shape is changed.
+
+                        // // These edges both have different line properties
+                        // a -> b -> c[style=dotted];
+
+                        // subgraph cluster_0 {
+                        //     a [label="Foo", shape=box];
+                        // }
+                        // subgraph cluster_1 {
+                        //     b [shape=box, label="ASDF"];
+                        //     b -> d;
+                        //  }
+                        //}`);
+                    );
+            })
+
+
+    </script>

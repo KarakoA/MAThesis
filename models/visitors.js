@@ -12,14 +12,14 @@ class TemplateBinding {
 }
 
 class TemplateBindings {
-  constructor(bindings, bindingsToNames) {
+  constructor(bindings, boundTagsToNames) {
     this.bindings = bindings;
-    this.bindingsToNames = bindingsToNames;
+    this.boundTagsToNames = boundTagsToNames;
   }
 }
 
 class TopLevel {
-  constructor(variableNames,methodNames, calledInInit) {
+  constructor(variableNames, methodNames, calledInInit) {
     this.variableNames = variableNames;
     this.methodNames = methodNames;
     this.calledInInit = calledInInit;
