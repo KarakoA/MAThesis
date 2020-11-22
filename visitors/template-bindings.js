@@ -29,7 +29,6 @@ module.exports = {
       // all plain text inside elements
       "VElement VText"(node) {
         let name = node.value.trim();
-
         //TODO maybe add this in a proper way, to support <span></span>{{property }} syntax
         if (name) {
           let id = currentId;
@@ -52,14 +51,14 @@ module.exports = {
       "VAttribute[key.name.name=model] VExpressionContainer Identifier"(node) {
         bindings.push(new TemplateBinding(currentId, node.name));
       },
-      //all identifiers, needs info on which are methods and not
+      //all identifiers
       "VExpressionContainer Identifier"(node) {
         boundHtmlTags.add(currentId);
         bindings.push(new TemplateBinding(node.name, currentId));
       },
       "VElement[name=template]:exit"(node) {
-        let boundTagsToNames = names.filter((x) => boundHtmlTags.has(x.id));
-        let result = new TemplateBindings(bindings, boundTagsToNames);
+        let tagsInfo = names.filter((x) => boundHtmlTags.has(x.id));
+        let result = new TemplateBindings(bindings, tagsInfo);
         context.report({ node: node, message: JSON.stringify(result) });
       },
     });

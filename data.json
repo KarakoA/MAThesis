@@ -68,7 +68,7 @@
         "isEventBinding": false
       }
     ],
-    "boundTagsToNames": [
+    "tagsInfo": [
       {
         "id": "span_5_8_5_28",
         "name": "a"

@@ -41,7 +41,7 @@
                 let scopedVarsDot = data.boundVariables.map(scoped).join("\n")
                 let scopedMethodsDot = data.boundMethods.map(scoped).join("\n")
 
-                let htmlTagsDot = data.boundTagsToNames.map(htmlTag).join("\n")
+                let htmlTagsDot = data.tagsInfo.map(htmlTag).join("\n")
 
                 let boundMethodsWithInfo = data.boundMethods.map(
                     methodName => data.methods.find(m => m.name == methodName))

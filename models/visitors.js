@@ -14,9 +14,9 @@ class TemplateBinding {
 }
 
 class TemplateBindings {
-  constructor(bindings, boundTagsToNames) {
+  constructor(bindings, tagsInfo) {
     this.bindings = bindings;
-    this.boundTagsToNames = boundTagsToNames;
+    this.tagsInfo = tagsInfo;
   }
 }
 
