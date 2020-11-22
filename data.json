@@ -4,47 +4,68 @@
     "bindings": [
       {
         "source": "a",
-        "target": "span_5_8_5_28"
+        "target": "span_5_8_5_28",
+        "isEventBinding": false
       },
       {
         "source": "b",
-        "target": "span_5_31_5_52"
+        "target": "span_5_31_5_52",
+        "isEventBinding": false
       },
       {
         "source": "answer",
-        "target": "input_6_14_6_56"
+        "target": "input_6_14_6_56",
+        "isEventBinding": false
       },
       {
         "source": "input_6_14_6_56",
-        "target": "answer"
+        "target": "answer",
+        "isEventBinding": false
       },
       {
         "source": "may_check",
-        "target": "button_7_8_15_17"
+        "target": "button_7_8_15_17",
+        "isEventBinding": false
       },
       {
         "source": "check_answer",
-        "target": "button_7_8_15_17"
+        "target": "button_7_8_15_17",
+        "isEventBinding": false
+      },
+      {
+        "source": "button_7_8_15_17",
+        "target": "check_answer",
+        "isEventBinding": true
       },
       {
         "source": "right",
-        "target": "button_16_8_23_17"
+        "target": "button_16_8_23_17",
+        "isEventBinding": false
       },
       {
         "source": "right",
-        "target": "button_24_8_31_17"
+        "target": "button_24_8_31_17",
+        "isEventBinding": false
       },
       {
         "source": "new_problem",
-        "target": "button_32_8_38_17"
+        "target": "button_32_8_38_17",
+        "isEventBinding": false
+      },
+      {
+        "source": "button_32_8_38_17",
+        "target": "new_problem",
+        "isEventBinding": true
       },
       {
         "source": "count_right",
-        "target": "span_52_12_52_43"
+        "target": "span_52_12_52_43",
+        "isEventBinding": false
       },
       {
         "source": "count_wrong",
-        "target": "span_55_12_55_43"
+        "target": "span_55_12_55_43",
+        "isEventBinding": false
       }
     ],
     "boundTagsToNames": [

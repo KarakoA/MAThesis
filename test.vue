@@ -118,6 +118,6 @@ export default {
   width: 2em;
   background-color: #3ff;
   margin-left: 5px;
-  margin-righ: 5px;
+  margin-right: 5px;
 }
 </style>

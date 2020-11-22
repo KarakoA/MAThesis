@@ -4,10 +4,12 @@ class BindingToName {
     this.name = name;
   }
 }
+
 class TemplateBinding {
-  constructor(source, target) {
+  constructor(source, target, isEventBinding = false) {
     this.source = source;
     this.target = target;
+    this.isEventBinding = isEventBinding;
   }
 }
 
@@ -25,11 +27,13 @@ class TopLevel {
     this.calledInInit = calledInInit;
   }
 }
+
 class Methods {
   constructor(methods) {
     this.methods = methods;
   }
 }
+
 class Method {
   constructor(name, reads, writes, calls) {
     this.name = name;
