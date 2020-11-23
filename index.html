@@ -86,7 +86,13 @@
                             node[shape=box];
                             //rankdir="LR";
                             edge [style=dashed,arrowhead=empty];
-                            
+
+                            ranksep=1;
+                            nodesep=1; 
+                            rankdir=BT;
+                            splines=ortho;
+                            shape=box;
+
                             nodesep=0.6;
                             ${bindingsDot}
                             subgraph cluster_0 {
