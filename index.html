@@ -7,12 +7,23 @@
     <script src="https://unpkg.com/d3-graphviz@3.0.5/build/d3-graphviz.js"></script>
     <div id="graph" style="text-align: center;"></div>
     <script>
+
+
+
+        function scopedMethod(x) {
+            return `${x}[label="$scope.${x}()"];`
+        }
         function scoped(x) {
             return `${x}[label="$scope.${x}"];`
         }
         function htmlTag(x) {
-            label = x.name ? x.name : x.id
-            return `${x.id}[label="${label}"];`
+            return `${x.id}[label="${x.name}${subline(x.loc)}"];`
+        }
+        function subline(loc) {
+            let start = loc.start.line;
+            let end = loc.end.line;
+            let locString = start == end ? start : `${start}--${end}`;
+            return `\nh: ${locString}`;
         }
         function reads({ name, reads }) {
             return !reads ? [] : reads.map(r => `${r}-> ${name};`)
@@ -26,30 +37,36 @@
         function binding({ source, target, isEventBinding }) {
             if (isEventBinding)
                 //TODO not so nice semantically
-                return `${target} -> ${source}[style=solids];`
+                return `${source} -> ${target}[style=solids];`
             else
                 return `${source} -> ${target};`
         }
+        function initMethod(calledInInit) {
+            let initID = "INIT"
+            let calledDot = calledInInit.map(methodName => `${initID} -> ${methodName};`)
+            initDefinitionDot = [`${initID}[fillcolor=lightgrey,style=filled];`]
+            return initDefinitionDot.concat(calledDot)
+        }
+
         fetch("./data.json")
             .then(response => {
                 return response.json();
             })
             .then(data => {
+
                 //todo only for 1 file currently
                 data = data[0]
 
                 let scopedVarsDot = data.boundVariables.map(scoped).join("\n")
-                let scopedMethodsDot = data.boundMethods.map(scoped).join("\n")
-
+                let scopedMethodsDot = data.boundMethods.map(scopedMethod).join("\n")
                 let htmlTagsDot = data.tagsInfo.map(htmlTag).join("\n")
 
                 let boundMethodsWithInfo = data.boundMethods.map(
                     methodName => data.methods.find(m => m.name == methodName))
-
-
                 let called = boundMethodsWithInfo.map(x => x.calls).flat().map(calledName =>
                     data.methods.find(m => m.name == calledName)
                 )
+
 
                 let boundMethodsWithInfoAndCalled = boundMethodsWithInfo.concat(called)
                 let methodReadsDot = boundMethodsWithInfoAndCalled.map(reads).flat().join("\n")
@@ -59,26 +76,31 @@
                 let bindingsDot = data.bindings.map(binding).join("\n")
                 console.log(bindingsDot)
                 //TODO how to handle call depth ? a(b) b(c) etc
+                //NOTE should be handled by doing depth 1, right? is a graph
 
-                //TODO INIT
+                let initDot = initMethod(data.calledInInit).join("\n")
                 d3.select("#graph").graphviz()
                     .renderDot(
                         `digraph graphname {
-                            node[shape=box]
+                            forcelabels=true;
+                            node[shape=box];
+                            //rankdir="LR";
                             edge [style=dashed,arrowhead=empty];
-                            size="16,32";
+                            
                             nodesep=0.6;
                             ${bindingsDot}
                             subgraph cluster_0 {
                                 ${scopedVarsDot}
                                 ${scopedMethodsDot}
+                              
                             }
+                            ${initDot}
                             subgraph cluster_1 {
                                 ${htmlTagsDot}
                             }
                             ${methodReadsDot}
                             ${methodWritesDot}
-                            ${methodCallsDot}   
+                            ${methodCallsDot} 
                         }`
                     );
             })

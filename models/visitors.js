@@ -1,7 +1,8 @@
 class BindingToName {
-  constructor(id, name) {
+  constructor(id, name,loc) {
     this.id = id;
     this.name = name;
+    this.loc = loc;
   }
 }
 

@@ -28,11 +28,6 @@
         "isEventBinding": false
       },
       {
-        "source": "check_answer",
-        "target": "button_7_8_15_17",
-        "isEventBinding": false
-      },
-      {
         "source": "button_7_8_15_17",
         "target": "check_answer",
         "isEventBinding": true
@@ -45,11 +40,6 @@
       {
         "source": "right",
         "target": "button_24_8_31_17",
-        "isEventBinding": false
-      },
-      {
-        "source": "new_problem",
-        "target": "button_32_8_38_17",
         "isEventBinding": false
       },
       {
@@ -71,35 +61,129 @@
     "tagsInfo": [
       {
         "id": "span_5_8_5_28",
-        "name": "a"
+        "name": "a",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 8
+          },
+          "end": {
+            "line": 5,
+            "column": 28
+          }
+        }
       },
       {
         "id": "span_5_31_5_52",
-        "name": "b"
+        "name": "b",
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 31
+          },
+          "end": {
+            "line": 5,
+            "column": 52
+          }
+        }
+      },
+      {
+        "id": "input_6_14_6_56",
+        "name": "input",
+        "loc": {
+          "start": {
+            "line": 6,
+            "column": 14
+          },
+          "end": {
+            "line": 6,
+            "column": 56
+          }
+        }
       },
       {
         "id": "button_7_8_15_17",
-        "name": "Check"
+        "name": "Check",
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 8
+          },
+          "end": {
+            "line": 15,
+            "column": 17
+          }
+        }
       },
       {
         "id": "button_16_8_23_17",
-        "name": "Right"
+        "name": "Right",
+        "loc": {
+          "start": {
+            "line": 16,
+            "column": 8
+          },
+          "end": {
+            "line": 23,
+            "column": 17
+          }
+        }
       },
       {
         "id": "button_24_8_31_17",
-        "name": "Wrong"
+        "name": "Wrong",
+        "loc": {
+          "start": {
+            "line": 24,
+            "column": 8
+          },
+          "end": {
+            "line": 31,
+            "column": 17
+          }
+        }
       },
       {
         "id": "button_32_8_38_17",
-        "name": "New Problem"
+        "name": "New Problem",
+        "loc": {
+          "start": {
+            "line": 32,
+            "column": 8
+          },
+          "end": {
+            "line": 38,
+            "column": 17
+          }
+        }
       },
       {
         "id": "span_52_12_52_43",
-        "name": "count_right"
+        "name": "count_right",
+        "loc": {
+          "start": {
+            "line": 52,
+            "column": 12
+          },
+          "end": {
+            "line": 52,
+            "column": 43
+          }
+        }
       },
       {
         "id": "span_55_12_55_43",
-        "name": "count_wrong"
+        "name": "count_wrong",
+        "loc": {
+          "start": {
+            "line": 55,
+            "column": 12
+          },
+          "end": {
+            "line": 55,
+            "column": 43
+          }
+        }
       }
     ],
     "variableNames": [

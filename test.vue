@@ -2,7 +2,7 @@
   <div>
     <div style="margin-left: 5px; margin-top: 20px;">
       <form @submit.prevent>
-        <span>{{ a }}</span> + <span> {{ b }}</span> =
+        <span>{{ a }}</span> + <span> {{ b }}</span> = 
         <span><input class="question" v-model="answer"/></span>
         <button
           class="btn btn-primary"
@@ -79,6 +79,8 @@ export default {
     };
   },
   created: function() {
+    //this.a = 12 // TODO not yet implemented
+   // let g = this.c
     this.add_problem();
   },
   methods: {

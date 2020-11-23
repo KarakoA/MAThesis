@@ -5,57 +5,60 @@ const {
   TemplateBindings,
 } = require("../models/visitors");
 
-//TODO delete me, logging not crampled
-require("util").inspect.defaultOptions.depth = null;
 
-//TODO correct way to store
 let bindings = [];
 let boundHtmlTags = new Set();
 let names = [];
-let currentId = undefined;
+let currentId = undefined
 
 module.exports = {
-  bindings,
   create(context) {
+    //TODO check if <span></span>{{property }} syntax is supported
+    //TODO check if self closing handled
+
     return context.parserServices.defineTemplateBodyVisitor({
-      "VElement > VStartTag"() {},
-      "VElement > VEndTag"() {
-        currentId = undefined;
-      },
-      //new html tag, set target to its id
-      VElement(elem) {
-        currentId = utils.id(elem);
-      },
-      // all plain text inside elements
-      "VElement VText"(node) {
-        let name = node.value.trim();
-        //TODO maybe add this in a proper way, to support <span></span>{{property }} syntax
-        if (name) {
-          let id = currentId;
-          if (!id) id = utils.id(node);
-          names.push(new BindingToName(id, name));
-        }
-      },
       // click handlers
       "VAttribute[key.name.name=on] > VExpressionContainer > Identifier"(node) {
+        boundHtmlTags.add(currentId);
         bindings.push(new TemplateBinding(currentId, node.name, true));
       },
-      //all other with simple bindings
-      ":not(VAttribute[key.name.name=on]) VElement > VExpressionContainer >Identifier"(
+      //other identifiers
+      ":not(VAttribute[key.name.name=on]) >  VExpressionContainer  Identifier"(
         node
       ) {
-        let name = node.name.trim();
-        if (name) names.push(new BindingToName(currentId, name));
-      },
-      //two way binding, also include html tag -> variable. the other one is handled below
-      "VAttribute[key.name.name=model] VExpressionContainer Identifier"(node) {
-        bindings.push(new TemplateBinding(currentId, node.name));
-      },
-      //all identifiers
-      "VExpressionContainer Identifier"(node) {
         boundHtmlTags.add(currentId);
         bindings.push(new TemplateBinding(node.name, currentId));
       },
+      //two way binding, also include html tag -> variable. the other one is handled below
+      "VAttribute[key.name.name=model] > VExpressionContainer > Identifier"(
+        node
+      ) {
+        boundHtmlTags.add(currentId);
+        bindings.push(new TemplateBinding(currentId, node.name));
+      },
+
+      // all html tags
+      VElement(node) {
+        
+        let id = utils.id(node)
+        currentId = id;
+        
+        //simple name, raw string
+        let firstVText = node.children
+          .find((x) => x.type === "VText" && x.value.trim())
+          ?.value.trim();
+
+        // moustache property
+        let firstVExpressionContainer = () =>
+          node.children.find((x) => x.type == "VExpressionContainer")
+            ?.expression?.name;
+
+        // if both fail, just the name of the node
+        let name =
+          firstVText ?? firstVExpressionContainer() ?? node.name;
+        names.push(new BindingToName(id, name,node.loc));
+      },
+      //last node on the way to top
       "VElement[name=template]:exit"(node) {
         let tagsInfo = names.filter((x) => boundHtmlTags.has(x.id));
         let result = new TemplateBindings(bindings, tagsInfo);
