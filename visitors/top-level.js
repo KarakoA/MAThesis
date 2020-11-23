@@ -25,6 +25,7 @@ module.exports = {
         },
 
         //init - (this type call directly inside a call expression)
+        //TODO proper init, not only methods inside it
         "Property[key.name = created] CallExpression[callee.type=MemberExpression] > MemberExpression[object.type=ThisExpression]"(
           node
         ) {

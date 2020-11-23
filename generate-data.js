@@ -1,7 +1,6 @@
 const { ESLint } = require("eslint");
 const fs =require("fs")
 const path  = require("path")
-//const d3 = require("d3-graphviz");
 
 async function runLinter(files) {
   const eslint = new ESLint({
@@ -45,7 +44,6 @@ async function main() {
 
   r = transform(r);
   fs.writeFileSync("data.json",JSON.stringify(r,null,2))
-  //d3.graphviz("#graph").renderDot("digraph {a -> b}");
 }
 
 main().catch((error) => {
