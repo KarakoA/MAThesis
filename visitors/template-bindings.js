@@ -62,6 +62,7 @@ module.exports = {
       "VElement[name=template]:exit"(node) {
         let tagsInfo = names.filter((x) => boundHtmlTags.has(x.id));
         let result = new TemplateBindings(bindings, tagsInfo);
+
         context.report({ node: node, message: JSON.stringify(result) });
       },
     });
