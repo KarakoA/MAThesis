@@ -1,12 +1,16 @@
 const { assert } = require("console");
 const { Method, Methods } = require("../models/visitors");
 
-let methodName = undefined;
-let writes = [];
-let all = [];
-let calls = [];
+let self = {};
+function reset() {
+  self.methodName = undefined;
+  self.writes = [];
+  self.all = [];
+  self.calls = [];
+}
+reset();
 
-const NAME = "function-reads-writes"
+const NAME = "function-reads-writes";
 module.exports = {
   NAME,
   create(context) {
@@ -17,14 +21,14 @@ module.exports = {
         "Property[key.name = methods] Property[value.type=FunctionExpression]"(
           node
         ) {
-          methodName = node.key.name;
+          self.methodName = node.key.name;
         },
         //writes (this type call as the left side of an expression statement)
         "Property[key.name = methods] AssignmentExpression[left.object.type=ThisExpression]"(
           node
         ) {
-          writes.push({
-            method: methodName,
+          self.writes.push({
+            method: self.methodName,
             property: node.left.property.name,
           });
         },
@@ -32,19 +36,25 @@ module.exports = {
         "Property[key.name = methods] CallExpression[callee.type=MemberExpression] > MemberExpression[object.type=ThisExpression]"(
           node
         ) {
-          calls.push({ method: methodName, property: node.property.name });
+          self.calls.push({
+            method: self.methodName,
+            property: node.property.name,
+          });
         },
         //all calls
         "Property[key.name = methods] MemberExpression[object.type=ThisExpression]"(
           node
         ) {
-          all.push({ method: methodName, property: node.property.name });
+          self.all.push({
+            method: self.methodName,
+            property: node.property.name,
+          });
         },
         //returned back to the top of the parsing tree
         "ExportDefaultDeclaration:exit"(node) {
           // reads equalts to  all except write and calls
-          let reads = [...all];
-          writes.concat(calls).forEach((el) => {
+          let reads = [...self.all];
+          self.writes.concat(self.calls).forEach((el) => {
             let found = reads.find(
               (x) => x.method === el.method && x.property == el.property
             );
@@ -54,7 +64,7 @@ module.exports = {
             reads.splice(i, 1);
           });
 
-          let allNames = [...new Set(all.map((x) => x.method))];
+          let allNames = [...new Set(self.all.map((x) => x.method))];
           //not a very computationally efficient way of creating the mapping,
           //groupBy/map reduce would have been better
           let f = (name, methods) => [
@@ -68,12 +78,13 @@ module.exports = {
                 new Method(
                   name,
                   f(name, reads),
-                  f(name, writes),
-                  f(name, calls)
+                  f(name, self.writes),
+                  f(name, self.calls)
                 )
             )
           );
           context.report({ node: node, message: JSON.stringify(methods) });
+          reset()
         },
       }
     );
