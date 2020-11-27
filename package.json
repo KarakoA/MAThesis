@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "serve": "light-server -s . -p 8000",
-    "generate": " node generate-data.js"
+    "generate": "node generate-data.js",
+    "lint": "eslint --ext .js ."
   },
   "repository": {
     "type": "git",
