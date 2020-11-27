@@ -1,4 +1,5 @@
-const { runLinter } = require("../util/eslint-runner");
+const { ESLinter } = require("../../eslinter");
+const { NAME } = require("../../visitors/top-level");
 let code = `<template></template><script>
 export default {
     name: "HelloWorld",
@@ -19,7 +20,8 @@ export default {
     }
 }</script>`;
 
+let linter = new ESLinter()
 test("adds 1 + 2 to equal 3", async () => {
-  let r = await runLinter(code, "top-level");
+  let r = await linter.lintCode(code, NAME);
   console.log(r);
 });

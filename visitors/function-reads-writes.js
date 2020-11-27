@@ -1,14 +1,14 @@
 const { assert } = require("console");
 const { Method, Methods } = require("../models/visitors");
-//TODO delete me, logging not crampled
-require("util").inspect.defaultOptions.depth = null;
 
 let methodName = undefined;
 let writes = [];
 let all = [];
 let calls = [];
 
+const NAME = "function-reads-writes"
 module.exports = {
+  NAME,
   create(context) {
     return context.parserServices.defineTemplateBodyVisitor(
       {},

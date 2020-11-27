@@ -1,12 +1,12 @@
-let utils = require("../utils");
-//TODO delete me, logging not crampled
 const { TopLevel } = require("../models/visitors");
-require("util").inspect.defaultOptions.depth = null;
 
 let methods = [];
 let init = [];
 let variables = [];
+
+const NAME = "top-level"
 module.exports = {
+  NAME,
   create(context) {
     return context.parserServices.defineTemplateBodyVisitor(
       {},

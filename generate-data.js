@@ -1,28 +1,5 @@
-const { ESLint } = require("eslint");
+const { ESLinter } = require("./eslinter");
 const fs =require("fs")
-const path  = require("path")
-
-async function runLinter(files) {
-  const eslint = new ESLint({
-    rulePaths: ["visitors"],
-      useEslintrc: false,
-      overrideConfigFile: "eslintrc-generation.js"
-  });
-  //runs all rules
-  const lintResults = await eslint.lintFiles(files);
-  //employing a bit of a hack,
-  //output of each rule is stored as stringified json in it's message
-  return lintResults.map((result) => {
-    let data = result.messages
-      .map((x) => JSON.parse(x.message))
-      //merge all together in one json
-      .reduce((a, c) => {
-        return { ...a, ...c };
-      });
-      //TODO note later will need to revert to full path, currently only single file 
-    return { name: path.basename(result.filePath), ...data };
-  });
-}
 
 function transform(rulesResults) {
   return rulesResults.map((result) => {
@@ -42,7 +19,7 @@ function transform(rulesResults) {
 }
 
 async function main() {
-  let r = await runLinter(["test.vue"]);
+  let r = await new ESLinter().lintFiles(["test.vue"]);
 
   r = transform(r);
   fs.writeFileSync("data.json",JSON.stringify(r,null,2))

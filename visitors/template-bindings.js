@@ -11,7 +11,10 @@ let boundHtmlTags = new Set();
 let names = [];
 let currentId = undefined
 
+const NAME = "template-bindings"
+
 module.exports = {
+  NAME,
   create(context) {
     //TODO check if <span></span>{{property }} syntax is supported
     //TODO check if self closing handled
