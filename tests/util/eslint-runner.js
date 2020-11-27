@@ -3,6 +3,8 @@ const { ESLint } = require("eslint");
 async function runLinter(code, rule) {
   const eslint = new ESLint({
     rulePaths: ["visitors"],
+    useEslintrc: false,
+    overrideConfigFile: "eslintrc-generation.js"
   });
   //runs all rules and selects only the ones we are interested in
   const lintResults = await eslint.lintText(code);

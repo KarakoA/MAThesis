@@ -5,6 +5,8 @@ const path  = require("path")
 async function runLinter(files) {
   const eslint = new ESLint({
     rulePaths: ["visitors"],
+      useEslintrc: false,
+      overrideConfigFile: "eslintrc-generation.js"
   });
   //runs all rules
   const lintResults = await eslint.lintFiles(files);
