@@ -1,5 +1,5 @@
 class BindingToName {
-  constructor(id, name,loc) {
+  constructor(id, name, loc) {
     this.id = id;
     this.name = name;
     this.loc = loc;
@@ -43,6 +43,11 @@ class Method {
     this.calls = calls;
   }
 }
+class Init {
+  constructor(methods) {
+    this.init = methods.methods[0] ?? undefined;
+  }
+}
 
 module.exports = {
   TemplateBinding,
@@ -51,4 +56,5 @@ module.exports = {
   TopLevel,
   Method,
   Methods,
+  Init,
 };
