@@ -4,6 +4,7 @@ const { Method, Methods } = require("../models/visitors");
 let self = {};
 function reset() {
   self.methodName = undefined;
+  self.allNames = new Set();
   self.writes = [];
   self.all = [];
   self.calls = [];
@@ -22,6 +23,7 @@ module.exports = {
           node
         ) {
           self.methodName = node.key.name;
+          self.allNames.add(self.methodName);
         },
         //writes (this type call as the left side of an expression statement)
         "Property[key.name = methods] AssignmentExpression[left.object.type=ThisExpression]"(
@@ -33,12 +35,12 @@ module.exports = {
           });
         },
         //method calls (this type call directly inside a call expression)
-        "Property[key.name = methods] CallExpression[callee.type=MemberExpression] > MemberExpression[object.type=ThisExpression]"(
+        "Property[key.name = methods] CallExpression[callee.object.type=ThisExpression]"(
           node
         ) {
           self.calls.push({
             method: self.methodName,
-            property: node.property.name,
+            property: node.callee.property.name,
           });
         },
         //all calls
@@ -64,7 +66,6 @@ module.exports = {
             reads.splice(i, 1);
           });
 
-          let allNames = [...new Set(self.all.map((x) => x.method))];
           //not a very computationally efficient way of creating the mapping,
           //groupBy/map reduce would have been better
           let f = (name, methods) => [
@@ -73,7 +74,7 @@ module.exports = {
             ),
           ];
           let methods = new Methods(
-            allNames.map(
+            [...self.allNames].map(
               (name) =>
                 new Method(
                   name,
@@ -84,7 +85,7 @@ module.exports = {
             )
           );
           context.report({ node: node, message: JSON.stringify(methods) });
-          reset()
+          reset();
         },
       }
     );
