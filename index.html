@@ -36,7 +36,6 @@
         }
         function binding({ source, target, isEventBinding }) {
             if (isEventBinding)
-                //TODO not so nice semantically
                 return `${source} -> ${target}[style=solids];`
             else
                 return `${source} -> ${target};`
