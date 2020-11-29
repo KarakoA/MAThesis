@@ -1,6 +1,6 @@
-let a = require("../function-state");
+const { FunctionState } = require("../function-state");
 
-let state = new a.FunctionState();
+let state = new FunctionState();
 
 const NAME = "function-reads-writes";
 module.exports = {
