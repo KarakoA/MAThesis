@@ -19,14 +19,13 @@ const NAME = "template-binding";
 module.exports = {
   NAME,
   create(context) {
-    //TODO check if <span></span>{{property }} syntax is supported
-    //TODO check if self closing handled
-
     return context.parserServices.defineTemplateBodyVisitor({
       // click handlers
       "VAttribute[key.name.name=on] > VExpressionContainer > Identifier"(node) {
         self.boundHtmlTags.add(self.currentId);
-        self.bindings.push(new TemplateBinding(self.currentId, node.name, true));
+        self.bindings.push(
+          new TemplateBinding(self.currentId, node.name, true)
+        );
       },
       //other identifiers
       ":not(VAttribute[key.name.name=on]) >  VExpressionContainer  Identifier"(
