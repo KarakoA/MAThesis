@@ -1,5 +1,5 @@
 const { ESLinter } = require("./eslinter");
-const fs =require("fs")
+const fs = require("fs");
 
 function transform(rulesResults) {
   return rulesResults.map((result) => {
@@ -19,10 +19,10 @@ function transform(rulesResults) {
 }
 
 async function main() {
-  let r = await new ESLinter().lintFiles(["test.vue"]);
+  let r = await new ESLinter().lintFiles(["test-files/test.vue"]);
 
   r = transform(r);
-  fs.writeFileSync("data.json",JSON.stringify(r,null,2))
+  fs.writeFileSync("data.json", JSON.stringify(r, null, 2));
 }
 
 main().catch((error) => {
