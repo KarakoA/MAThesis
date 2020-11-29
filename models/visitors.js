@@ -48,7 +48,11 @@ class Init {
     this.init = methods.methods[0] ?? undefined;
   }
 }
-
+class Computed {
+  constructor(methods) {
+    this.computed = methods.methods;
+  }
+}
 module.exports = {
   TemplateBinding,
   TemplateBindings,
@@ -57,4 +61,5 @@ module.exports = {
   Method,
   Methods,
   Init,
+  Computed,
 };
