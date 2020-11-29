@@ -14,12 +14,16 @@ function transform(rulesResults) {
     let boundMethods = result.methodNames.filter((x) =>
       boundVarsAndMethods.includes(x)
     );
-    return { ...result, boundVariables, boundMethods };
+    //scope computed methods
+    let boundComputedVariables = result.computed
+      .map((x) => x.name)
+      .filter((x) => boundVarsAndMethods.includes(x));
+    return { ...result, boundVariables, boundMethods, boundComputedVariables };
   });
 }
 
 async function main() {
-  let r = await new ESLinter().lintFiles(["test-files/test.vue"]);
+  let r = await new ESLinter().lintFiles(["test-files/test-computed.vue"]);
 
   r = transform(r);
   fs.writeFileSync("data.json", JSON.stringify(r, null, 2));

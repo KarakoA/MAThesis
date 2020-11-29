@@ -1,6 +1,6 @@
 [
   {
-    "name": "test.vue",
+    "name": "test-computed.vue",
     "bindings": [
       {
         "source": "a",
@@ -14,11 +14,11 @@
       },
       {
         "source": "answer",
-        "target": "input_6_14_6_56",
+        "target": "input_6_14_6_57",
         "isEventBinding": false
       },
       {
-        "source": "input_6_14_6_56",
+        "source": "input_6_14_6_57",
         "target": "answer",
         "isEventBinding": false
       },
@@ -49,12 +49,17 @@
       },
       {
         "source": "count_right",
-        "target": "span_52_12_52_43",
+        "target": "span_53_12_53_43",
         "isEventBinding": false
       },
       {
         "source": "count_wrong",
-        "target": "span_55_12_55_43",
+        "target": "span_56_12_56_43",
+        "isEventBinding": false
+      },
+      {
+        "source": "accuracy",
+        "target": "span_59_12_59_40",
         "isEventBinding": false
       }
     ],
@@ -88,7 +93,7 @@
         }
       },
       {
-        "id": "input_6_14_6_56",
+        "id": "input_6_14_6_57",
         "name": "input",
         "loc": {
           "start": {
@@ -97,7 +102,7 @@
           },
           "end": {
             "line": 6,
-            "column": 56
+            "column": 57
           }
         }
       },
@@ -158,30 +163,44 @@
         }
       },
       {
-        "id": "span_52_12_52_43",
+        "id": "span_53_12_53_43",
         "name": "count_right",
         "loc": {
           "start": {
-            "line": 52,
+            "line": 53,
             "column": 12
           },
           "end": {
-            "line": 52,
+            "line": 53,
             "column": 43
           }
         }
       },
       {
-        "id": "span_55_12_55_43",
+        "id": "span_56_12_56_43",
         "name": "count_wrong",
         "loc": {
           "start": {
-            "line": 55,
+            "line": 56,
             "column": 12
           },
           "end": {
-            "line": 55,
+            "line": 56,
             "column": 43
+          }
+        }
+      },
+      {
+        "id": "span_59_12_59_40",
+        "name": "accuracy",
+        "loc": {
+          "start": {
+            "line": 59,
+            "column": 12
+          },
+          "end": {
+            "line": 59,
+            "column": 40
           }
         }
       }
@@ -193,9 +212,7 @@
       "answer",
       "right",
       "count_right",
-      "count_wrong",
-      "topLevel",
-      "otherLevel"
+      "count_wrong"
     ],
     "methodNames": [
       "add_problem",
@@ -214,7 +231,17 @@
         "add_problem"
       ]
     },
-    "computed": [],
+    "computed": [
+      {
+        "name": "accuracy",
+        "writes": [],
+        "reads": [
+          "count_wrong",
+          "count_right"
+        ],
+        "calls": []
+      }
+    ],
     "methods": [
       {
         "name": "add_problem",
@@ -275,6 +302,9 @@
       "check_answer",
       "may_check",
       "new_problem"
+    ],
+    "boundComputedVariables": [
+      "accuracy"
     ]
   }
 ]
