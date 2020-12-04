@@ -171,6 +171,69 @@ describe("Parsing expression", () => {
   });
 });
 
+describe("Parsing object accessors", () => {
+  describe("with a depth of 2 should yield correct", () => {
+    let tag = `<div> {{VAR.VAR1}} </div>`;
+    test("bindings", async () => {
+      let actual = await parse(tag);
+      expect(actual.bindings).toStrictEqual([
+        {
+          source: "VAR.VAR1",
+          target: expect.any(String),
+          isEventBinding: false,
+        },
+      ]);
+    });
+
+    test("tagsInfo", async () => {
+      let actual = await parse(tag);
+      expect(actual.tagsInfo).toStrictEqual([
+        {
+          id: actual.bindings[0].target,
+          name: "VAR.VAR1",
+          loc: expect.anything(),
+        },
+      ]);
+    });
+  });
+
+  describe("with arbitrary depth should yield correct", () => {
+    let tag = `<div v-bind:id="VAR.VAR1.VAR2.VAR3.VAR4"/>`;
+    test("bindings", async () => {
+      let actual = await parse(tag);
+      expect(actual.bindings).toStrictEqual([
+        {
+          source: "VAR.VAR1.VAR2.VAR3.VAR4",
+          target: expect.any(String),
+          isEventBinding: false,
+        },
+      ]);
+    });
+  });
+  describe("for event binding should yield correct", () => {
+    let tag = `<div @click="OnVAR.VAR"></div>`;
+    test("bindings", async () => {
+      let actual = await parse(tag);
+      expect(actual.bindings).toStrictEqual([
+        {
+          source: expect.any(String),
+          target: "OnVAR.VAR",
+          isEventBinding: true,
+        },
+      ]);
+    });
+    test("tagsInfo", async () => {
+      let actual = await parse(tag);
+      expect(actual.tagsInfo).toStrictEqual([
+        {
+          id: actual.bindings[0].source,
+          name: "div",
+          loc: expect.anything(),
+        },
+      ]);
+    });
+  });
+});
 describe("TagsInfo", () => {
   describe("given no binding", () => {
     test("be empty", async () => {
@@ -311,5 +374,3 @@ describe("TagsInfo", () => {
     });
   });
 });
-
-//TODO complex variables not yet supported //topLevel:{otherLevel:0}
