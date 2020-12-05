@@ -1,73 +1,50 @@
-let utils = require("../utils");
-const {
-  BindingToName,
-  TemplateBinding,
-  TemplateBindings,
-} = require("../models/visitors");
+const { BindingsState, bindingTypes } = require("../bindings-state.js");
 
-let self = {};
-function reset() {
-  self.bindings = [];
-  self.boundHtmlTags = new Set();
-  self.names = [];
-  self.currentId = undefined;
-}
-reset();
+let state = new BindingsState();
 
 const NAME = "template-binding";
 
+function name(node) {
+  return node.type === "Identifier" ? node.name : node.property.name;
+}
 module.exports = {
   NAME,
   create(context) {
     return context.parserServices.defineTemplateBodyVisitor({
       // click handlers
-      "VAttribute[key.name.name=on] > VExpressionContainer > Identifier"(node) {
-        self.boundHtmlTags.add(self.currentId);
-        self.bindings.push(
-          new TemplateBinding(self.currentId, node.name, true)
-        );
+      "VAttribute[key.name.name=on] >  VExpressionContainer :matches(MemberExpression, Identifier)"(
+        node
+      ) {
+        state.identifierOrExpressionNew(name(node), bindingTypes.CLICK_HANDLER);
+      },
+
+      //two way binding
+      "VAttribute[key.name.name=model] > VExpressionContainer :matches(MemberExpression, Identifier)"(
+        node
+      ) {
+        state.identifierOrExpressionNew(name(node), bindingTypes.TWO_WAY);
       },
       //other identifiers
-      ":not(VAttribute[key.name.name=on]) >  VExpressionContainer  Identifier"(
+      ":not(:matches(VAttribute[key.name.name=on], VAttribute[key.name.name=model])) >  VExpressionContainer :matches(MemberExpression, Identifier)"(
         node
       ) {
-        self.boundHtmlTags.add(self.currentId);
-        self.bindings.push(new TemplateBinding(node.name, self.currentId));
+        state.identifierOrExpressionNew(name(node), bindingTypes.ONE_WAY);
       },
-      //two way binding, also include html tag -> variable. the other one is handled below
-      "VAttribute[key.name.name=model] > VExpressionContainer > Identifier"(
-        node
-      ) {
-        self.boundHtmlTags.add(self.currentId);
-        self.bindings.push(new TemplateBinding(self.currentId, node.name));
+
+      "VExpressionContainer :matches(MemberExpression, Identifier):exit"() {
+        state.identifierOrExpressionExit();
       },
 
       // all html tags
-      VElement(node) {
-        let id = utils.id(node);
-        self.currentId = id;
-
-        //simple name, raw string
-        let firstVText = node.children
-          .find((x) => x.type === "VText" && x.value.trim())
-          ?.value.trim();
-
-        // moustache property
-        let firstVExpressionContainer = () =>
-          node.children.find((x) => x.type == "VExpressionContainer")
-            ?.expression?.name;
-
-        // if both fail, just the name of the node
-        let name = firstVText ?? firstVExpressionContainer() ?? node.name;
-        self.names.push(new BindingToName(id, name, node.loc));
+      "VElement:exit"(node) {
+        state.nodeExited(node);
       },
       //last node on the way to top
       "VElement[name=template]:exit"(node) {
-        let tagsInfo = self.names.filter((x) => self.boundHtmlTags.has(x.id));
-        let result = new TemplateBindings(self.bindings, tagsInfo);
+        let result = state.finish();
 
         context.report({ node: node, message: JSON.stringify(result) });
-        reset();
+        state.reset();
       },
     });
   },

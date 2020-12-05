@@ -46,7 +46,7 @@ describe("Parsing single", () => {
     test("tagsInfo", async () => {
       let actual = await parse(tag);
       expect(actual.tagsInfo).toStrictEqual([
-        { id: actual.bindings[0].target, name: "div", loc: expect.anything() },
+        { id: actual.bindings[0].target, name: "VAR", loc: expect.anything() },
       ]);
     });
   });
@@ -65,7 +65,7 @@ describe("Parsing single", () => {
       expect(actual.tagsInfo).toStrictEqual([
         {
           id: actual.bindings[0].target,
-          name: "div",
+          name: "VAR",
           loc: expect.anything(),
         },
       ]);
@@ -89,7 +89,7 @@ describe("Parsing single", () => {
       expect(actual.tagsInfo).toStrictEqual([
         {
           id: actual.bindings[0].target,
-          name: "input",
+          name: "VAR",
           loc: expect.anything(),
         },
       ]);
@@ -139,7 +139,7 @@ describe("Parsing single", () => {
       expect(actual.tagsInfo).toStrictEqual([
         {
           id: actual.bindings[0].source,
-          name: "div",
+          name: "OnVAR",
           loc: expect.anything(),
         },
       ]);
@@ -209,15 +209,25 @@ describe("Parsing object accessors", () => {
         },
       ]);
     });
+    test("tagsInfo", async () => {
+      let actual = await parse(tag);
+      expect(actual.tagsInfo).toStrictEqual([
+        {
+          id: actual.bindings[0].target,
+          name: "VAR.VAR1.VAR2.VAR3.VAR4",
+          loc: expect.anything(),
+        },
+      ]);
+    });
   });
   describe("for event binding should yield correct", () => {
-    let tag = `<div @click="OnVAR.VAR"></div>`;
+    let tag = `<div @click="OnVAR.VAR1.VAR2"></div>`;
     test("bindings", async () => {
       let actual = await parse(tag);
       expect(actual.bindings).toStrictEqual([
         {
           source: expect.any(String),
-          target: "OnVAR.VAR",
+          target: "OnVAR.VAR1.VAR2",
           isEventBinding: true,
         },
       ]);
@@ -227,7 +237,7 @@ describe("Parsing object accessors", () => {
       expect(actual.tagsInfo).toStrictEqual([
         {
           id: actual.bindings[0].source,
-          name: "div",
+          name: "OnVAR.VAR1.VAR2",
           loc: expect.anything(),
         },
       ]);
@@ -259,6 +269,13 @@ describe("TagsInfo", () => {
           { name: "VAR1", loc: expect.anything(), id: expect.any(String) },
         ]);
       });
+      test("nested moustache if value not present", async () => {
+        let tag = `<div> {{VAR1.VAR2}} </div>`;
+        let actual = await parse(tag);
+        expect(actual.tagsInfo).toStrictEqual([
+          { name: "VAR1.VAR2", loc: expect.anything(), id: expect.any(String) },
+        ]);
+      });
 
       test("value if value followed by moustache are present", async () => {
         let tag = `<div> VALUE {{VAR1}} </div>`;
@@ -276,13 +293,13 @@ describe("TagsInfo", () => {
         ]);
       });
 
-      test("type if value not present", async () => {
-        let tag = `<input v-model="VAR1">  </input>`;
-        let actual = await parse(tag);
-        expect(actual.tagsInfo).toStrictEqual([
-          { name: "input", loc: expect.anything(), id: expect.any(String) },
-        ]);
-      });
+      // test("type if value not present", async () => {
+      //   let tag = `<input v-model="VAR1">  </input>`;
+      //   let actual = await parse(tag);
+      //   expect(actual.tagsInfo).toStrictEqual([
+      //     { name: "input", loc: expect.anything(), id: expect.any(String) },
+      //   ]);
+      // });
 
       test("moustache if not inside tag", async () => {
         let tag = `{{VAR1}}`;
