@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "serve": "light-server -s . -p 8000",
-    "generate": "node generate-data.js",
+    "serve": "light-server -s src -p 8000",
+    "generate": "node src/generate-data.js",
     "lint": "eslint --ext .js ."
   },
   "repository": {

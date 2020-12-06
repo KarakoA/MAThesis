@@ -4,9 +4,9 @@ const path = require("path");
 class ESLinter {
   constructor() {
     this.eslint = new ESLint({
-      rulePaths: ["visitors"],
+      rulePaths: ["./src/visitors"],
       useEslintrc: false,
-      overrideConfigFile: "eslintrc-generation.js",
+      overrideConfigFile: "./src/eslintrc-generation.js",
     });
   }
 
