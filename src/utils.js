@@ -6,19 +6,15 @@ function firstParentOfType(elem, typeString) {
     : undefined;
 }
 
-function getBindingNameFromExpressionContainer(expressionNode) {
-  let node = expressionNode?.expression;
-  return node ? getBindingNameFromMemberExpression(node) : undefined;
+function isRootNameNode(node) {
+  return node.parent.type !== "MemberExpression";
 }
 
-function getBindingNameFromMemberExpression(node, prev = []) {
+function getNameFromExpression(node, prev = []) {
   if (node.type === "Identifier")
     return prev.concat(node.name).reverse().join(".");
   else if (node.type === "MemberExpression") {
-    return getBindingNameFromMemberExpression(
-      node.object,
-      prev.concat(node.property.name)
-    );
+    return getNameFromExpression(node.object, prev.concat(node.property.name));
   } else throw new Error(`Unknown node type: ${node.type}`);
 }
 
@@ -42,5 +38,6 @@ module.exports = {
   id,
   firstParentOfType,
   firstVElementParent,
-  getBindingNameFromExpressionContainer,
+  getNameFromExpression,
+  isRootNameNode,
 };

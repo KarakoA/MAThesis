@@ -1,5 +1,4 @@
 let utils = require("../utils");
-const { NameResolver } = require("../utils/name-resolver");
 const {
   BindingToName,
   TemplateBinding,
@@ -13,30 +12,25 @@ const bindingTypes = {
 };
 class BindingsState {
   constructor() {
-    this.nameResolver = new NameResolver();
     this.reset();
   }
   reset() {
     this.bindings = [];
     this.tagsInfo = [];
-    this.nameResolver.reset();
+    this.latest = [];
   }
 
-  identifierOrExpressionNew(simpleName, bindingType) {
-    this.nameResolver.identifierOrExpressionNew(simpleName, bindingType);
-  }
-
-  identifierOrExpressionExit() {
-    this.nameResolver.identifierOrExpressionExit();
+  identifierOrExpressionNew(node, bindingType) {
+    let name = utils.getNameFromExpression(node);
+    this.latest.push({ name, bindingType });
   }
 
   nodeExited(node) {
-    let bindings = this.nameResolver.nodeExited();
-    if (bindings.length != 0) {
+    if (this.latest.length != 0) {
       let id = utils.id(node);
-      let newBindings = bindings
+      let newBindings = this.latest
         .map((x) => {
-          switch (x.options) {
+          switch (x.bindingType) {
             case bindingTypes.ONE_WAY:
               return [new TemplateBinding(x.name, id, false)];
             case bindingTypes.CLICK_HANDLER:
@@ -57,11 +51,12 @@ class BindingsState {
         .find((x) => x.type === "VText" && x.value.trim())
         ?.value.trim();
 
-      let firstBinding = bindings[0].name;
+      let firstBinding = this.latest[0].name;
 
       // if both fail, just the name of the node
       let name = firstVText ?? firstBinding ?? node.name;
       this.tagsInfo.push(new BindingToName(id, name, node.loc));
+      this.latest = [];
     }
   }
 
