@@ -57,6 +57,7 @@ describe("Method", () => {
           { name: "a", reads: ["a"], writes: [], calls: [] },
         ]);
       });
+
       test("multiple variables", async () => {
         let methods = `a(){
             let q = this.a
@@ -72,6 +73,13 @@ describe("Method", () => {
         let actual = await parse(methods);
         expect(actual.methods).toStrictEqual([
           { name: "a", reads: ["a", "b"], writes: [], calls: [] },
+        ]);
+      });
+      test("multiple nested variables as an expression on the same line", async () => {
+        let methods = `a(){let q = this.a.b.c + this.d.e.f}`;
+        let actual = await parse(methods);
+        expect(actual.methods).toStrictEqual([
+          { name: "a", reads: ["a.b.c", "d.e.f"], writes: [], calls: [] },
         ]);
       });
       test("complex expressions", async () => {
@@ -143,6 +151,13 @@ describe("Method", () => {
           { name: "a", reads: [], writes: ["a", "b"], calls: [] },
         ]);
       });
+      test("multiple nested variables as an expression on the same line", async () => {
+        let methods = `a(){this.a.b.c=3,this.d.e.f = 4}`;
+        let actual = await parse(methods);
+        expect(actual.methods).toStrictEqual([
+          { name: "a", reads: [], writes: ["a.b.c", "d.e.f"], calls: [] },
+        ]);
+      });
       test("complex expressions", async () => {
         let methods = `a(){this.d = this.a + math.doSomething(this.b) + 3 + 22 * this.a + this.some_method(this.b)}`;
         let actual = await parse(methods);
@@ -192,6 +207,7 @@ describe("Method", () => {
           { name: "a", reads: [], writes: [], calls: ["a"] },
         ]);
       });
+
       test("multiple methods", async () => {
         let methods = `a(){
             this.a()
@@ -211,6 +227,18 @@ describe("Method", () => {
             reads: expect.anything(),
             writes: [],
             calls: ["a", "b"],
+          },
+        ]);
+      });
+      test("multiple nested methods in an expression", async () => {
+        let methods = `a(){let q= this.a.b.c(this.h) + this.d.e.f()}`;
+        let actual = await parse(methods);
+        expect(actual.methods).toStrictEqual([
+          {
+            name: "a",
+            reads: expect.anything(),
+            writes: [],
+            calls: ["a.b.c", "d.e.f"],
           },
         ]);
       });

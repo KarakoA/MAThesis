@@ -10,7 +10,13 @@ export default {
       return {
         a: 0,
         b: 0,
-        c: 0
+        c: 0,
+        d: {
+          e:{
+            f:0,
+            g: {h:0}
+          }
+        }
       };
     },
     created: function() {
@@ -31,12 +37,19 @@ describe("Parsing top level", () => {
   test("methods", () => {
     expect(parsed.methodNames).toEqual(["method1", "method2"]);
   });
-  test("simple variables", () => {
-    expect(parsed.variableNames).toEqual(["a", "b", "c"]);
+  test("variables", () => {
+    expect(parsed.variableNames).toEqual([
+      "a",
+      "b",
+      "c",
+      "d",
+      "d.e",
+      "d.e.f",
+      "d.e.g",
+      "d.e.g.h",
+    ]);
   });
   test("functions called in init", () => {
     expect(parsed.calledInInit).toEqual(["method1"]);
   });
-
-  //TODO complex variables not yet supported //topLevel:{otherLevel:0}
 });
