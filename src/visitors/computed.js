@@ -1,4 +1,4 @@
-const { FunctionState } = require("../function-state");
+const { FunctionState } = require("../state/function-state");
 const { Init, Computed } = require("../models/visitors");
 let state = new FunctionState();
 

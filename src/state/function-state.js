@@ -1,5 +1,5 @@
 const { assert } = require("console");
-const { Method, Methods } = require("./models/visitors");
+const { Method, Methods } = require("../models/visitors");
 
 class FunctionState {
   constructor() {

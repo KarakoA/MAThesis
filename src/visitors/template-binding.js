@@ -1,4 +1,4 @@
-const { BindingsState, bindingTypes } = require("../bindings-state.js");
+const { BindingsState, bindingTypes } = require("../state/bindings-state.js");
 
 let state = new BindingsState();
 

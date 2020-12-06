@@ -1,9 +1,10 @@
-let utils = require("./utils");
+let utils = require("../utils");
+const { NameResolver } = require("../utils/name-resolver");
 const {
   BindingToName,
   TemplateBinding,
   TemplateBindings,
-} = require("./models/visitors");
+} = require("../models/visitors");
 
 const bindingTypes = {
   TWO_WAY: "two-way",
@@ -12,44 +13,30 @@ const bindingTypes = {
 };
 class BindingsState {
   constructor() {
+    this.nameResolver = new NameResolver();
     this.reset();
   }
   reset() {
     this.bindings = [];
     this.tagsInfo = [];
-    this.latestBindings = [];
-    this.reset_data();
-  }
-
-  reset_data() {
-    this.stack = [];
-    this.longest = [];
-
-    this.bindingType = undefined;
+    this.nameResolver.reset();
   }
 
   identifierOrExpressionNew(simpleName, bindingType) {
-    if (!this.bindingType) this.bindingType = bindingType;
-    this.stack.push(simpleName);
+    this.nameResolver.identifierOrExpressionNew(simpleName, bindingType);
   }
 
   identifierOrExpressionExit() {
-    if (this.stack.length > this.longest.length) this.longest = [...this.stack];
-
-    this.stack.pop();
-    if (this.stack.length == 0) {
-      let name = this.longest.reverse().join(".");
-      this.latestBindings.push({ name, bindingType: this.bindingType });
-      this.reset_data();
-    }
+    this.nameResolver.identifierOrExpressionExit();
   }
 
   nodeExited(node) {
-    if (this.latestBindings.length != 0) {
+    let bindings = this.nameResolver.nodeExited();
+    if (bindings.length != 0) {
       let id = utils.id(node);
-      let newBindings = this.latestBindings
+      let newBindings = bindings
         .map((x) => {
-          switch (x.bindingType) {
+          switch (x.options) {
             case bindingTypes.ONE_WAY:
               return [new TemplateBinding(x.name, id, false)];
             case bindingTypes.CLICK_HANDLER:
@@ -70,13 +57,11 @@ class BindingsState {
         .find((x) => x.type === "VText" && x.value.trim())
         ?.value.trim();
 
-      let firstBinding = this.latestBindings[0].name;
+      let firstBinding = bindings[0].name;
 
       // if both fail, just the name of the node
       let name = firstVText ?? firstBinding ?? node.name;
       this.tagsInfo.push(new BindingToName(id, name, node.loc));
-
-      this.latestBindings = [];
     }
   }
 
