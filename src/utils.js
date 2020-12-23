@@ -13,9 +13,13 @@ function isRootNameNode(node) {
 function getNameFromExpression(node, prev = []) {
   if (node.type === "Identifier")
     return prev.concat(node.name).reverse().join(".");
-  else if (node.type === "MemberExpression") {
+  else if (node.type === "ThisExpression") {
+    //TODO revert
+    //return prev.concat("this").reverse().join(".");
+    return prev.reverse().join(".");
+  } else if (node.type === "MemberExpression")
     return getNameFromExpression(node.object, prev.concat(node.property.name));
-  } else throw new Error(`Unknown node type: ${node.type}`);
+  else throw new Error(`Unknown node type: ${node.type}`);
 }
 
 function firstVElementParent(elem) {
