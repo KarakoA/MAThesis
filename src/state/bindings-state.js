@@ -14,11 +14,11 @@ function determineNodeName(node, firstBindingName = undefined) {
 }
 
 function substituteVFor(replacements, data) {
-  console.log(replacements);
   //TODO rethink this. problem.a => problems.a currently
   //should be problems[i].a
   replacements.forEach((replacement) => {
     data.forEach((x) =>
+      //TODO in methods also has to replace in params
       x.item.id.replaceFront(replacement.left, replacement.right)
     );
   });
@@ -48,6 +48,7 @@ class BindingsState {
     let left = utils.getNameFromExpression(vforAttributeNode.left[0]);
     //items
     let right = utils.getNameFromExpression(vforAttributeNode.right);
+    right.addPosition();
     this.VForReplacement.unshift({ left, right });
   }
 

@@ -5,6 +5,10 @@ const {
   IdentifierChain,
 } = require("./models/visitors.js");
 
+function nextChar(i) {
+  console.log(i);
+  return String.fromCharCode(i.charCodeAt() + 1);
+}
 function firstParentOfType(elem, typeString) {
   return elem.parent
     ? elem.parent.type == typeString
@@ -56,19 +60,25 @@ function methodOrProperty(node) {
   } else throw new Error(`Unknown node type: ${node.type}`);
 }
 
-function getNameFromExpression(node, prev = []) {
+function getNameFromExpression(node, prev = [], position = undefined) {
   if (node.type === "Identifier")
     return new IdentifierChain(
-      prev.concat(new Identifier(node.name)).reverse()
+      prev.concat(new Identifier(node.name, position)).reverse()
     );
   else if (node.type === "ThisExpression") {
     return new IdentifierChain(prev.concat(new Identifier("this")).reverse());
-  } else if (node.type === "MemberExpression")
-    return getNameFromExpression(
-      node.object,
-      prev.concat(new Identifier(node.property.name))
-    );
-  else throw new Error(`Unknown node type: ${node.type}. prev: ${prev}`);
+  } else if (node.type === "MemberExpression") {
+    //index accessor
+    if (node.computed) {
+      let position =
+        node.property.type === "Literal" ? node.property.value : "i";
+      return getNameFromExpression(node.object, prev, position);
+    } else
+      return getNameFromExpression(
+        node.object,
+        prev.concat(new Identifier(node.property.name, position))
+      );
+  } else throw new Error(`Unknown node type: ${node.type}. prev: ${prev}`);
 }
 
 function firstVElementParent(elem) {

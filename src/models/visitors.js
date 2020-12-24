@@ -1,6 +1,7 @@
 const assert = require("assert");
 
 const deepEqual = require("deep-equal");
+const utils2 = require("../utils2");
 
 class BindingToName {
   constructor(id, name, loc) {
@@ -71,12 +72,19 @@ class IdentifierChain {
     return this.identifiers.length;
   }
 
+  addPosition() {
+    let last = this.identifiers[this.length - 1];
+    let char = last.positions
+      ? utils2.nextChar(last.positions[last.positions.length - 1])
+      : "i";
+    last.addPosition(char);
+  }
+
   //mutable, fails silently (no replace)
   replaceFront(subList, replacement) {
     assert(subList);
     let n = subList.length;
     let firstN = this.identifiers.slice(0, n);
-    console.log();
     //TODO proper equality, not to String
     //    console.log(deepEqual(firstN, subList, { strict: true }));
     //TODO test this properly
@@ -86,24 +94,33 @@ class IdentifierChain {
   }
 }
 class Identifier {
-  constructor(name, position = undefined) {
+  constructor(name, positions = undefined) {
     assert(name);
     this.name = name;
-    this.position = position;
+    if (positions && !Array.isArray(positions)) positions = [positions];
+    this.positions = positions;
+  }
+  addPosition(position) {
+    assert(position);
+    this.positions
+      ? this.positions.push(position)
+      : (this.positions = [position]);
   }
   toString() {
-    return this.position ? `${this.name}[${this.position}]` : this.name;
+    return this.positions
+      ? `${this.name}${this.positions.map((x) => `[${x}]`).join("")}`
+      : this.name;
   }
 }
 
-class Position {
+/*class Position {
   constructor(index) {
     assert(index);
     let n = Number(index);
     assert(n >= 0);
     this.index = n ?? "i";
   }
-}
+}*/
 class Tag {
   constructor(id, loc, position = undefined, name = undefined) {
     assert(id);
@@ -211,7 +228,7 @@ module.exports = {
   bindingType,
   dataType,
   Access,
-  Position,
+  //Position,
   Identifier,
   IdentifierChain,
 };
