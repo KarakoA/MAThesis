@@ -1,4 +1,6 @@
-const { BindingsState, bindingTypes } = require("../state/bindings-state.js");
+const { BindingsState } = require("../state/bindings-state.js");
+
+const { bindingType } = require("../models/visitors.js");
 
 let state = new BindingsState();
 let utils = require("../utils");
@@ -9,26 +11,27 @@ module.exports = {
   create(context) {
     return context.parserServices.defineTemplateBodyVisitor({
       // click handlers
-      "VAttribute[key.name.name=on] >  VExpressionContainer :matches(MemberExpression, Identifier)"(
+      "VAttribute[key.name.name=on] >  VExpressionContainer :matches(MemberExpression, Identifier,CallExpression)"(
         node
       ) {
         if (utils.isRootNameNode(node))
-          state.identifierOrExpressionNew(node, bindingTypes.CLICK_HANDLER);
+          state.identifierOrExpressionNew(node, bindingType.EVENT);
       },
 
       //two way binding
-      "VAttribute[key.name.name=model] > VExpressionContainer :matches(MemberExpression, Identifier)"(
+      "VAttribute[key.name.name=model] > VExpressionContainer :matches(MemberExpression, Identifier, CallExpression)"(
         node
       ) {
         if (utils.isRootNameNode(node))
-          state.identifierOrExpressionNew(node, bindingTypes.TWO_WAY);
+          state.identifierOrExpressionNew(node, bindingType.TWO_WAY);
       },
+
       //other identifiers
-      ":not(:matches(VAttribute[key.name.name=on], VAttribute[key.name.name=model])) >  VExpressionContainer :matches(MemberExpression, Identifier)"(
+      ":not(:matches(VAttribute[key.name.name=on], VAttribute[key.name.name=model])) >  VExpressionContainer :matches(MemberExpression, Identifier, CallExpression)"(
         node
       ) {
         if (utils.isRootNameNode(node))
-          state.identifierOrExpressionNew(node, bindingTypes.ONE_WAY);
+          state.identifierOrExpressionNew(node, bindingType.ONE_WAY);
       },
 
       // all html tags
