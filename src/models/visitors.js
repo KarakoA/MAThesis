@@ -1,5 +1,7 @@
 const assert = require("assert");
 
+const deepEqual = require("deep-equal");
+
 class BindingToName {
   constructor(id, name, loc) {
     this.id = id;
@@ -26,6 +28,16 @@ const dataType = {
   VALUE: "value",
 };
 
+class Access {
+  constructor(id) {
+    assert(id);
+    this.id = id;
+  }
+  cond() {
+    throw new Error("Implementation is missing");
+  }
+}
+
 class MethodAccess extends Access {
   //id is of type identifier chain
   constructor(id, args = []) {
@@ -45,17 +57,6 @@ class PropertyAccess extends Access {
     return onProperty(this);
   }
 }
-class Access {
-  constructor(id) {
-    assert(id);
-    this.id = id;
-  }
-  cond() {
-    throw new Error("Implementation is missing");
-  }
-}
-
-//PROBLEM position is wrong, either leave those as strings and parse later or chain ACCESS.ACCESS.ACCESS(with index)
 
 class IdentifierChain {
   constructor(identifiers) {
@@ -66,6 +67,23 @@ class IdentifierChain {
   toString() {
     return this.identifiers.map((x) => x.toString()).join(".");
   }
+  get length() {
+    return this.identifiers.length;
+  }
+
+  //mutable, fails silently (no replace)
+  replaceFront(subList, replacement) {
+    assert(subList);
+    let n = subList.length;
+    let firstN = this.identifiers.slice(0, n);
+    console.log();
+    //TODO proper equality, not to String
+    //    console.log(deepEqual(firstN, subList, { strict: true }));
+    //TODO test this properly
+    if (firstN.toString() === subList.toString())
+      this.identifiers.splice(0, n, replacement.identifiers);
+    // else throw new Error(`Sublist did not match!`);
+  }
 }
 class Identifier {
   constructor(name, position = undefined) {
@@ -74,7 +92,7 @@ class Identifier {
     this.position = position;
   }
   toString() {
-    return `${this.name}[${this.position}]`;
+    return this.position ? `${this.name}[${this.position}]` : this.name;
   }
 }
 

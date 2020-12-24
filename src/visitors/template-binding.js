@@ -27,7 +27,9 @@ module.exports = {
       },
 
       //other identifiers
-      ":not(:matches(VAttribute[key.name.name=on], VAttribute[key.name.name=model])) >  VExpressionContainer :matches(MemberExpression, Identifier, CallExpression)"(
+      //TODO handle vfor, has VAttribute[key.argument.name=key]
+      //for itself VAttribute[key.name.name=for]
+      ":not(:matches(VAttribute[key.name.name=on], VAttribute[key.name.name=model]),VAttribute[key.argument.name=key], VAttribute[key.name.name=for]) >  VExpressionContainer :matches(MemberExpression, Identifier, CallExpression)"(
         node
       ) {
         if (utils.isRootNameNode(node))
@@ -35,12 +37,20 @@ module.exports = {
       },
 
       // all html tags
+      VElement(node) {
+        let vFor = utils.vForExpression(node);
+        if (vFor) state.elementWithVForStarted(vFor);
+      },
+      // all html tags
       "VElement:exit"(node) {
         state.nodeExited(node);
+        let vFor = utils.vForExpression(node);
+        if (vFor) state.elementWithVForExited();
       },
       //last node on the way to top
       "VElement[name=template]:exit"(node) {
         let result = state.finish();
+        console.log(result);
 
         context.report({ node: node, message: JSON.stringify(result) });
         state.reset();

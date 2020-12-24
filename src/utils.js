@@ -3,7 +3,7 @@ const {
   MethodAccess,
   Identifier,
   IdentifierChain,
-} = require("../models/visitors");
+} = require("./models/visitors.js");
 
 function firstParentOfType(elem, typeString) {
   return elem.parent
@@ -13,11 +13,16 @@ function firstParentOfType(elem, typeString) {
     : undefined;
 }
 
+function vForExpression(node) {
+  let vFor = node.startTag.attributes?.find((x) => x.key?.name?.name === "for");
+  return vFor ? vFor.value.expression : undefined;
+}
+
 //inside call expressions, triggered once for the call expression itself and a second time for each identifier/member chain
 //TODO this triggers twice for the method name
 // also for nested call expressions each time
 function isRootNameNode(node) {
-  return isRootCallExpression(node) && isRootName(node);
+  return isRootCallExpression(node) || isRootName(node);
 }
 
 //TODO naming
@@ -61,9 +66,9 @@ function getNameFromExpression(node, prev = []) {
   } else if (node.type === "MemberExpression")
     return getNameFromExpression(
       node.object,
-      prev.concat(new Identifier(node.property.name()))
+      prev.concat(new Identifier(node.property.name))
     );
-  else throw new Error(`Unknown node type: ${node.type}`);
+  else throw new Error(`Unknown node type: ${node.type}. prev: ${prev}`);
 }
 
 function firstVElementParent(elem) {
@@ -89,4 +94,5 @@ module.exports = {
   getNameFromExpression,
   isRootNameNode,
   methodOrProperty,
+  vForExpression,
 };

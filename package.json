@@ -29,6 +29,7 @@
   "dependencies": {
     "@dagrejs/graphlib": "^2.1.4",
     "babel-eslint": "^10.1.0",
-    "d3-graphviz": "^3.1.0"
+    "d3-graphviz": "^3.1.0",
+    "deep-equal": "^2.0.5"
   }
 }
