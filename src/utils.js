@@ -3,7 +3,10 @@ const {
   MethodAccess,
   Identifier,
   IdentifierChain,
+  TopLevelVariable,
 } = require("./models/visitors.js");
+
+const { flattenDeep } = require("lodash");
 
 function firstParentOfType(elem, typeString) {
   return elem.parent
@@ -64,6 +67,43 @@ function methodOrProperty(node) {
   } else throw new Error(`Unknown node type: ${node.type}`);
 }
 
+//ObjectExpression
+//[Property]
+//.key (identifier always)
+//.value (back to top or )
+//.value actually expression
+function getNamesFromTopLevelObject(node) {
+  function func(node, prev) {
+    switch (node.type) {
+      case "Property": {
+        let name = node.key.name;
+        let value = node.value;
+        if (value.type === "ObjectExpression")
+          return func(node.value, prev.concat(new Identifier(name)));
+        //@Future array type distinguish here
+        else if (value.type === "ArrayExpression")
+          //TODO encapsulate this logic in ctor's
+          return new TopLevelVariable(
+            new IdentifierChain(prev.concat(new Identifier(name)))
+          );
+        //@Future other type distinguish here
+        else
+          return new TopLevelVariable(
+            new IdentifierChain(prev.concat(new Identifier(name)))
+          );
+      }
+      case "ObjectExpression":
+        return node.properties.map((x) => func(x, prev));
+      case "MemberExpression":
+        //should never be the case for top level data object
+        return [getNameFromExpression(node)];
+      default:
+        throw new Error(`Unknown node type: ${node.type}`);
+    }
+  }
+  return flattenDeep(func(node, []));
+}
+
 function getNameFromExpression(node, prev = [], position = undefined) {
   if (node.type === "Identifier")
     return new IdentifierChain(
@@ -109,4 +149,5 @@ module.exports = {
   isRootNameNode,
   methodOrProperty,
   vForExpression,
+  getNamesFromTopLevelObject,
 };

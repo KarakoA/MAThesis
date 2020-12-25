@@ -26,8 +26,8 @@ const bindingType = {
 };
 
 const dataType = {
-  REFERENCE: "reference",
-  VALUE: "value",
+  ARRAY: "array",
+  OTHER: "other",
 };
 
 class Access {
@@ -130,6 +130,12 @@ class Tag {
     this.position = position;
   }
 }
+class TopLevelVariable {
+  constructor(id) {
+    assert(id);
+    this.id = id;
+  }
+}
 
 //TODO accessors all/single for lists , as part of binding instead of boolean
 //for methods need params
@@ -220,6 +226,7 @@ module.exports = {
   bindingType,
   dataType,
   Access,
+  TopLevelVariable,
   //Position,
   Identifier,
   IdentifierChain,
