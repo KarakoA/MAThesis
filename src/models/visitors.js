@@ -205,16 +205,7 @@ class Method {
     this.calls = uniqWith(calls, isEqual);
   }
 }
-class Init {
-  constructor(methods) {
-    this.init = methods.methods[0] ?? undefined;
-  }
-}
-class Computed {
-  constructor(methods) {
-    this.computed = methods.methods;
-  }
-}
+
 module.exports = {
   TemplateBinding,
   TemplateBindings,
@@ -222,8 +213,6 @@ module.exports = {
   TopLevel,
   Method,
   Methods,
-  Init,
-  Computed,
   //NEW ONES
   MethodAccess,
   PropertyAccess,
