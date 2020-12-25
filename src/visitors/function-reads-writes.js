@@ -27,39 +27,45 @@ module.exports = {
         ) {
           state.newMethod(node, methodType.METHOD);
         },
+        //start of computed
+        "Property[key.name = computed] Property[value.type=FunctionExpression]"(
+          node
+        ) {
+          state.newMethod(node, methodType.COMPUTED);
+        },
 
         //end of any method or init
         "Property[value.type=FunctionExpression]:exit"() {
           state.nodeExited();
         },
         //writes left side of assignment expression
-        ":matches(Property[key.name = methods], Property[key.name = created]) AssignmentExpression"(
+        ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) AssignmentExpression"(
           node
         ) {
           state.identifierOrExpressionNew(node.left, accessType.WRITES);
         },
         //method calls
-        ":matches(Property[key.name = methods], Property[key.name = created]) CallExpression "(
+        ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) CallExpression "(
           node
         ) {
           if (utils.isRootNameNode(node))
             state.identifierOrExpressionNew(node, accessType.CALLS);
         },
         //declares
-        ":matches(Property[key.name = methods], Property[key.name = created]) VariableDeclarator"(
+        ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) VariableDeclarator"(
           node
         ) {
           state.identifierOrExpressionNew(node.id, accessType.DECLARES);
         },
         //all expressions
-        ":matches(Property[key.name = methods], Property[key.name = created]) FunctionExpression :matches(MemberExpression, Identifier)"(
+        ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) FunctionExpression :matches(MemberExpression, Identifier)"(
           node
         ) {
           if (utils.isRootNameNode(node))
             state.identifierOrExpressionNew(node, accessType.ALL);
         },
-
-        ":matches(Property[key.name = methods], Property[key.name = created]) ObjectExpression Property[method = false]"(
+        //:not(:matches(Property[method = true],Property[computed = true]))
+        ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) FunctionExpression Property[method = false]"(
           node
         ) {
           state.identifierOrExpressionNew(node.key, accessType.OBJECT_PROPERTY);

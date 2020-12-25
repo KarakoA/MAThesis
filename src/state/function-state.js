@@ -116,7 +116,12 @@ class FunctionState {
     let reads = [...all];
     other.forEach((el) => {
       let i = reads.findIndex((x) => isEqual(x.id, el.id ?? el));
-      //i should always be found
+
+      // if (i == -1) {
+      //   console.log(this);
+      //   require("util").inspect.defaultOptions.depth = null;
+      // }
+      //i should always be
       assert(i != -1);
 
       reads.splice(i, 1);
