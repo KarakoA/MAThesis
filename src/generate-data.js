@@ -1,5 +1,6 @@
 const { ESLinter } = require("./eslinter");
 const fs = require("fs");
+const { compute } = require("./generator/transformer.js");
 
 function transform(rulesResults) {
   return rulesResults.map((result) => {
@@ -26,7 +27,7 @@ async function main() {
   let r = await new ESLinter().lintFiles(["./src/test-files/test-lists.vue"]);
 
   console.log(r);
-  r = transform(r);
+  r = compute(r[0]);
   fs.writeFileSync("./src/data.json", JSON.stringify(r, null, 2));
 }
 
