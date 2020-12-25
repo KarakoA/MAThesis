@@ -93,7 +93,7 @@ function getNamesFromTopLevelObject(node) {
           );
       }
       case "ObjectExpression":
-        return node.properties.map((x) => func(x, prev));
+        return [node.properties.map((x) => func(x, prev))];
       case "MemberExpression":
         //should never be the case for top level data object
         return [getNameFromExpression(node)];
