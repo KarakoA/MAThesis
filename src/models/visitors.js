@@ -189,7 +189,9 @@ class TopLevel {
 }
 
 class Methods {
-  constructor(methods) {
+  constructor(init, computed, methods) {
+    this.init = init;
+    this.computed = computed;
     this.methods = methods;
   }
 }

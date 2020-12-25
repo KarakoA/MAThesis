@@ -11,6 +11,12 @@ const accessType = {
   ALL: "all",
 };
 
+const methodType = {
+  INIT: "init",
+  METHOD: "method",
+  COMPUTED: "computed",
+};
+
 class FunctionState {
   constructor() {
     this.reset();
@@ -19,18 +25,37 @@ class FunctionState {
   reset() {
     this.reset_partial();
     this.methods = [];
+    this.init = undefined;
+    this.computed = [];
   }
 
   reset_partial() {
     this.latest = [];
     this.method = undefined;
+    this.methodType = undefined;
   }
-  newMethod(node) {
+
+  add(method) {
+    switch (this.methodType) {
+      case methodType.METHOD:
+        this.methods.push(method);
+        break;
+      case methodType.INIT:
+        assert(!this.init);
+        this.init = method;
+        break;
+      case methodType.COMPUTED:
+        this.computed.push(method);
+        break;
+    }
+  }
+  newMethod(node, methodType) {
     let args = node.value.params.map((param) =>
       utils.getNameFromExpression(param)
     );
     let name = node.key.name;
     this.method = { name, args };
+    this.methodType = methodType;
   }
 
   identifierOrExpressionNew(node, accessType) {
@@ -61,15 +86,20 @@ class FunctionState {
         this.method.args,
         all
       );
-      this.methods.push(
-        new Method(this.method.name, this.method.args, reads, writes, calls)
+      let method = new Method(
+        this.method.name,
+        this.method.args,
+        reads,
+        writes,
+        calls
       );
+      this.add(method);
       this.reset_partial();
     }
   }
 
   finished() {
-    let methods = new Methods(this.methods);
+    let methods = new Methods(this.init, this.computed, this.methods);
     this.reset();
     return methods;
   }
@@ -95,4 +125,4 @@ class FunctionState {
   }
 }
 
-module.exports = { FunctionState, accessType };
+module.exports = { FunctionState, accessType, methodType };
