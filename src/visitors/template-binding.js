@@ -50,7 +50,6 @@ module.exports = {
       //last node on the way to top
       "VElement[name=template]:exit"(node) {
         let result = state.finish();
-        console.log(result);
 
         context.report({ node: node, message: JSON.stringify(result) });
         state.reset();

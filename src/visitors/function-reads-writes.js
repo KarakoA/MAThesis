@@ -14,23 +14,18 @@ module.exports = {
         "Property[key.name = methods] Property[value.type=FunctionExpression]"(
           node
         ) {
-          state.newMethod(node.key.name);
+          state.newMethod(node);
         },
         //end of any method
         "Property[key.name = methods] Property[value.type=FunctionExpression]:exit"() {
           state.nodeExited();
         },
-        //writes (this type call as the left side of an expression statement)
-        "Property[key.name = methods] AssignmentExpression :matches(MemberExpression, Identifier)"(
-          node
-        ) {
-          if (utils.isRootNameNode(node))
-            state.identifierOrExpressionNew(node, accessType.WRITES);
+        //writes left side of assignment expression
+        "Property[key.name = methods] AssignmentExpression"(node) {
+          state.identifierOrExpressionNew(node.left, accessType.WRITES);
         },
-        //method calls (this type call directly inside a call expression)
-        "Property[key.name = methods] CallExpression :matches(MemberExpression, Identifier)"(
-          node
-        ) {
+        //method calls
+        "Property[key.name = methods] CallExpression "(node) {
           if (utils.isRootNameNode(node))
             state.identifierOrExpressionNew(node, accessType.CALLS);
         },
@@ -38,12 +33,18 @@ module.exports = {
         "Property[key.name = methods] VariableDeclarator"(node) {
           state.identifierOrExpressionNew(node.id, accessType.DECLARES);
         },
-        //all this expressions
+        //all expressions
         "Property[key.name = methods] FunctionExpression :matches(MemberExpression, Identifier)"(
           node
         ) {
           if (utils.isRootNameNode(node))
             state.identifierOrExpressionNew(node, accessType.ALL);
+        },
+
+        "Property[key.name = methods] ObjectExpression Property[method = false]"(
+          node
+        ) {
+          state.identifierOrExpressionNew(node.key, accessType.OBJECT_PROPERTY);
         },
         //returned back to the top of the parsing tree
         "ExportDefaultDeclaration:exit"(node) {

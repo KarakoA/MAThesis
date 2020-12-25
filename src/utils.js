@@ -5,10 +5,6 @@ const {
   IdentifierChain,
 } = require("./models/visitors.js");
 
-function nextChar(i) {
-  console.log(i);
-  return String.fromCharCode(i.charCodeAt() + 1);
-}
 function firstParentOfType(elem, typeString) {
   return elem.parent
     ? elem.parent.type == typeString
@@ -50,11 +46,19 @@ function isNameIdentifier(name) {
   );
 }
 
+//TODO handle binary expressions
+//TODO not so nice abstraction
 function methodOrProperty(node) {
-  if (node.type == "CallExpression") {
+  if (node.type === "CallExpression") {
     let methodName = getNameFromExpression(node.callee);
-    let args = node.arguments.map((x) => methodOrProperty(x));
+    let args = node.arguments.map((x) => methodOrProperty(x)).flat();
     return new MethodAccess(methodName, args);
+  } else if (node.type === "BinaryExpression") {
+    let left = methodOrProperty(node.left);
+    let right = methodOrProperty(node.right);
+    return [left, right];
+  } else if (node.type === "Literal") {
+    return [];
   } else if (isNameIdentifier(node.type)) {
     return new PropertyAccess(getNameFromExpression(node));
   } else throw new Error(`Unknown node type: ${node.type}`);

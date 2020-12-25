@@ -1,7 +1,7 @@
 <template>
   <div>
     <ul>
-      <li v-for="problem in problems" :key="problem.id">
+      <li v-for="problem in problems[i]" :key="problem.id">
         <div style="margin-left: 5px; margin-top: 20px">
           <form @submit.prevent>
             <span>{{ problem.a }}</span> + <span> {{ problem.b }}</span> =

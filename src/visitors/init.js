@@ -2,7 +2,8 @@ const { FunctionState } = require("../state/function-state");
 const { Init } = require("../models/visitors");
 let state = new FunctionState();
 //set the name
-state.newMethod("init");
+//TODO
+//state.newMethod("init");
 
 const NAME = "init";
 module.exports = {

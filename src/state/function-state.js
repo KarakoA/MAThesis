@@ -1,11 +1,13 @@
 const utils = require("../utils");
 const { Method, Methods } = require("../models/visitors");
 const assert = require("assert");
+const { isEqual } = require("lodash");
 
 const accessType = {
   WRITES: "writes",
   CALLS: "calls",
   DECLARES: "declares",
+  OBJECT_PROPERTY: "object-property",
   ALL: "all",
 };
 
@@ -13,26 +15,32 @@ class FunctionState {
   constructor() {
     this.reset();
   }
-  reset() {
-    this.methodName = undefined;
-    this.allNames = new Set();
 
+  reset() {
+    this.reset_partial();
     this.methods = [];
-    this.latest = [];
   }
-  newMethod(methodName) {
-    this.methodName = methodName;
-    this.allNames.add(this.methodName);
+
+  reset_partial() {
+    this.latest = [];
+    this.method = undefined;
+  }
+  newMethod(node) {
+    let args = node.value.params.map((param) =>
+      utils.getNameFromExpression(param)
+    );
+    let name = node.key.name;
+    this.method = { name, args };
   }
 
   identifierOrExpressionNew(node, accessType) {
-    let name = utils.getNameFromExpression(node);
-    this.latest.push({ name, accessType });
+    let item = utils.methodOrProperty(node);
+    this.latest.push({ item, accessType });
   }
 
   filterOrEmpty(data, accessType) {
     return (
-      data.filter((x) => x.accessType === accessType)?.map((x) => x.name) ?? []
+      data.filter((x) => x.accessType === accessType)?.map((x) => x.item) ?? []
     );
   }
   nodeExited() {
@@ -40,39 +48,50 @@ class FunctionState {
       let writes = this.filterOrEmpty(this.latest, accessType.WRITES);
       let calls = this.filterOrEmpty(this.latest, accessType.CALLS);
       let all = this.filterOrEmpty(this.latest, accessType.ALL);
-
       let declares = this.filterOrEmpty(this.latest, accessType.DECLARES);
-
-      let reads = this.computeReads(writes, calls, declares, all);
-
-      this.methods.push(
-        new Method(this.methodName, [...reads], [...writes], [...calls])
+      let objectProps = this.filterOrEmpty(
+        this.latest,
+        accessType.OBJECT_PROPERTY
       );
-      this.methodName = undefined;
+      let reads = this.computeReads(
+        writes,
+        calls,
+        declares,
+        objectProps,
+        this.method.args,
+        all
+      );
+      this.methods.push(
+        new Method(this.method.name, this.method.args, reads, writes, calls)
+      );
+      this.reset_partial();
     }
   }
 
   finished() {
     let methods = new Methods(this.methods);
-    //TODO check this is not null
     this.reset();
     return methods;
   }
 
-  computeReads(writes, calls, declares, all) {
-    let other = writes.concat(calls).concat(declares);
-    // reads equalts to  all except write and calls
+  //TODO too repetitive, better way
+  computeReads(writes, calls, declares, objectProps, args, all) {
+    let other = writes
+      .concat(calls)
+      .concat(declares)
+      .concat(args)
+      .concat(objectProps);
+    // reads equalts to  all except write, calls, declares
     //marking for each once
     let reads = [...all];
     other.forEach((el) => {
-      let i = reads.findIndex((x) => x == el);
+      let i = reads.findIndex((x) => isEqual(x.id, el.id ?? el));
       //i should always be found
       assert(i != -1);
+
       reads.splice(i, 1);
     });
-    return reads;
-    // reads equalts to  all except write and calls
-    //   return [...all].filter((x) => !(calls.has(x) || writes.has(x)));
+    return [...new Set(reads)];
   }
 }
 

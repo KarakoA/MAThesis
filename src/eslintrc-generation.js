@@ -13,6 +13,6 @@ module.exports = {
     //"top-level": 1,
     //init: 1,
     //computed: 1,
-    //"function-reads-writes": 1,
+    "function-reads-writes": 1,
   },
 };

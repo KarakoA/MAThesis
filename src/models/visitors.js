@@ -1,7 +1,8 @@
 const assert = require("assert");
 
-const deepEqual = require("deep-equal");
 const utils2 = require("../utils2");
+
+const { isEqual, uniqWith } = require("lodash");
 
 class BindingToName {
   constructor(id, name, loc) {
@@ -82,13 +83,12 @@ class IdentifierChain {
 
   //mutable, fails silently (no replace)
   replaceFront(subList, replacement) {
-    assert(subList);
+    assert(subList.length > 0);
     let n = subList.length;
-    let firstN = this.identifiers.slice(0, n);
-    //TODO proper equality, not to String
-    //    console.log(deepEqual(firstN, subList, { strict: true }));
-    //TODO test this properly
-    if (firstN.toString() === subList.toString())
+    //TODO can without, use lists for both
+    let firstN = new IdentifierChain(this.identifiers.slice(0, n));
+
+    if (isEqual(firstN, subList))
       this.identifiers.splice(0, n, replacement.identifiers);
     // else throw new Error(`Sublist did not match!`);
   }
@@ -195,11 +195,12 @@ class Methods {
 }
 
 class Method {
-  constructor(name, reads, writes, calls) {
+  constructor(name, args, reads, writes, calls) {
     this.name = name;
-    this.writes = writes;
-    this.reads = reads;
-    this.calls = calls;
+    this.args = args;
+    this.writes = uniqWith(writes, isEqual);
+    this.reads = uniqWith(reads, isEqual);
+    this.calls = uniqWith(calls, isEqual);
   }
 }
 class Init {
