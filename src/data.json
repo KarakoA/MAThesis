@@ -1,310 +1,156 @@
-[
-  {
-    "name": "test-computed.vue",
-    "bindings": [
-      {
-        "source": "a",
-        "target": "span_5_8_5_28",
-        "isEventBinding": false
-      },
-      {
-        "source": "b",
-        "target": "span_5_31_5_52",
-        "isEventBinding": false
-      },
-      {
-        "source": "answer",
-        "target": "input_6_14_6_57",
-        "isEventBinding": false
-      },
-      {
-        "source": "input_6_14_6_57",
-        "target": "answer",
-        "isEventBinding": false
-      },
-      {
-        "source": "may_check",
-        "target": "button_7_8_15_17",
-        "isEventBinding": false
-      },
-      {
-        "source": "button_7_8_15_17",
-        "target": "check_answer",
-        "isEventBinding": true
-      },
-      {
-        "source": "right",
-        "target": "button_16_8_23_17",
-        "isEventBinding": false
-      },
-      {
-        "source": "right",
-        "target": "button_24_8_31_17",
-        "isEventBinding": false
-      },
-      {
-        "source": "button_32_8_38_17",
-        "target": "new_problem",
-        "isEventBinding": true
-      },
-      {
-        "source": "count_right",
-        "target": "span_53_12_53_43",
-        "isEventBinding": false
-      },
-      {
-        "source": "count_wrong",
-        "target": "span_56_12_56_43",
-        "isEventBinding": false
-      },
-      {
-        "source": "accuracy",
-        "target": "span_59_12_59_40",
-        "isEventBinding": false
-      }
-    ],
-    "tagsInfo": [
-      {
-        "id": "span_5_8_5_28",
-        "name": "a",
-        "loc": {
-          "start": {
-            "line": 5,
-            "column": 8
-          },
-          "end": {
-            "line": 5,
-            "column": 28
-          }
-        }
-      },
-      {
-        "id": "span_5_31_5_52",
-        "name": "b",
-        "loc": {
-          "start": {
-            "line": 5,
-            "column": 31
-          },
-          "end": {
-            "line": 5,
-            "column": 52
-          }
-        }
-      },
-      {
-        "id": "input_6_14_6_57",
-        "name": "answer",
-        "loc": {
-          "start": {
-            "line": 6,
-            "column": 14
-          },
-          "end": {
-            "line": 6,
-            "column": 57
-          }
-        }
-      },
-      {
-        "id": "button_7_8_15_17",
-        "name": "Check",
-        "loc": {
-          "start": {
-            "line": 7,
-            "column": 8
-          },
-          "end": {
-            "line": 15,
-            "column": 17
-          }
-        }
-      },
-      {
-        "id": "button_16_8_23_17",
-        "name": "Right",
-        "loc": {
-          "start": {
-            "line": 16,
-            "column": 8
-          },
-          "end": {
-            "line": 23,
-            "column": 17
-          }
-        }
-      },
-      {
-        "id": "button_24_8_31_17",
-        "name": "Wrong",
-        "loc": {
-          "start": {
-            "line": 24,
-            "column": 8
-          },
-          "end": {
-            "line": 31,
-            "column": 17
-          }
-        }
-      },
-      {
-        "id": "button_32_8_38_17",
-        "name": "New Problem",
-        "loc": {
-          "start": {
-            "line": 32,
-            "column": 8
-          },
-          "end": {
-            "line": 38,
-            "column": 17
-          }
-        }
-      },
-      {
-        "id": "span_53_12_53_43",
-        "name": "count_right",
-        "loc": {
-          "start": {
-            "line": 53,
-            "column": 12
-          },
-          "end": {
-            "line": 53,
-            "column": 43
-          }
-        }
-      },
-      {
-        "id": "span_56_12_56_43",
-        "name": "count_wrong",
-        "loc": {
-          "start": {
-            "line": 56,
-            "column": 12
-          },
-          "end": {
-            "line": 56,
-            "column": 43
-          }
-        }
-      },
-      {
-        "id": "span_59_12_59_40",
-        "name": "accuracy",
-        "loc": {
-          "start": {
-            "line": 59,
-            "column": 12
-          },
-          "end": {
-            "line": 59,
-            "column": 40
-          }
-        }
-      }
-    ],
-    "variableNames": [
-      "a",
-      "b",
-      "c",
-      "answer",
-      "right",
-      "count_right",
-      "count_wrong"
-    ],
-    "methodNames": [
-      "add_problem",
-      "check_answer",
-      "may_check",
-      "new_problem"
-    ],
-    "calledInInit": [
-      "add_problem"
-    ],
-    "init": {
-      "name": "init",
-      "writes": [],
-      "reads": [],
-      "calls": [
-        "add_problem"
-      ]
+{
+  "options": {
+    "directed": true,
+    "multigraph": false,
+    "compound": false
+  },
+  "nodes": [
+    {
+      "v": "span_7_12_7_40"
     },
-    "computed": [
-      {
-        "name": "accuracy",
-        "writes": [],
-        "reads": [
-          "count_wrong",
-          "count_right"
-        ],
-        "calls": []
-      }
-    ],
-    "methods": [
-      {
-        "name": "add_problem",
-        "writes": [
-          "c",
-          "a",
-          "b",
-          "answer",
-          "right"
-        ],
-        "reads": [
-          "c",
-          "a"
-        ],
-        "calls": []
-      },
-      {
-        "name": "check_answer",
-        "writes": [
-          "right",
-          "count_right",
-          "count_wrong"
-        ],
-        "reads": [
-          "c",
-          "answer",
-          "right"
-        ],
-        "calls": []
-      },
-      {
-        "name": "may_check",
-        "writes": [],
-        "reads": [
-          "answer",
-          "right"
-        ],
-        "calls": []
-      },
-      {
-        "name": "new_problem",
-        "writes": [],
-        "reads": [],
-        "calls": [
-          "add_problem"
-        ]
-      }
-    ],
-    "boundVariables": [
-      "a",
-      "b",
-      "answer",
-      "right",
-      "count_right",
-      "count_wrong"
-    ],
-    "boundMethods": [
-      "check_answer",
-      "may_check",
-      "new_problem"
-    ],
-    "boundComputedVariables": [
-      "accuracy"
-    ]
-  }
-]
+    {
+      "v": "problems[i][j]",
+      "value": "problems[i][j]"
+    },
+    {
+      "v": "problems[i][j].a",
+      "value": "a"
+    },
+    {
+      "v": "span_7_43_7_72"
+    },
+    {
+      "v": "problems[i][j].b",
+      "value": "b"
+    },
+    {
+      "v": "input_8_18_8_69"
+    },
+    {
+      "v": "problems[i][j].answer",
+      "value": "answer"
+    },
+    {
+      "v": "button_9_12_17_21"
+    },
+    {
+      "v": "may_check",
+      "value": "may_check"
+    },
+    {
+      "v": "check_answer",
+      "value": "check_answer"
+    },
+    {
+      "v": "button_18_12_25_21"
+    },
+    {
+      "v": "problems[i][j].right",
+      "value": "right"
+    },
+    {
+      "v": "button_26_12_33_21"
+    },
+    {
+      "v": "button_34_12_40_21"
+    },
+    {
+      "v": "new_problem",
+      "value": "new_problem"
+    },
+    {
+      "v": "span_57_12_57_43"
+    },
+    {
+      "v": "count_right",
+      "value": "count_right"
+    },
+    {
+      "v": "span_60_12_60_43"
+    },
+    {
+      "v": "count_wrong",
+      "value": "count_wrong"
+    },
+    {
+      "v": "span_63_12_63_40"
+    },
+    {
+      "v": "accuracy",
+      "value": "accuracy"
+    }
+  ],
+  "edges": [
+    {
+      "v": "problems[i][j]",
+      "w": "problems[i][j].a"
+    },
+    {
+      "v": "span_7_12_7_40",
+      "w": "problems[i][j].a"
+    },
+    {
+      "v": "problems[i][j]",
+      "w": "problems[i][j].b"
+    },
+    {
+      "v": "span_7_43_7_72",
+      "w": "problems[i][j].b"
+    },
+    {
+      "v": "problems[i][j]",
+      "w": "problems[i][j].answer"
+    },
+    {
+      "v": "input_8_18_8_69",
+      "w": "problems[i][j].answer"
+    },
+    {
+      "v": "problems[i][j].answer",
+      "w": "input_8_18_8_69"
+    },
+    {
+      "v": "button_9_12_17_21",
+      "w": "may_check"
+    },
+    {
+      "v": "button_9_12_17_21",
+      "w": "problems[i][j]",
+      "value": "event"
+    },
+    {
+      "v": "button_9_12_17_21",
+      "w": "check_answer",
+      "value": "event"
+    },
+    {
+      "v": "problems[i][j]",
+      "w": "problems[i][j].right"
+    },
+    {
+      "v": "button_18_12_25_21",
+      "w": "problems[i][j].right"
+    },
+    {
+      "v": "button_26_12_33_21",
+      "w": "problems[i][j].right"
+    },
+    {
+      "v": "button_34_12_40_21",
+      "w": "new_problem",
+      "value": "event"
+    },
+    {
+      "v": "span_57_12_57_43",
+      "w": "count_right"
+    },
+    {
+      "v": "span_60_12_60_43",
+      "w": "count_wrong"
+    },
+    {
+      "v": "span_63_12_63_40",
+      "w": "accuracy"
+    }
+  ]
+}

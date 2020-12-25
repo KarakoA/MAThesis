@@ -1,23 +1,25 @@
 const { Graph } = require("@dagrejs/graphlib");
+const { IdentifierChain } = require("../models/visitors.js");
 class ExtendedGraph {
-  constructor(idFunction) {
+  constructor() {
     this.graph = new Graph({
       directed: true,
       compound: false,
       multigraph: false,
     });
-    this.idFunction = idFunction;
     this.nodesLater = [];
     this.edgesLater = [];
+    this.lastAddedNode = undefined;
   }
 
   addNode(node) {
-    this.graph.setNode(this.idFunction(node), node);
+    this.lastAddedNode = node;
+    this.graph.setNode(node.id, node.label);
   }
 
-  addEdge(source, sink, label) {
-    this.addNode(this.idFunction(source));
-    this.addNode(this.idFunction(sink));
+  addEdge(source, sink, label = undefined) {
+    this.addNode(source);
+    this.addNode(sink);
     this.graph.setEdge(source.id, sink.id, label);
   }
 

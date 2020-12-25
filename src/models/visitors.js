@@ -51,8 +51,14 @@ class IdentifierChain {
     this.identifiers = identifiers;
   }
 
+  //TODO own class
+  static toString(that) {
+    return (that.identifiers ?? that)
+      .map((x) => Identifier.toString(x))
+      .join(".");
+  }
   toString() {
-    return this.identifiers.map((x) => x.toString()).join(".");
+    return IdentifierChain.toString(this);
   }
   get length() {
     return this.identifiers.length;
@@ -73,8 +79,10 @@ class IdentifierChain {
     //TODO can without, use lists for both
     let firstN = new IdentifierChain(this.identifiers.slice(0, n));
 
-    if (isEqual(firstN, subList))
+    if (isEqual(firstN, subList)) {
       this.identifiers.splice(0, n, replacement.identifiers);
+      this.identifiers = this.identifiers.flat();
+    }
     // else throw new Error(`Sublist did not match!`);
   }
 }
@@ -91,10 +99,14 @@ class Identifier {
       ? this.positions.push(position)
       : (this.positions = [position]);
   }
+
   toString() {
-    return this.positions
-      ? `${this.name}${this.positions.map((x) => `[${x}]`).join("")}`
-      : this.name;
+    return Identifier.toString(this);
+  }
+  static toString(that) {
+    return that.positions
+      ? `${that.name}${that.positions.map((x) => `[${x}]`).join("")}`
+      : that.name;
   }
 }
 

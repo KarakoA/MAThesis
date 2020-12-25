@@ -16,6 +16,7 @@ function determineNodeName(node, firstBindingName = undefined) {
 function substituteVFor(replacements, data) {
   //TODO rethink this. problem.a => problems.a currently
   //should be problems[i].a
+
   replacements.forEach((replacement) => {
     data.forEach((x) =>
       //TODO in methods also has to replace in params

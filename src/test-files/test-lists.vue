@@ -79,6 +79,7 @@ export default {
       problems: [],
       count_right: 0,
       count_wrong: 0,
+      nested: { property: 1 },
     };
   },
   computed: {
