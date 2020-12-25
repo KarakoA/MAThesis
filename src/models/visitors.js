@@ -4,21 +4,6 @@ const utils2 = require("../utils2");
 
 const { isEqual, uniqWith } = require("lodash");
 
-class BindingToName {
-  constructor(id, name, loc) {
-    this.id = id;
-    this.name = name;
-    this.loc = loc;
-  }
-}
-
-class TemplateBinding {
-  constructor(source, target, isEventBinding = false) {
-    this.source = source;
-    this.target = target;
-    this.isEventBinding = isEventBinding;
-  }
-}
 const bindingType = {
   EVENT: "event",
   ONE_WAY: "one-way",
@@ -178,30 +163,6 @@ Writes - computed later based on assignment and arg of method
 
 
 */
-
-class TemplateBindings {
-  constructor(bindings, tagsInfo) {
-    this.bindings = bindings;
-    this.tagsInfo = tagsInfo;
-  }
-}
-
-class TopLevel {
-  constructor(variableNames, methodNames, calledInInit) {
-    this.variableNames = variableNames;
-    this.methodNames = methodNames;
-    this.calledInInit = calledInInit;
-  }
-}
-
-class Methods {
-  constructor(init, computed, methods) {
-    this.init = init;
-    this.computed = computed;
-    this.methods = methods;
-  }
-}
-
 class Method {
   constructor(name, args, reads, writes, calls) {
     this.name = name;
@@ -213,12 +174,7 @@ class Method {
 }
 
 module.exports = {
-  TemplateBinding,
-  TemplateBindings,
-  BindingToName,
-  TopLevel,
   Method,
-  Methods,
   //NEW ONES
   MethodAccess,
   PropertyAccess,

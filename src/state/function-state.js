@@ -99,7 +99,11 @@ class FunctionState {
   }
 
   finished() {
-    let methods = new Methods(this.init, this.computed, this.methods);
+    let methods = {
+      init: this.init,
+      computed: this.computed,
+      methods: this.methods,
+    };
     this.reset();
     return methods;
   }

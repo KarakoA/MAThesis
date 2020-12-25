@@ -1,6 +1,5 @@
 let utils = require("../utils");
 const { Tag } = require("../models/visitors");
-const { vForExpression } = require("../utils");
 //@here
 require("util").inspect.defaultOptions.depth = 12;
 function determineNodeName(node, firstBindingName = undefined) {
@@ -78,7 +77,9 @@ class BindingsState {
   }
 
   finish() {
-    return this.bindings;
+    let result = { bindings: [...this.bindings] };
+    this.reset();
+    return result;
   }
 }
 

@@ -73,7 +73,6 @@ module.exports = {
         //returned back to the top of the parsing tree
         "ExportDefaultDeclaration:exit"(node) {
           let methods = state.finished();
-          console.log(methods);
           context.report({ node: node, message: JSON.stringify(methods) });
         },
       }

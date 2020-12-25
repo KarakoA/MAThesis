@@ -25,6 +25,7 @@ function transform(rulesResults) {
 async function main() {
   let r = await new ESLinter().lintFiles(["./src/test-files/test-lists.vue"]);
 
+  console.log(r);
   r = transform(r);
   fs.writeFileSync("./src/data.json", JSON.stringify(r, null, 2));
 }
