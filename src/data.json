@@ -61,13 +61,13 @@
       }
     },
     {
-      "v": "problems[i]",
+      "v": "this.problems.problems[i]",
       "value": {
         "name": "problems[i]"
       }
     },
     {
-      "v": "problems[i].a",
+      "v": "this.problems.problems[i].a",
       "value": {
         "name": "a"
       }
@@ -92,7 +92,7 @@
       }
     },
     {
-      "v": "problems[i].b",
+      "v": "this.problems.problems[i].b",
       "value": {
         "name": "b"
       }
@@ -117,7 +117,7 @@
       }
     },
     {
-      "v": "problems[i].answer",
+      "v": "this.problems.problems[i].answer",
       "value": {
         "name": "answer"
       }
@@ -142,13 +142,13 @@
       }
     },
     {
-      "v": "may_check",
+      "v": "this.may_check",
       "value": {
         "name": "may_check"
       }
     },
     {
-      "v": "check_answer",
+      "v": "this.check_answer",
       "value": {
         "name": "check_answer"
       }
@@ -173,7 +173,7 @@
       }
     },
     {
-      "v": "problems[i].right",
+      "v": "this.problems.problems[i].right",
       "value": {
         "name": "right"
       }
@@ -217,7 +217,7 @@
       }
     },
     {
-      "v": "new_problem",
+      "v": "this.new_problem",
       "value": {
         "name": "new_problem"
       }
@@ -242,12 +242,6 @@
       }
     },
     {
-      "v": "count_right",
-      "value": {
-        "name": "count_right"
-      }
-    },
-    {
       "v": "span_60_12_60_43",
       "value": {
         "name": "count_wrong",
@@ -264,12 +258,6 @@
           },
           "type": "tag"
         }
-      }
-    },
-    {
-      "v": "count_wrong",
-      "value": {
-        "name": "count_wrong"
       }
     },
     {
@@ -292,7 +280,7 @@
       }
     },
     {
-      "v": "accuracy",
+      "v": "this.accuracy",
       "value": {
         "name": "accuracy"
       }
@@ -320,81 +308,101 @@
       "w": "this.nested.property"
     },
     {
-      "v": "problems[i]",
-      "w": "problems[i].a"
+      "v": "this.problems",
+      "w": "this.problems.problems[i]"
+    },
+    {
+      "v": "this.problems.problems[i]",
+      "w": "this.problems.problems[i].a"
     },
     {
       "v": "span_7_12_7_40",
-      "w": "problems[i].a"
+      "w": "this.problems.problems[i].a"
     },
     {
-      "v": "problems[i]",
-      "w": "problems[i].b"
+      "v": "this.problems.problems[i]",
+      "w": "this.problems.problems[i].b"
     },
     {
       "v": "span_7_43_7_72",
-      "w": "problems[i].b"
+      "w": "this.problems.problems[i].b"
     },
     {
-      "v": "problems[i]",
-      "w": "problems[i].answer"
+      "v": "this.problems.problems[i]",
+      "w": "this.problems.problems[i].answer"
     },
     {
       "v": "input_8_18_8_69",
-      "w": "problems[i].answer"
+      "w": "this.problems.problems[i].answer"
     },
     {
-      "v": "problems[i].answer",
+      "v": "this.problems.problems[i].answer",
       "w": "input_8_18_8_69"
     },
     {
-      "v": "button_9_12_17_21",
-      "w": "may_check"
+      "v": "this",
+      "w": "this.may_check"
     },
     {
       "v": "button_9_12_17_21",
-      "w": "problems[i]",
+      "w": "this.may_check"
+    },
+    {
+      "v": "button_9_12_17_21",
+      "w": "this.problems.problems[i]",
       "value": {
         "type": "event"
       }
     },
     {
+      "v": "this",
+      "w": "this.check_answer"
+    },
+    {
       "v": "button_9_12_17_21",
-      "w": "check_answer",
+      "w": "this.check_answer",
       "value": {
         "type": "event"
       }
     },
     {
-      "v": "problems[i]",
-      "w": "problems[i].right"
+      "v": "this.problems.problems[i]",
+      "w": "this.problems.problems[i].right"
     },
     {
       "v": "button_18_12_25_21",
-      "w": "problems[i].right"
+      "w": "this.problems.problems[i].right"
     },
     {
       "v": "button_26_12_33_21",
-      "w": "problems[i].right"
+      "w": "this.problems.problems[i].right"
+    },
+    {
+      "v": "this",
+      "w": "this.new_problem"
     },
     {
       "v": "button_34_12_40_21",
-      "w": "new_problem",
+      "w": "this.new_problem",
       "value": {
         "type": "event"
       }
     },
     {
       "v": "span_57_12_57_43",
-      "w": "count_right"
+      "w": "this.count_right"
     },
     {
       "v": "span_60_12_60_43",
-      "w": "count_wrong"
+      "w": "this.count_wrong"
+    },
+    {
+      "v": "this",
+      "w": "this.accuracy"
     },
     {
       "v": "span_63_12_63_40",
-      "w": "accuracy"
+      "w": "this.accuracy"
     }
   ]
 }

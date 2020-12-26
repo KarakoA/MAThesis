@@ -21,45 +21,61 @@ function addBindings(graph, bindings) {
     let boundItems = x[1];
     let tagNode = new Node(tag.id, tag.name, { loc: tag.loc, type: "tag" });
     graph.addNode(tagNode);
+
     boundItems.forEach((y) => {
       let item = y.item;
-      let bindingType = y.bindingType;
-      //TODO doesn't respect positions
+      prefix(item);
       let last = addIdentifierChain(graph, item);
-      addEdgeBasedOnType(graph, tagNode, last, bindingType);
-
-      //TODO need to add linke from "problems[i]" to "problems"
-      //TODO need to add tests with nested problems[i][j] type access
+      addEdgeBasedOnType(graph, tagNode, last, y.bindingType);
     });
   });
 }
 function addTopLevel(graph, topLevel) {
-  topLevel.forEach((x) => x.id.identifiers.unshift({ name: "this" }));
+  prefixAll(topLevel);
   topLevel.forEach((topLevel) => addIdentifierChain(graph, topLevel));
 }
 
 function addIdentifierChain(graph, x, opts = undefined) {
   let nodes = identifierChainToNodes(x.id.identifiers, opts);
 
-  nodes.forEach((x) => graph.addNode(x));
+  graph.addNodes(nodes);
   graph.connect(nodes);
 
   return lodash.last(nodes);
 }
 
+function prefix(acessor, name = "this") {
+  acessor.id.identifiers.unshift({ name: name });
+}
+
+function prefixAll(acessors, name = "this") {
+  acessors.forEach((a) => prefix(a, name));
+}
+
 function identifierChainToNodes(identifiers, opts) {
-  console.log(identifiers);
-  //  identifiers.map((x) => [x.name, x.positions.map((x) => x.name)]).flat();
   let prev = [];
   let nodes = identifiers
     .map((last) => {
+      let nodes = [];
+      if (last.positions) {
+        //TODO abstract me
+        let lastSimple = new Identifier(last.name);
+        prev = prev.concat(lastSimple);
+        let nodeSimple = new Node(
+          IdentifierChain.toString(prev),
+          Identifier.toString(lastSimple),
+          opts
+        );
+        nodes.push(nodeSimple);
+      }
       prev = prev.concat(last);
       let node = new Node(
         IdentifierChain.toString(prev),
         Identifier.toString(last),
         opts
       );
-      return node;
+      nodes.push(node);
+      return nodes;
     })
     .flat();
   return nodes;

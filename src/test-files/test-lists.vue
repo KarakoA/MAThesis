@@ -34,7 +34,7 @@
             <button
               class="btn btn-info"
               style="margin-left: 5px"
-              @click="new_problem"
+              @click="new_problem()"
             >
               New Problem
             </button>

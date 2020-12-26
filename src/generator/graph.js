@@ -21,6 +21,10 @@ class ExtendedGraph {
     if (!this.graph.hasNode(node.id)) this.graph.setNode(node.id, node.label);
   }
 
+  addNodes(nodes) {
+    nodes.forEach((node) => this.addNode(node));
+  }
+
   addEdge(source, sink, label = undefined) {
     this.addNode(source);
     this.addNode(sink);
