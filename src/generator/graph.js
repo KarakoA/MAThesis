@@ -1,5 +1,7 @@
 const { Graph } = require("@dagrejs/graphlib");
 const { IdentifierChain } = require("../models/visitors.js");
+const assert = require("assert");
+const { Node } = require("../models/graph.js");
 class ExtendedGraph {
   constructor() {
     this.graph = new Graph({
@@ -14,7 +16,8 @@ class ExtendedGraph {
 
   addNode(node) {
     this.lastAddedNode = node;
-    this.graph.setNode(node.id, node.label);
+    assert(node instanceof Node);
+    if (!this.graph.hasNode(node.id)) this.graph.setNode(node.id, node.label);
   }
 
   addEdge(source, sink, label = undefined) {

@@ -1,7 +1,7 @@
 class Node {
-  constructor(id, label) {
+  constructor(id, name, opts = undefined) {
     this.id = id;
-    this.label = label;
+    this.label = { name, opts };
   }
 }
 module.exports = { Node };
