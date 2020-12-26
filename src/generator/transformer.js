@@ -16,7 +16,6 @@ function compute(visitorsResult) {
 }
 
 function addBindings(graph, bindings) {
-  //console.log(bindings[0][1]);
   bindings.forEach((x) => {
     let tag = x[0];
     let boundItems = x[1];
@@ -28,6 +27,7 @@ function addBindings(graph, bindings) {
       //TODO doesn't respect positions
       let last = addIdentifierChain(graph, item);
       addEdgeBasedOnType(graph, tagNode, last, bindingType);
+
       //TODO need to add linke from "problems[i]" to "problems"
       //TODO need to add tests with nested problems[i][j] type access
     });
@@ -39,24 +39,30 @@ function addTopLevel(graph, topLevel) {
 }
 
 function addIdentifierChain(graph, x, opts = undefined) {
-  let prev = [];
-  let nodes = x.id.identifiers.map((last) => {
-    prev = prev.concat(last);
-    let node = new Node(
-      IdentifierChain.toString(prev),
-      Identifier.toString(last),
-      opts
-    );
-    return node;
-  });
+  let nodes = identifierChainToNodes(x.id.identifiers, opts);
 
-  //TODO might be removable
-  nodes.forEach((node) => graph.addNode(node));
+  nodes.forEach((x) => graph.addNode(x));
+  graph.connect(nodes);
 
-  lodash.zip(nodes, nodes.slice(1)).forEach((x) => {
-    if (x[1]) graph.addEdge(x[0], x[1]);
-  });
   return lodash.last(nodes);
+}
+
+function identifierChainToNodes(identifiers, opts) {
+  console.log(identifiers);
+  //  identifiers.map((x) => [x.name, x.positions.map((x) => x.name)]).flat();
+  let prev = [];
+  let nodes = identifiers
+    .map((last) => {
+      prev = prev.concat(last);
+      let node = new Node(
+        IdentifierChain.toString(prev),
+        Identifier.toString(last),
+        opts
+      );
+      return node;
+    })
+    .flat();
+  return nodes;
 }
 
 function addEdgeBasedOnType(graph, tag, item, type) {

@@ -2,6 +2,7 @@ const { Graph } = require("@dagrejs/graphlib");
 const { IdentifierChain } = require("../models/visitors.js");
 const assert = require("assert");
 const { Node } = require("../models/graph.js");
+const lodash = require("lodash");
 class ExtendedGraph {
   constructor() {
     this.graph = new Graph({
@@ -24,6 +25,13 @@ class ExtendedGraph {
     this.addNode(source);
     this.addNode(sink);
     this.graph.setEdge(source.id, sink.id, label);
+  }
+
+  //adds edges between all adjacent nodes
+  connect(nodes, label = undefined) {
+    lodash.zip(nodes, nodes.slice(1)).forEach((x) => {
+      if (x[1]) this.addEdge(x[0], x[1], label);
+    });
   }
 
   addNodeLater(node) {

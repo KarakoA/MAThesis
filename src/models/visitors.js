@@ -16,32 +16,25 @@ const dataType = {
 };
 
 class Access {
-  constructor(id) {
+  constructor(id, type) {
     assert(id);
+    assert(type);
     this.id = id;
-  }
-  cond() {
-    throw new Error("Implementation is missing");
+    this.type = type;
   }
 }
 
 class MethodAccess extends Access {
   //id is of type identifier chain
   constructor(id, args = []) {
-    super(id);
+    super(id, "method");
     this.args = args;
-  }
-  cond(onMethod) {
-    return onMethod(this);
   }
 }
 
 class PropertyAccess extends Access {
   constructor(id) {
-    super(id);
-  }
-  cond(_onMethod, onProperty) {
-    return onProperty(this);
+    super(id, "property");
   }
 }
 
