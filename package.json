@@ -32,6 +32,7 @@
     "d3-graphviz": "^3.1.0",
     "deep-equal": "^2.0.5",
     "immutable": "^4.0.0-rc.12",
-    "lodash": "^4.17.20"
+    "lodash": "^4.17.20",
+    "serialize-javascript": "^5.0.1"
   }
 }

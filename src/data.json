@@ -6,151 +6,50 @@
   },
   "nodes": [
     {
-      "v": "span_7_12_7_40"
+      "v": "this",
+      "value": "this"
     },
     {
-      "v": "problems[i][j]",
-      "value": "problems[i][j]"
+      "v": "this.problems",
+      "value": "problems"
     },
     {
-      "v": "problems[i][j].a",
-      "value": "a"
-    },
-    {
-      "v": "span_7_43_7_72"
-    },
-    {
-      "v": "problems[i][j].b",
-      "value": "b"
-    },
-    {
-      "v": "input_8_18_8_69"
-    },
-    {
-      "v": "problems[i][j].answer",
-      "value": "answer"
-    },
-    {
-      "v": "button_9_12_17_21"
-    },
-    {
-      "v": "may_check",
-      "value": "may_check"
-    },
-    {
-      "v": "check_answer",
-      "value": "check_answer"
-    },
-    {
-      "v": "button_18_12_25_21"
-    },
-    {
-      "v": "problems[i][j].right",
-      "value": "right"
-    },
-    {
-      "v": "button_26_12_33_21"
-    },
-    {
-      "v": "button_34_12_40_21"
-    },
-    {
-      "v": "new_problem",
-      "value": "new_problem"
-    },
-    {
-      "v": "span_57_12_57_43"
-    },
-    {
-      "v": "count_right",
+      "v": "this.count_right",
       "value": "count_right"
     },
     {
-      "v": "span_60_12_60_43"
-    },
-    {
-      "v": "count_wrong",
+      "v": "this.count_wrong",
       "value": "count_wrong"
     },
     {
-      "v": "span_63_12_63_40"
+      "v": "this.nested",
+      "value": "nested"
     },
     {
-      "v": "accuracy",
-      "value": "accuracy"
+      "v": "this.nested.property",
+      "value": "property"
     }
   ],
   "edges": [
     {
-      "v": "problems[i][j]",
-      "w": "problems[i][j].a"
+      "v": "this",
+      "w": "this.problems"
     },
     {
-      "v": "span_7_12_7_40",
-      "w": "problems[i][j].a"
+      "v": "this",
+      "w": "this.count_right"
     },
     {
-      "v": "problems[i][j]",
-      "w": "problems[i][j].b"
+      "v": "this",
+      "w": "this.count_wrong"
     },
     {
-      "v": "span_7_43_7_72",
-      "w": "problems[i][j].b"
+      "v": "this",
+      "w": "this.nested"
     },
     {
-      "v": "problems[i][j]",
-      "w": "problems[i][j].answer"
-    },
-    {
-      "v": "input_8_18_8_69",
-      "w": "problems[i][j].answer"
-    },
-    {
-      "v": "problems[i][j].answer",
-      "w": "input_8_18_8_69"
-    },
-    {
-      "v": "button_9_12_17_21",
-      "w": "may_check"
-    },
-    {
-      "v": "button_9_12_17_21",
-      "w": "problems[i][j]",
-      "value": "event"
-    },
-    {
-      "v": "button_9_12_17_21",
-      "w": "check_answer",
-      "value": "event"
-    },
-    {
-      "v": "problems[i][j]",
-      "w": "problems[i][j].right"
-    },
-    {
-      "v": "button_18_12_25_21",
-      "w": "problems[i][j].right"
-    },
-    {
-      "v": "button_26_12_33_21",
-      "w": "problems[i][j].right"
-    },
-    {
-      "v": "button_34_12_40_21",
-      "w": "new_problem",
-      "value": "event"
-    },
-    {
-      "v": "span_57_12_57_43",
-      "w": "count_right"
-    },
-    {
-      "v": "span_60_12_60_43",
-      "w": "count_wrong"
-    },
-    {
-      "v": "span_63_12_63_40",
-      "w": "accuracy"
+      "v": "this.nested",
+      "w": "this.nested.property"
     }
   ]
 }

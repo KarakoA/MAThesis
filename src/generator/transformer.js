@@ -9,8 +9,8 @@ const { Node } = require("../models/graph.js");
 const lodash = require("lodash");
 function compute(visitorsResult) {
   let graph = new ExtendedGraph();
-  //addTopLevel(graph, visitorsResult.topLevelData);
-  addBindings(graph, visitorsResult.bindings);
+  addTopLevel(graph, visitorsResult.topLevelData);
+  //addBindings(graph, visitorsResult.bindings);
   let g = graph.execute();
   return graphlib.json.write(g);
 }
@@ -28,6 +28,8 @@ function addBindings(graph, bindings) {
       //TODO doesn't respect positions
       let last = addIdentifierChain(graph, item);
       addEdgeBasedOnType(graph, tag, last, bindingType);
+      //TODO need to add linke from "problems[i]" to "problems"
+      //TODO need to add tests with nested problems[i][j] type access
     });
   });
 }
