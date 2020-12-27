@@ -1,5 +1,6 @@
 let utils = require("../utils");
-const { Tag } = require("../models/visitors");
+const { Tag } = require("../models/visitors.js");
+const { Identifiers } = require("../models/identifiers.js");
 //@here
 require("util").inspect.defaultOptions.depth = 12;
 function determineNodeName(node, firstBindingName = undefined) {
@@ -14,14 +15,15 @@ function determineNodeName(node, firstBindingName = undefined) {
 }
 
 function substituteVFor(replacements, data) {
-  //TODO rethink this. problem.a => problems.a currently
-  //should be problems[i].a
-
   replacements.forEach((replacement) => {
-    data.forEach((x) =>
+    data.forEach((x) => {
       //TODO in methods also has to replace in params
-      x.item.id.replaceFront(replacement.left, replacement.right)
-    );
+      x.item.id = Identifiers.replaceFront(
+        x.item.id,
+        replacement.left,
+        replacement.right
+      );
+    });
   });
 }
 
@@ -48,8 +50,9 @@ class BindingsState {
     //also how to add i accesses, see problem above
     let left = utils.getNameFromExpression(vforAttributeNode.left[0]);
     //items
-    let right = utils.getNameFromExpression(vforAttributeNode.right);
-    right.addPosition();
+    let right = Identifiers.addPosition(
+      utils.getNameFromExpression(vforAttributeNode.right)
+    );
     this.VForReplacement.unshift({ left, right });
   }
 
@@ -63,7 +66,7 @@ class BindingsState {
 
       substituteVFor(this.VForReplacement, this.latest);
 
-      let firstBindingName = this.latest[0].item.id.toString();
+      let firstBindingName = Identifiers.toString(this.latest[0].item.id);
 
       let name = determineNodeName(node, firstBindingName);
       //TODO could apply the substitution on it for more info, but maybe don't even need this at all, will see

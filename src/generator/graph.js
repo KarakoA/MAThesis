@@ -1,5 +1,5 @@
 const { Graph } = require("@dagrejs/graphlib");
-const { IdentifierChain } = require("../models/visitors.js");
+//const { Identifiers } = require("../models/visitors.js");
 const assert = require("assert");
 const { Node } = require("../models/graph.js");
 const lodash = require("lodash");

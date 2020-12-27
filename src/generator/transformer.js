@@ -1,10 +1,7 @@
 const { ExtendedGraph } = require("./graph.js");
 const graphlib = require("@dagrejs/graphlib");
-const {
-  IdentifierChain,
-  Identifier,
-  bindingType,
-} = require("../models/visitors.js");
+const { bindingType } = require("../models/visitors.js");
+const { Identifier, Identifiers } = require("../models/identifiers.js");
 const { Node } = require("../models/graph.js");
 const lodash = require("lodash");
 function compute(visitorsResult) {
@@ -16,7 +13,7 @@ function compute(visitorsResult) {
   return graphlib.json.write(g);
 }
 function addMethods(graph, methods) {
-  console.log(methods);
+  //console.log(methods);
 }
 
 function addBindings(graph, bindings) {
@@ -27,20 +24,19 @@ function addBindings(graph, bindings) {
     graph.addNode(tagNode);
 
     boundItems.forEach((y) => {
-      let item = y.item;
-      prefix(item);
+      let item = prefix(y.item);
       let last = addIdentifierChain(graph, item);
       addEdgeBasedOnType(graph, tagNode, last, y.bindingType);
     });
   });
 }
 function addTopLevel(graph, topLevel) {
-  prefixAll(topLevel);
+  topLevel = prefixAll(topLevel);
   topLevel.forEach((topLevel) => addIdentifierChain(graph, topLevel));
 }
 
 function addIdentifierChain(graph, x, opts = undefined) {
-  let nodes = identifierChainToNodes(x.id.identifiers, opts);
+  let nodes = identifierChainToNodes(x.id, opts);
 
   graph.addNodes(nodes);
   graph.connect(nodes);
@@ -48,40 +44,30 @@ function addIdentifierChain(graph, x, opts = undefined) {
   return lodash.last(nodes);
 }
 
-function prefix(acessor, name = "this") {
-  acessor.id.identifiers.unshift({ name: name });
+function prefix(acessor) {
+  return { id: Identifiers.prefix(acessor.id, Identifier.createThis()) };
 }
 
-function prefixAll(acessors, name = "this") {
-  acessors.forEach((a) => prefix(a, name));
+function prefixAll(acessors) {
+  return acessors.map((a) => prefix(a));
 }
 
 function identifierChainToNodes(identifiers, opts) {
   let prev = [];
-  let nodes = identifiers
-    .map((last) => {
-      let nodes = [];
-      if (last.positions) {
-        //TODO abstract me
-        let lastSimple = new Identifier(last.name);
-        prev = prev.concat(lastSimple);
-        let nodeSimple = new Node(
-          IdentifierChain.toString(prev),
-          Identifier.toString(lastSimple),
-          opts
-        );
-        nodes.push(nodeSimple);
-      }
-      prev = prev.concat(last);
-      let node = new Node(
-        IdentifierChain.toString(prev),
-        Identifier.toString(last),
-        opts
-      );
-      nodes.push(node);
-      return nodes;
-    })
-    .flat();
+  let nodes = identifiers.map((current) => {
+    let newNode = Identifier.isPosition(current)
+      ? Identifier.createIdentifier(
+          lodash.last(prev).name + Identifier.toString(current)
+        )
+      : current;
+
+    prev = prev.concat(newNode);
+    return new Node(
+      Identifiers.toString(prev),
+      Identifier.toString(newNode),
+      opts
+    );
+  });
   return nodes;
 }
 

@@ -1,12 +1,11 @@
 const {
   PropertyAccess,
   MethodAccess,
-  Identifier,
-  IdentifierChain,
   TopLevelVariable,
 } = require("./models/visitors.js");
 
-const { flattenDeep } = require("lodash");
+const lodash = require("lodash");
+const { Identifier, Identifiers } = require("./models/identifiers.js");
 
 function firstParentOfType(elem, typeString) {
   return elem.parent
@@ -79,17 +78,20 @@ function getNamesFromTopLevelObject(node) {
         let name = node.key.name;
         let value = node.value;
         if (value.type === "ObjectExpression")
-          return func(node.value, prev.concat(new Identifier(name)));
+          return func(
+            node.value,
+            prev.concat(Identifier.createIdentifier(name))
+          );
         //@Future array type distinguish here
         else if (value.type === "ArrayExpression")
           //TODO encapsulate this logic in ctor's
           return new TopLevelVariable(
-            new IdentifierChain(prev.concat(new Identifier(name)))
+            Identifiers.create(prev.concat(Identifier.createIdentifier(name)))
           );
         //@Future other type distinguish here
         else
           return new TopLevelVariable(
-            new IdentifierChain(prev.concat(new Identifier(name)))
+            Identifiers.create(prev.concat(Identifier.createIdentifier(name)))
           );
       }
       case "ObjectExpression":
@@ -101,26 +103,28 @@ function getNamesFromTopLevelObject(node) {
         throw new Error(`Unknown node type: ${node.type}`);
     }
   }
-  return flattenDeep(func(node, []));
+  return lodash.flattenDeep(func(node, []));
 }
 
-function getNameFromExpression(node, prev = [], position = undefined) {
+function getNameFromExpression(node, prev = []) {
   if (node.type === "Identifier")
-    return new IdentifierChain(
-      prev.concat(new Identifier(node.name, position)).reverse()
+    return Identifiers.create(
+      prev.concat(Identifier.createIdentifier(node.name)).reverse()
     );
   else if (node.type === "ThisExpression") {
-    return new IdentifierChain(prev.concat(new Identifier("this")).reverse());
+    return Identifiers.create(prev.concat(Identifier.createThis()).reverse());
   } else if (node.type === "MemberExpression") {
     //index accessor
     if (node.computed) {
       let position =
-        node.property.type === "Literal" ? node.property.value : "i";
-      return getNameFromExpression(node.object, prev, position);
+        node.property.type === "Literal"
+          ? Identifier.createPosition(node.property.value)
+          : Identifier.nextPosition(lodash.head(prev));
+      return getNameFromExpression(node.object, prev.concat(position));
     } else
       return getNameFromExpression(
         node.object,
-        prev.concat(new Identifier(node.property.name, position))
+        prev.concat(Identifier.createIdentifier(node.property.name))
       );
   } else throw new Error(`Unknown node type: ${node.type}. prev: ${prev}`);
 }

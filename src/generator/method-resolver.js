@@ -1,6 +1,6 @@
 const { method } = require("lodash");
 const lodash = require("lodash");
-const { IdentifierChain, Identifier } = require("../models/visitors");
+const { Identifiers, Identifier } = require("../models/visitors");
 
 class MethodResolver {
   constructor(methods) {
@@ -48,9 +48,9 @@ class MethodResolver {
     if (arg.type === "property")
       //TODO check
       return (methodArg) => {
-        if (IdentifierChain.startsWith(arg, methodArg))
-          new IdentifierChain(...arg);
-        return "other";
+        if (Identifiers.startsWith(arg, methodArg))
+          //Identifiers.create(...arg);
+          return "other";
       };
   }
 
