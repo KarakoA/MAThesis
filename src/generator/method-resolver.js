@@ -1,68 +1,74 @@
-const { method } = require("lodash");
 const lodash = require("lodash");
-const { Identifiers, Identifier } = require("../models/visitors");
+const { Identifiers, Identifier } = require("../models/identifiers.js");
+const assert = require("assert");
 
 class MethodResolver {
-  constructor(methods) {
-    this.methods = new Map();
-    methods.forEach((x) => (methods[x.name] = x));
-
-    this.resolved = new Map();
-
-    //        cache:(method,args) => {R,W,C(method,args)}
-    //args: this expr. or any
-  }
-  initResolved(methods) {
-    //all without args
-    methods
-      .filter(
-        (m) =>
-          lodash.isEmpty(m.args) &&
-          lodash.every(m.calls, (x) => lodash.isEmpty(x.args))
-      )
-      .forEach((m) => (this.resolved[m] = m));
-  }
-  //simplify calls in 4 ways: this.XYZ, "same", "other", "nothing"
-  //compute this for every method in methods, "OR" compute lazily once called
-  //calls can also be nested, so recursive for sure
-
-  resolve(methods, resolved = new Map()) {
-    if (lodash.isEmpty(methods)) return resolved;
-    let head = lodash.head(methods);
-    let tail = lodash.drop(methods, 1);
-
-    let headResolved = this.resolve(head);
-    this.resolve(tail, resolved.concat(headResolved));
+  constructor(methods, topLevel) {
+    this.methods = methods;
+    this.topLevel = topLevel;
   }
 
-  resolve2(method) {
-    method.calls.map((x) => (arg) => {
-      arg: this.resolveArg;
+  called({ id, args }) {
+    let method = this.methods.find((x) => lodash.isEqual(x.name, id));
+    assert(method);
+    assert(method.args.length == args.length);
+
+    let calls = method.calls.map((m) => {
+      let mArgs = m.args.map((arg) => this.resolveArg(arg, method.args, args));
+      return { id: m.id, args: mArgs };
     });
+
+    let reads = method.reads
+      .map((x) => x.id)
+      .map((x) => this.maybeSubstitudeArgs(x, method.args, args))
+      .map((x) => this.maybePrefixThis(x))
+      .filter((x) => Identifiers.startsWithThis(x));
+
+    let writes = method.writes
+      .map((x) => x.id)
+      .map((x) => this.maybeSubstitudeArgs(x, method.args, args))
+      .map((x) => this.maybePrefixThis(x))
+
+      .filter((x) => Identifiers.startsWithThis(x));
+
+    return { id: Identifiers.prefixThis(id), args: args, calls, reads, writes };
   }
 
-  //up to last i same, last can vary
+  maybePrefixThis(x) {
+    lodash.some(this.topLevel, (topLevel) => {
+      return Identifiers.startsWith(x, topLevel.id);
+    });
 
-  resolveArg(arg) {
-    if (arg.type === "method") return () => "method";
-    if (arg.type === "property")
-      //TODO check
-      return (methodArg) => {
-        if (Identifiers.startsWith(arg, methodArg))
-          //Identifiers.create(...arg);
-          return "other";
-      };
+    return lodash.some(this.topLevel, (topLevel) =>
+      Identifiers.startsWith(x, topLevel.id)
+    )
+      ? Identifiers.prefixThis(x)
+      : x;
+  }
+  maybeSubstitudeArgs(x, methodArgs, calledArgs) {
+    let i = methodArgs.findIndex((arg) => Identifiers.startsWith(x, arg));
+    if (i != -1)
+      return Identifiers.replaceFront(x, methodArgs[i], calledArgs[i]);
+    return x;
   }
 
-  //ignored for now:
-  //A(asdf) calls B(asdf)
-  //B(asdf) calls A(asdf)
-  // -> results in endless loop, even though B(asdf) could have if(asdf) return 0 and later have A(asdf). would not know
+  resolveArg(arg, methodArgs, calledArgs) {
+    if (arg.type === "method") return "method";
+    //TODO check with undefined
+    if (arg.type === "property") {
+      let foundIndex = lodash.findIndex(methodArgs, (methodArg) =>
+        Identifiers.startsWith(arg.id, methodArg)
+      );
+      if (foundIndex != -1)
+        return Identifiers.replaceFront(
+          arg.id,
+          methodArgs[foundIndex],
+          calledArgs[foundIndex]
+        );
+      else "other";
+    }
+    throw new Error("Unknown arg type!");
+  }
 }
-
-const types = {
-  METHOD: "method",
-  OTHER: "other",
-};
 
 module.exports = { MethodResolver };

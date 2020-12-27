@@ -53,8 +53,8 @@ class FunctionState {
     let args = node.value.params.map((param) =>
       utils.getNameFromExpression(param)
     );
-    let name = node.key.name;
-    this.method = { name, args };
+    let id = utils.getNameFromExpression(node.key);
+    this.method = { id, args };
     this.methodType = methodType;
   }
 
@@ -87,7 +87,7 @@ class FunctionState {
         all
       );
       let method = new Method(
-        this.method.name,
+        this.method.id,
         this.method.args,
         reads,
         writes,

@@ -33,7 +33,7 @@ class ExtendedGraph {
 
   //adds edges between all adjacent nodes
   connect(nodes, label = undefined) {
-    lodash.zip(nodes, nodes.slice(1)).forEach((x) => {
+    lodash.zip(nodes, lodash.tail(nodes)).forEach((x) => {
       if (x[1]) this.addEdge(x[0], x[1], label);
     });
   }

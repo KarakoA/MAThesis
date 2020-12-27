@@ -23,6 +23,15 @@ function substituteVFor(replacements, data) {
         replacement.left,
         replacement.right
       );
+      //TODO needs to be recursive probably for nested methods (if supported)
+      if (x.item.type === "method")
+        x.item.args = x.item.args?.map((arg) => {
+          return Identifiers.replaceFront(
+            arg.id,
+            replacement.left,
+            replacement.right
+          );
+        });
     });
   });
 }

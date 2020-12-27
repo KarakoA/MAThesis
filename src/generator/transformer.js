@@ -4,11 +4,18 @@ const { bindingType } = require("../models/visitors.js");
 const { Identifier, Identifiers } = require("../models/identifiers.js");
 const { Node } = require("../models/graph.js");
 const lodash = require("lodash");
+const { MethodResolver } = require("./method-resolver.js");
 function compute(visitorsResult) {
+  //console.log(visitorsResult.topLevelData);
+  //console.log(visitorsResult.bindings);
   let graph = new ExtendedGraph();
+  let methodResolver = new MethodResolver(
+    visitorsResult.methods,
+    visitorsResult.topLevelData
+  );
   addTopLevel(graph, visitorsResult.topLevelData);
-  addBindings(graph, visitorsResult.bindings);
-  addMethods(graph, visitorsResult.methods);
+  addBindings(graph, methodResolver, visitorsResult.bindings);
+  //addMethods(graph, visitorsResult.methods);
   let g = graph.execute();
   return graphlib.json.write(g);
 }
@@ -16,17 +23,24 @@ function addMethods(graph, methods) {
   //console.log(methods);
 }
 
-function addBindings(graph, bindings) {
+function addBindings(graph, methodResolver, bindings) {
   bindings.forEach((x) => {
     let tag = x[0];
     let boundItems = x[1];
     let tagNode = new Node(tag.id, tag.name, { loc: tag.loc, type: "tag" });
     graph.addNode(tagNode);
 
-    boundItems.forEach((y) => {
-      let item = prefix(y.item);
-      let last = addIdentifierChain(graph, item);
-      addEdgeBasedOnType(graph, tagNode, last, y.bindingType);
+    boundItems.forEach((binding) => {
+      if (binding.item.type === "property") {
+        let item = prefix(binding.item);
+        let last = addIdentifierChain(graph, item);
+        addEdgeBasedOnType(graph, tagNode, last, binding.bindingType);
+      }
+      if (binding.item.type === "method") {
+        let resolved = methodResolver.called(binding.item);
+        console.log(resolved);
+        //        addEdgeBasedOnType(graph, tagNode, "TODO", binding.bindingType);
+      }
     });
   });
 }
@@ -45,7 +59,7 @@ function addIdentifierChain(graph, x, opts = undefined) {
 }
 
 function prefix(acessor) {
-  return { id: Identifiers.prefix(acessor.id, Identifier.createThis()) };
+  return { id: Identifiers.prefixThis(acessor.id) };
 }
 
 function prefixAll(acessors) {
