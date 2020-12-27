@@ -2,7 +2,8 @@ const assert = require("assert");
 
 const utils2 = require("../utils2");
 
-const { isEqual, uniqWith } = require("lodash");
+const lodash = require("lodash");
+const { isEqual } = require("lodash");
 
 const bindingType = {
   EVENT: "event",
@@ -50,6 +51,39 @@ class IdentifierChain {
       .map((x) => Identifier.toString(x))
       .join(".");
   }
+
+  static startsWithStrict(that, start) {
+    assert(start.length > 0);
+
+    if (start.length > that.length) return false;
+
+    let startActual = lodash.take(that.identifiers, start.length);
+    console.log(startActual);
+    return lodash.isEqual(startActual, start);
+  }
+
+  static replaceFront(that, subList, replacement) {
+    assert(subList.length > 0);
+    if (!IdentifierChain.startsWithStrict(that, subList)) {
+      console.log(that);
+      console.log(subList);
+    }
+    assert(IdentifierChain.startsWithStrict(that, subList));
+    let n = subList.length;
+    //TODO can without, use lists for both
+    let firstN = new IdentifierChain(that.identifiers.slice(0, n));
+
+    if (lodash.isEqual(firstN, subList)) {
+      that.identifiers.splice(0, n, replacement.identifiers);
+      that.identifiers = that.identifiers.flat();
+    }
+  }
+
+  //@todo position
+  //this.problems[i] and this.problems do both start with the same
+  //but this.problems[i].a and this.problems.a do not, which is captured by the logic here
+  //capture this
+
   toString() {
     return IdentifierChain.toString(this);
   }
@@ -67,22 +101,14 @@ class IdentifierChain {
 
   //mutable, fails silently (no replace)
   replaceFront(subList, replacement) {
-    assert(subList.length > 0);
-    let n = subList.length;
-    //TODO can without, use lists for both
-    let firstN = new IdentifierChain(this.identifiers.slice(0, n));
-
-    if (isEqual(firstN, subList)) {
-      this.identifiers.splice(0, n, replacement.identifiers);
-      this.identifiers = this.identifiers.flat();
-    }
-    // else throw new Error(`Sublist did not match!`);
+    return IdentifierChain.replaceFront(this, subList, replacement);
   }
 }
 class Identifier {
   constructor(name, positions = undefined) {
     assert(name);
     this.name = name;
+    //TODO model positions as separate entity
     if (positions && !Array.isArray(positions)) positions = [positions];
     this.positions = positions;
   }
@@ -103,14 +129,6 @@ class Identifier {
   }
 }
 
-/*class Position {
-  constructor(index) {
-    assert(index);
-    let n = Number(index);
-    assert(n >= 0);
-    this.index = n ?? "i";
-  }
-}*/
 class Tag {
   constructor(id, loc, position = undefined, name = undefined) {
     assert(id);
@@ -127,54 +145,13 @@ class TopLevelVariable {
   }
 }
 
-//TODO accessors all/single for lists , as part of binding instead of boolean
-//for methods need params
-
-//
-
-/*
-ADTs
-BindingType: {EVENT, TWO_WAY, ONE_WAY}
-
-
-Property: {id, name:Option[String], position:Option[String]//i or positive number }
-Method: {id, name, args:Option[List[Property | Method]]}
-
-Tag: {id, name, loc, groupInfo:Option[{position:String//i or positive number}]}
-
-, groupId?
-
-//NOTE graphically enumerate tags maybe?
-
-Bindings:
-Map: Property -> Tag : BindingType
-List[(Property, Tag, BindingType)]
-
-Top Level:
-Data: Map of Property -> DataType
-
-Methods:
-//Declaration, handled as assignment (no statement for declaration, but just assignemnts to values)
-//if just let xyz, to undefined
-argsnames: List[String]
-Returns:List[Property | Method]
-List[Assignment{prop, to:List[Property | Method ]}] //writes, RHS
-Calls:List[Method]
-Reads:List[Property]
-Writes - computed later based on assignment and arg of method
-
-
-//NODE multiple on one line? => split to array
-
-
-*/
 class Method {
   constructor(name, args, reads, writes, calls) {
     this.name = name;
     this.args = args;
-    this.writes = uniqWith(writes, isEqual);
-    this.reads = uniqWith(reads, isEqual);
-    this.calls = uniqWith(calls, isEqual);
+    this.writes = lodash.uniqWith(writes, lodash.isEqual);
+    this.reads = lodash.uniqWith(reads, lodash.isEqual);
+    this.calls = lodash.uniqWith(calls, lodash.isEqual);
   }
 }
 

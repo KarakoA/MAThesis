@@ -48,8 +48,8 @@ module.exports = {
         ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) CallExpression "(
           node
         ) {
-          if (utils.isRootNameNode(node))
-            state.identifierOrExpressionNew(node, accessType.CALLS);
+          // if (utils.isRootNameNode(node))
+          state.identifierOrExpressionNew(node, accessType.CALLS);
         },
         //declares
         ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) VariableDeclarator"(

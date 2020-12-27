@@ -11,8 +11,12 @@ function compute(visitorsResult) {
   let graph = new ExtendedGraph();
   addTopLevel(graph, visitorsResult.topLevelData);
   addBindings(graph, visitorsResult.bindings);
+  addMethods(graph, visitorsResult.methods);
   let g = graph.execute();
   return graphlib.json.write(g);
+}
+function addMethods(graph, methods) {
+  console.log(methods);
 }
 
 function addBindings(graph, bindings) {
