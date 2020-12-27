@@ -6,8 +6,6 @@ const { Node } = require("../models/graph.js");
 const lodash = require("lodash");
 const { MethodResolver } = require("./method-resolver.js");
 function compute(visitorsResult) {
-  //console.log(visitorsResult.topLevelData);
-  //console.log(visitorsResult.bindings);
   let graph = new ExtendedGraph();
   let methodResolver = new MethodResolver(
     visitorsResult.methods,
@@ -15,6 +13,8 @@ function compute(visitorsResult) {
   );
   addTopLevel(graph, visitorsResult.topLevelData);
   addBindings(graph, methodResolver, visitorsResult.bindings);
+  console.log(visitorsResult.bindings);
+  console.log(visitorsResult.computed);
   //addMethods(graph, visitorsResult.methods);
   let g = graph.execute();
   return graphlib.json.write(g);
@@ -24,6 +24,9 @@ function addMethods(graph, methods) {
 }
 
 function addBindings(graph, methodResolver, bindings) {
+  //TODO keep track of those in method resolver?
+  let methodsDone = [];
+  let methodsToDo = [];
   bindings.forEach((x) => {
     let tag = x[0];
     let boundItems = x[1];
@@ -37,12 +40,61 @@ function addBindings(graph, methodResolver, bindings) {
         addEdgeBasedOnType(graph, tagNode, last, binding.bindingType);
       }
       if (binding.item.type === "method") {
+        //TODO abstract
         let resolved = methodResolver.called(binding.item);
-        console.log(resolved);
-        //        addEdgeBasedOnType(graph, tagNode, "TODO", binding.bindingType);
+        let node = methodNode(resolved);
+        methodsDone.push(node);
+        methodsToDo = methodsToDo.concat(resolved.calls);
+        addEdgesMethod(graph, node, resolved);
+
+        addEdgeBasedOnType(graph, tagNode, node, binding.bindingType);
       }
     });
   });
+
+  //TODO abstraction level
+  //TODO simplify, if can use proper equals this is just a contains query
+  while (
+    !(
+      lodash.isEmpty(methodsToDo) ||
+      lodash.every(methodsToDo, (todo) =>
+        lodash.some(methodsDone, (done) =>
+          lodash.isEqual(done.id, methodNode(todo).id)
+        )
+      )
+    )
+  ) {
+    let item = methodsToDo.pop();
+    let resolved = methodResolver.called(item);
+    if (resolved) {
+      let node = methodNode(resolved);
+      methodsDone.push(node);
+      methodsToDo = methodsToDo.concat(resolved.calls);
+      addEdgesMethod(graph, node, resolved);
+    }
+  }
+}
+
+function addEdgesMethod(graph, node, resolved) {
+  let readNodes = resolved.reads.map((x) => addIdentifierChain(graph, x));
+  readNodes.map((x) => graph.addEdge(x, node));
+
+  let writeNodes = resolved.writes.map((x) => addIdentifierChain(graph, x));
+  writeNodes.map((x) => graph.addEdge(node, x));
+
+  let callNodes = resolved.calls.map(methodNode);
+  callNodes.map((x) => graph.addEdge(node, x));
+}
+function methodNode(method) {
+  let id = `${Identifiers.toString(method.id)}(${method.args
+    .map((arg) => Identifiers.toString(arg))
+    .join(",")})`;
+  let name = `${Identifiers.toString(
+    method.id,
+    false
+  )}(${method.args.map((arg) => Identifiers.toString(arg, false)).join(",")})`;
+
+  return new Node(id, name);
 }
 function addTopLevel(graph, topLevel) {
   topLevel = prefixAll(topLevel);
@@ -50,7 +102,7 @@ function addTopLevel(graph, topLevel) {
 }
 
 function addIdentifierChain(graph, x, opts = undefined) {
-  let nodes = identifierChainToNodes(x.id, opts);
+  let nodes = identifierChainToNodes(x.id ?? x, opts);
 
   graph.addNodes(nodes);
   graph.connect(nodes);

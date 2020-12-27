@@ -1,6 +1,7 @@
 let utils = require("../utils");
 const { Tag } = require("../models/visitors.js");
 const { Identifiers } = require("../models/identifiers.js");
+const lodash = require("lodash");
 //@here
 require("util").inspect.defaultOptions.depth = 12;
 function determineNodeName(node, firstBindingName = undefined) {
@@ -12,6 +13,17 @@ function determineNodeName(node, firstBindingName = undefined) {
   // if both fail, just the name of the node
   let name = firstVText ?? firstBindingName ?? node.name;
   return name;
+}
+
+function filterOutMethodNamesAsIdentifiers(latest) {
+  //TODO toSet has better perfornamce, but can't compare with isEqual
+  let methodNames = latest
+    .filter((x) => x.item.type === "method")
+    .map((x) => x.item.id);
+  let inNames = (x) => lodash.some(methodNames, (m) => lodash.isEqual(x, m));
+  return latest.filter(
+    (x) => !(x.item.type === "property" && inNames(x.item.id))
+  );
 }
 
 function substituteVFor(replacements, data) {
@@ -84,7 +96,7 @@ class BindingsState {
       let position = this.VForReplacement.length == 0 ? undefined : "i";
       let tag = new Tag(id, node.loc, position, name);
 
-      this.bindings.set(tag, this.latest);
+      this.bindings.set(tag, filterOutMethodNamesAsIdentifiers(this.latest));
       this.latest = [];
     }
   }

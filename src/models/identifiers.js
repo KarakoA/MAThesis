@@ -10,11 +10,11 @@ class Identifiers {
     return data;
   }
 
-  static toString(that) {
+  static toString(that, includeThis = true) {
     return lodash.reduce(
       that,
       (acc, c) => {
-        let string = Identifier.toString(c);
+        let string = Identifier.toString(c, includeThis);
         if (!acc) return string;
         return c.type == identifierTypes.POSITION
           ? acc.concat(string)
@@ -100,7 +100,9 @@ class Identifier {
     return !this.isPosition(that);
   }
 
-  static toString(that) {
+  static toString(that, includeThis = true) {
+    if (!includeThis & (that.type == identifierTypes.THIS)) return "";
+
     return that.type === identifierTypes.POSITION
       ? `[${that.name}]`
       : that.name;

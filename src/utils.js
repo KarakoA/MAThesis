@@ -53,7 +53,9 @@ function isNameIdentifier(name) {
 function methodOrProperty(node) {
   if (node.type === "CallExpression") {
     let methodName = getNameFromExpression(node.callee);
-    let args = node.arguments.map((x) => methodOrProperty(x)).flat();
+    let args = lodash.flattenDeep(
+      node.arguments.map((x) => methodOrProperty(x))
+    );
     return new MethodAccess(methodName, args);
   } else if (node.type === "BinaryExpression") {
     let left = methodOrProperty(node.left);

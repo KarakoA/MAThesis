@@ -11,7 +11,7 @@ module.exports = {
   create(context) {
     return context.parserServices.defineTemplateBodyVisitor({
       // click handlers
-      "VAttribute[key.name.name=on] >  VExpressionContainer :matches(MemberExpression, Identifier,CallExpression)"(
+      "VAttribute[key.name.name=on] >  VExpressionContainer :matches(MemberExpression, Identifier, CallExpression)"(
         node
       ) {
         if (utils.isRootNameNode(node))

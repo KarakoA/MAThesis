@@ -142,15 +142,27 @@
       }
     },
     {
-      "v": "this.may_check",
+      "v": "this.problems.problems[i].right",
       "value": {
-        "name": "may_check"
+        "name": "right"
       }
     },
     {
-      "v": "this.check_answer",
+      "v": "this.may_check(this.problems[i])",
       "value": {
-        "name": "check_answer"
+        "name": "may_check(problems[i])"
+      }
+    },
+    {
+      "v": "this.problems.problems[i].c",
+      "value": {
+        "name": "c"
+      }
+    },
+    {
+      "v": "this.check_answer(this.problems[i])",
+      "value": {
+        "name": "check_answer(problems[i])"
       }
     },
     {
@@ -170,12 +182,6 @@
           },
           "type": "tag"
         }
-      }
-    },
-    {
-      "v": "this.problems.problems[i].right",
-      "value": {
-        "name": "right"
       }
     },
     {
@@ -217,9 +223,15 @@
       }
     },
     {
-      "v": "this.new_problem",
+      "v": "this.new_problem()",
       "value": {
-        "name": "new_problem"
+        "name": "new_problem()"
+      }
+    },
+    {
+      "v": "this.add_problem()",
+      "value": {
+        "name": "add_problem()"
       }
     },
     {
@@ -284,6 +296,18 @@
       "value": {
         "name": "accuracy"
       }
+    },
+    {
+      "v": "this.problems.length",
+      "value": {
+        "name": "length"
+      }
+    },
+    {
+      "v": "this.problems.push()",
+      "value": {
+        "name": "problems.push()"
+      }
     }
   ],
   "edges": [
@@ -340,12 +364,20 @@
       "w": "input_8_18_8_69"
     },
     {
-      "v": "this",
-      "w": "this.may_check"
+      "v": "this.problems.problems[i]",
+      "w": "this.problems.problems[i].right"
+    },
+    {
+      "v": "this.problems.problems[i].answer",
+      "w": "this.may_check(this.problems[i])"
+    },
+    {
+      "v": "this.problems.problems[i].right",
+      "w": "this.may_check(this.problems[i])"
     },
     {
       "v": "button_9_12_17_21",
-      "w": "this.may_check"
+      "w": "this.may_check(this.problems[i])"
     },
     {
       "v": "button_9_12_17_21",
@@ -355,19 +387,39 @@
       }
     },
     {
-      "v": "this",
-      "w": "this.check_answer"
+      "v": "this.problems.problems[i]",
+      "w": "this.problems.problems[i].c"
+    },
+    {
+      "v": "this.problems.problems[i].c",
+      "w": "this.check_answer(this.problems[i])"
+    },
+    {
+      "v": "this.problems.problems[i].answer",
+      "w": "this.check_answer(this.problems[i])"
+    },
+    {
+      "v": "this.problems.problems[i].right",
+      "w": "this.check_answer(this.problems[i])"
+    },
+    {
+      "v": "this.check_answer(this.problems[i])",
+      "w": "this.problems.problems[i].right"
+    },
+    {
+      "v": "this.check_answer(this.problems[i])",
+      "w": "this.count_right"
+    },
+    {
+      "v": "this.check_answer(this.problems[i])",
+      "w": "this.count_wrong"
     },
     {
       "v": "button_9_12_17_21",
-      "w": "this.check_answer",
+      "w": "this.check_answer(this.problems[i])",
       "value": {
         "type": "event"
       }
-    },
-    {
-      "v": "this.problems.problems[i]",
-      "w": "this.problems.problems[i].right"
     },
     {
       "v": "button_18_12_25_21",
@@ -378,12 +430,12 @@
       "w": "this.problems.problems[i].right"
     },
     {
-      "v": "this",
-      "w": "this.new_problem"
+      "v": "this.new_problem()",
+      "w": "this.add_problem()"
     },
     {
       "v": "button_34_12_40_21",
-      "w": "this.new_problem",
+      "w": "this.new_problem()",
       "value": {
         "type": "event"
       }
@@ -403,6 +455,18 @@
     {
       "v": "span_63_12_63_40",
       "w": "this.accuracy"
+    },
+    {
+      "v": "this.problems",
+      "w": "this.problems.length"
+    },
+    {
+      "v": "this.problems.length",
+      "w": "this.add_problem()"
+    },
+    {
+      "v": "this.add_problem()",
+      "w": "this.problems.push()"
     }
   ]
 }
