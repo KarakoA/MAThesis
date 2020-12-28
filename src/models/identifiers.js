@@ -81,7 +81,7 @@ class Identifier {
   }
 
   static create({ name, type }) {
-    assert(name);
+    assert(name || name >= 0);
     assert(type);
     return { name, type };
   }

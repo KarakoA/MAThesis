@@ -298,6 +298,37 @@
       }
     },
     {
+      "v": "span_68_4_68_58",
+      "value": {
+        "name": "First Problem",
+        "opts": {
+          "loc": {
+            "start": {
+              "line": 68,
+              "column": 4
+            },
+            "end": {
+              "line": 68,
+              "column": 58
+            }
+          },
+          "type": "tag"
+        }
+      }
+    },
+    {
+      "v": "this.problems.problems[0]",
+      "value": {
+        "name": "problems[0]"
+      }
+    },
+    {
+      "v": "this.problems.problems[0].a",
+      "value": {
+        "name": "a"
+      }
+    },
+    {
       "v": "this.problems.length",
       "value": {
         "name": "length"
@@ -455,6 +486,18 @@
     {
       "v": "span_63_12_63_40",
       "w": "this.accuracy"
+    },
+    {
+      "v": "this.problems",
+      "w": "this.problems.problems[0]"
+    },
+    {
+      "v": "this.problems.problems[0]",
+      "w": "this.problems.problems[0].a"
+    },
+    {
+      "v": "span_68_4_68_58",
+      "w": "this.problems.problems[0].a"
     },
     {
       "v": "this.problems",
