@@ -22,9 +22,11 @@
 
         function edge({ v, w, type }) {
             if (type === "event")
-                return `"${v}" -> "${w}"[style=solids];`
+                return `"${v}" -> "${w}"[style=bold];`
+            else if (type === "calls")
+                return `"${v}" -> "${w}"[style=solid];`
             else
-                return `"${v}" -> "${w}";`
+                return `"${v}" -> "${w}"[style=dashed];`
         }
 
         function subline(loc) {

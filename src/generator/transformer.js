@@ -92,12 +92,11 @@ function addBindings(graph, methodResolver, bindings, init, isComputedF) {
   let resolved = methodResolver.called({ id: init.name, args: init.args });
   //type:init
   let node = methodLikeNode(resolved, "init");
+  //TODO can contain duplicates(not an issue, but proper equals would be great )
   methodsDone.push(node);
   methodsToDo = methodsToDo.concat(resolved.calls);
 
   addEdgesMethod(graph, node, resolved);
-
-  //  addEdgeBasedOnType(graph, tagNode, node, binding.bindingType);
 
   //TODO abstraction level
   //TODO simplify, if can use proper equals this is just a contains query
@@ -130,7 +129,7 @@ function addEdgesMethod(graph, node, resolved) {
   writeNodes.map((x) => graph.addEdge(node, x));
 
   let callNodes = resolved.calls.map(methodNode);
-  callNodes.map((x) => graph.addEdge(node, x));
+  callNodes.map((x) => graph.addEdge(node, x, { type: "calls" }));
 }
 //TODO better abstraction
 function methodLikeNode(item, type) {
@@ -202,10 +201,11 @@ function addEdgeBasedOnType(graph, tag, item, type) {
       graph.addEdge(tag, item, { type: bindingType.EVENT });
       break;
     case bindingType.ONE_WAY:
-      graph.addEdge(tag, item);
+      graph.addEdge(item, tag);
       break;
     case bindingType.TWO_WAY:
-      graph.addEdge(tag, item);
+      //TODO @maybe leave it at two way here an check later?
+      graph.addEdge(tag, item, { type: bindingType.EVENT });
       graph.addEdge(item, tag);
       break;
     default:

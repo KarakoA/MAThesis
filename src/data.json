@@ -418,15 +418,6 @@
       "parent": "this.problems"
     },
     {
-      "v": "this.problems.push()",
-      "value": {
-        "name": "problems.push()",
-        "opts": {
-          "type": "method"
-        }
-      }
-    },
-    {
       "v": "this.problems.problems[0].b",
       "value": {
         "name": "b",
@@ -497,16 +488,16 @@
       "w": "this.problems.problems[i].a"
     },
     {
-      "v": "span_7_12_7_40",
-      "w": "this.problems.problems[i].a"
+      "v": "this.problems.problems[i].a",
+      "w": "span_7_12_7_40"
     },
     {
       "v": "this.problems.problems[i]",
       "w": "this.problems.problems[i].b"
     },
     {
-      "v": "span_7_43_7_72",
-      "w": "this.problems.problems[i].b"
+      "v": "this.problems.problems[i].b",
+      "w": "span_7_43_7_72"
     },
     {
       "v": "this.problems.problems[i]",
@@ -514,7 +505,10 @@
     },
     {
       "v": "input_8_18_8_69",
-      "w": "this.problems.problems[i].answer"
+      "w": "this.problems.problems[i].answer",
+      "value": {
+        "type": "event"
+      }
     },
     {
       "v": "this.problems.problems[i].answer",
@@ -533,15 +527,12 @@
       "w": "this.may_check(this.problems.problems[i])"
     },
     {
-      "v": "button_9_12_17_21",
-      "w": "this.may_check(this.problems.problems[i])"
+      "v": "this.may_check(this.problems.problems[i])",
+      "w": "button_9_12_17_21"
     },
     {
-      "v": "button_9_12_17_21",
-      "w": "this.problems.problems[i]",
-      "value": {
-        "type": "event"
-      }
+      "v": "this.problems.problems[i]",
+      "w": "button_9_12_17_21"
     },
     {
       "v": "this.problems.problems[i]",
@@ -579,16 +570,26 @@
       }
     },
     {
-      "v": "button_18_12_25_21",
-      "w": "this.problems.problems[i].right"
+      "v": "button_9_12_17_21",
+      "w": "this.problems.problems[i]",
+      "value": {
+        "type": "event"
+      }
     },
     {
-      "v": "button_26_12_33_21",
-      "w": "this.problems.problems[i].right"
+      "v": "this.problems.problems[i].right",
+      "w": "button_18_12_25_21"
+    },
+    {
+      "v": "this.problems.problems[i].right",
+      "w": "button_26_12_33_21"
     },
     {
       "v": "this.new_problem()",
-      "w": "this.add_problem()"
+      "w": "this.add_problem()",
+      "value": {
+        "type": "calls"
+      }
     },
     {
       "v": "button_34_12_40_21",
@@ -598,12 +599,12 @@
       }
     },
     {
-      "v": "span_57_12_57_43",
-      "w": "this.count_right"
+      "v": "this.count_right",
+      "w": "span_57_12_57_43"
     },
     {
-      "v": "span_60_12_60_43",
-      "w": "this.count_wrong"
+      "v": "this.count_wrong",
+      "w": "span_60_12_60_43"
     },
     {
       "v": "this.count_wrong",
@@ -614,8 +615,8 @@
       "w": "this.accuracy"
     },
     {
-      "v": "span_63_12_63_40",
-      "w": "this.accuracy"
+      "v": "this.accuracy",
+      "w": "span_63_12_63_40"
     },
     {
       "v": "this.problems",
@@ -626,12 +627,15 @@
       "w": "this.problems.problems[0].a"
     },
     {
-      "v": "span_68_4_68_58",
-      "w": "this.problems.problems[0].a"
+      "v": "this.problems.problems[0].a",
+      "w": "span_68_4_68_58"
     },
     {
       "v": "this.created",
-      "w": "this.add_problem()"
+      "w": "this.add_problem()",
+      "value": {
+        "type": "calls"
+      }
     },
     {
       "v": "this.problems",
@@ -643,18 +647,10 @@
     },
     {
       "v": "this.add_problem()",
-      "w": "this.problems.push()"
-    },
-    {
-      "v": "span_7_12_7_40",
-      "w": "this.problems.problems[0].a"
+      "w": "this.problems"
     },
     {
       "v": "this.problems.problems[0]",
-      "w": "this.problems.problems[0].b"
-    },
-    {
-      "v": "span_7_43_7_72",
       "w": "this.problems.problems[0].b"
     },
     {
@@ -674,16 +670,16 @@
       "w": "this.problems.problems[0].right"
     },
     {
-      "v": "button_18_12_25_21",
-      "w": "this.problems.problems[0].right"
-    },
-    {
-      "v": "button_26_12_33_21",
-      "w": "this.problems.problems[0].right"
-    },
-    {
       "v": "this.problems.problems[0]",
       "w": "this.problems.problems[0].c"
+    },
+    {
+      "v": "this.problems.problems[0].a",
+      "w": "span_7_12_7_40"
+    },
+    {
+      "v": "this.problems.problems[0].b",
+      "w": "span_7_43_7_72"
     },
     {
       "v": "this.problems.problems[0].answer",
@@ -704,6 +700,14 @@
     {
       "v": "this.problems.problems[0].right",
       "w": "this.check_answer(this.problems.problems[i])"
+    },
+    {
+      "v": "this.problems.problems[0].right",
+      "w": "button_18_12_25_21"
+    },
+    {
+      "v": "this.problems.problems[0].right",
+      "w": "button_26_12_33_21"
     },
     {
       "v": "this.problems.problems[0].c",

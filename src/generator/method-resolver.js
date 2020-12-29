@@ -22,7 +22,21 @@ class MethodResolver {
 
     assert(method.args.length == args?.length);
 
-    let calls = method.calls
+    let callsOrMethodCallOfTopLevel = method.calls.map((x) => {
+      return { ...x, topLevel: this.startsWithTopLevelVar(x) };
+    });
+
+    //TODO @Future if I do myMethod(problem) and then have problem.push() won't be recognized by this
+
+    //assumes mutation, returned as writes
+    let methodCallOfTopLevel = callsOrMethodCallOfTopLevel
+      .filter((x) => x.topLevel)
+      .map((x) => x.topLevel.id)
+      .map((x) => this.maybePrefixThis(x));
+
+    let calls = callsOrMethodCallOfTopLevel
+      .filter((x) => !x.topLevel)
+
       .map((m) => {
         let mArgs = m.args.map((arg) => {
           this.resolveArg(arg, method.args, args);
@@ -42,17 +56,23 @@ class MethodResolver {
       .map((x) => x.id)
       .map((x) => this.maybeSubstitudeArgs(x, method.args, args))
       .map((x) => this.maybePrefixThis(x))
-
       .filter((x) => Identifiers.startsWithThis(x));
-
     return {
       id: Identifiers.prefixThis(id),
       //TODO @maybe
       args: args.map((x) => this.maybePrefixThis(x)),
       calls,
       reads,
-      writes,
+      writes: writes.concat(methodCallOfTopLevel),
     };
+  }
+
+  startsWithTopLevelVar(x) {
+    let name = Identifiers.startsWithThis(x.id) ? lodash.tail(x.id) : x.id;
+    let found = lodash.find(this.topLevel, (topLevel) =>
+      Identifiers.startsWith(name, topLevel.id)
+    );
+    return found;
   }
 
   maybePrefixThis(x) {
