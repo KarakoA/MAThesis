@@ -13,16 +13,17 @@ function compute(visitorsResult) {
   );
   addTopLevel(graph, visitorsResult.topLevelData);
   addBindings(graph, methodResolver, visitorsResult.bindings);
-  console.log(visitorsResult.bindings);
-  console.log(visitorsResult.computed);
+
+  resolveDifferentDisplays(graph);
   //addMethods(graph, visitorsResult.methods);
   let g = graph.execute();
+
   return graphlib.json.write(g);
 }
-function addMethods(graph, methods) {
-  //console.log(methods);
-}
 
+function resolveDifferentDisplays(graph) {
+  graph.numericPositions();
+}
 function addBindings(graph, methodResolver, bindings) {
   //TODO keep track of those in method resolver?
   let methodsDone = [];
@@ -30,7 +31,11 @@ function addBindings(graph, methodResolver, bindings) {
   bindings.forEach((x) => {
     let tag = x[0];
     let boundItems = x[1];
-    let tagNode = new Node(tag.id, tag.name, { loc: tag.loc, type: "tag" });
+    let tagNode = new Node({
+      id: tag.id,
+      name: tag.name,
+      opts: { loc: tag.loc, type: "tag" },
+    });
     graph.addNode(tagNode);
 
     boundItems.forEach((binding) => {
@@ -86,15 +91,18 @@ function addEdgesMethod(graph, node, resolved) {
   callNodes.map((x) => graph.addEdge(node, x));
 }
 function methodNode(method) {
+  //
+
   let id = `${Identifiers.toString(method.id)}(${method.args
-    .map((arg) => Identifiers.toString(arg))
+    //TODO @this.problems.push() is undefined only
+    .map((arg) => (arg ? lodash.last(identifierChainToNodes(arg)).id : ""))
     .join(",")})`;
   let name = `${Identifiers.toString(
     method.id,
     false
   )}(${method.args.map((arg) => Identifiers.toString(arg, false)).join(",")})`;
 
-  return new Node(id, name);
+  return new Node({ id, name, opts: { type: "method" } });
 }
 function addTopLevel(graph, topLevel) {
   topLevel = prefixAll(topLevel);
@@ -121,18 +129,21 @@ function prefixAll(acessors) {
 function identifierChainToNodes(identifiers, opts) {
   let prev = [];
   let nodes = identifiers.map((current) => {
-    let newNode = Identifier.isPosition(current)
+    let nodeName = Identifier.isPosition(current)
       ? Identifier.createIdentifier(
           lodash.last(prev).name + Identifier.toString(current)
         )
       : current;
+    //TODO @check guaranteed to be only one?
+    let parent = Identifiers.toString(prev);
+    prev = prev.concat(nodeName);
 
-    prev = prev.concat(newNode);
-    return new Node(
-      Identifiers.toString(prev),
-      Identifier.toString(newNode),
-      opts
-    );
+    return new Node({
+      id: Identifiers.toString(prev),
+      name: Identifier.toString(nodeName),
+      opts: { ...opts, type: current.type },
+      parent,
+    });
   });
   return nodes;
 }

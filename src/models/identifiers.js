@@ -16,7 +16,7 @@ class Identifiers {
       (acc, c) => {
         let string = Identifier.toString(c, includeThis);
         if (!acc) return string;
-        return c.type == identifierTypes.POSITION
+        return c.type == identifierTypes.GENERIC_POSITION
           ? acc.concat(string)
           : acc.concat("." + string);
       },
@@ -62,14 +62,19 @@ class Identifiers {
 }
 
 const identifierTypes = {
-  POSITION: "pos",
+  GENERIC_POSITION: "position-generic",
+  NUMERIC_POSITION: "position-numeric",
   ID: "id",
   THIS: "this",
 };
 
 class Identifier {
+  static createNumericPosition(name) {
+    return this.create({ name, type: identifierTypes.NUMERIC_POSITION });
+  }
+
   static createPosition(name) {
-    return this.create({ name, type: identifierTypes.POSITION });
+    return this.create({ name, type: identifierTypes.GENERIC_POSITION });
   }
 
   static createThis() {
@@ -87,15 +92,25 @@ class Identifier {
   }
 
   static nextPosition(that) {
-    return this.createPosition(utils2.nextChar(this.positionName(that)));
+    return this.create({
+      name: utils2.nextChar(this.positionName(that)),
+      type: identifierTypes.GENERIC_POSITION,
+    });
   }
+
   static positionName(that) {
-    return that?.type === identifierTypes.POSITION ? that.name : undefined;
+    return that?.type === identifierTypes.GENERIC_POSITION
+      ? that.name
+      : undefined;
   }
 
   static isPosition(that) {
-    return that.type === identifierTypes.POSITION;
+    return (
+      that.type === identifierTypes.GENERIC_POSITION ||
+      that.type === identifierTypes.NUMERIC_POSITION
+    );
   }
+
   static nonPosition(that) {
     return !this.isPosition(that);
   }
@@ -103,9 +118,7 @@ class Identifier {
   static toString(that, includeThis = true) {
     if (!includeThis & (that.type == identifierTypes.THIS)) return "";
 
-    return that.type === identifierTypes.POSITION
-      ? `[${that.name}]`
-      : that.name;
+    return this.isPosition(that) ? `[${that.name}]` : that.name;
   }
 }
 module.exports = { Identifier, Identifiers, identifierTypes };

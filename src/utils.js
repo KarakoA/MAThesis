@@ -120,7 +120,7 @@ function getNameFromExpression(node, prev = []) {
     if (node.computed) {
       let position =
         node.property.type === "Literal"
-          ? Identifier.createPosition(node.property.value)
+          ? Identifier.createNumericPosition(node.property.value)
           : Identifier.nextPosition(lodash.head(prev));
       return getNameFromExpression(node.object, prev.concat(position));
     } else

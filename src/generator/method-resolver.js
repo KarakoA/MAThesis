@@ -8,6 +8,7 @@ class MethodResolver {
     this.topLevel = topLevel;
   }
 
+  //TODO abstract
   called({ id, args }) {
     let method = this.methods.find(
       (x) =>
@@ -16,7 +17,7 @@ class MethodResolver {
         lodash.isEqual(Identifiers.prefixThis(x.name), id)
     );
 
-    //TODO this.problems.push() how to handle those
+    //TODO @this.problems.push() how to handle those
     if (!method) return undefined;
 
     assert(method.args.length == args.length);
@@ -30,6 +31,7 @@ class MethodResolver {
       })
       .filter((x) => Identifiers.startsWithThis(x.id));
 
+    //TODO abstract
     let reads = method.reads
       .map((x) => x.id)
       .map((x) => this.maybeSubstitudeArgs(x, method.args, args))
