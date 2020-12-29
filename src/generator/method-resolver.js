@@ -20,7 +20,7 @@ class MethodResolver {
     //TODO @this.problems.push() how to handle those
     if (!method) return undefined;
 
-    assert(method.args.length == args.length);
+    assert(method.args.length == args?.length);
 
     let calls = method.calls
       .map((m) => {

@@ -8,16 +8,14 @@
     <script src="https://unpkg.com/@dagrejs/graphlib@2.1.4/dist/graphlib.min.js"></script>
     <div id="graph" style="text-align: center;"></div>
     <script>
-
-        function scopedMethod(x) {
-            return `"${x}"[label="$scope.${x}()"];`
-        }
-        function scoped(x) {
-            return `"${x}"[label="$scope.${x}"];`
-        }
         function simple(x) {
             return `"${x.id}"[label="${x.name}"];`
         }
+
+        function initFormat(x) {
+            return `"${x.id}"[label="${x.name}",fillcolor=lightgrey,style=filled];`
+        }
+
         function htmlTag(x) {
             return `"${x.id}"[label="${x.name}${subline(x.opts.loc)}"];`
         }
@@ -35,87 +33,27 @@
             let locString = start == end ? start : `${start}--${end}`;
             return `\nh: ${locString}`;
         }
-        function methodAccesses({ name, reads, writes, calls }) {
-            return [methodReads({ name, reads }), methodWrites({ name, writes }), methodCalls({ name, calls })]
-        }
-        function methodReads({ name, reads }) {
-            return !reads ? [] : reads.map(r => `${r}-> ${name};`)
-        }
-        function methodWrites({ name, writes }) {
-            return !writes ? [] : writes.map(r => `${name} -> ${r};`)
-        }
-        function methodCalls({ name, calls }) {
-            return !calls ? [] : calls.map(r => `${name} -> ${r};`)
-        }
-        function binding({ source, target, isEventBinding }) {
-            if (isEventBinding)
-                return `${source} -> ${target}[style=solids];`
-            else
-                return `${source} -> ${target};`
-        }
-
-        function initMethod(calledInInit) {
-            let initID = "INIT"
-            let calledDot = calledInInit.map(methodName => `${initID} -> ${methodName};`)
-            initDefinitionDot = [`${initID}[fillcolor=lightgrey,style=filled];`]
-            return initDefinitionDot.concat(calledDot)
-        }
 
         fetch("./data.json")
             .then(response => {
                 return response.json();
             })
             .then(data => {
-
                 let graph = graphlib.json.read(data)
 
                 let nodes = graph.nodes().map(id => { return { id, ...graph.node(id) } })
                 let edges = graph.edges().map(edge => { return { ...edge, ...graph.edge(edge) } })
-
+                let edgesDot = edges.map(edge).join("\n")
 
                 let tags = nodes.filter(x => x.opts?.type === "tag")
                 let tagsDot = tags.map(htmlTag).join("\n")
 
-                let other = nodes.filter(x => x.opts?.type !== "tag")
+                let other = nodes.filter(x => x.opts?.type !== "tag" && x.opts?.type !== "init")
                 let otherDot = other.map(simple).join("\n")
 
-                let edgesDot = edges.map(edge).join("\n")
-                //todo only for 1 file currently
-                //data = data[0]
+                let init = nodes.filter(x => x.opts?.type === "init")
+                let initDot = init.map(initFormat).join("\n")
 
-                // let scopedVarsDot = data.boundVariables.map(scoped).join("\n")
-                // let scopedComputedVarsDot = data.boundComputedVariables.map(scoped).join("\n")
-                // let scopedMethodsDot = data.boundMethods.map(scopedMethod).join("\n")
-                // let htmlTagsDot = data.tagsInfo.map(htmlTag).join("\n")
-
-                // let boundMethodsWithInfo = data.boundMethods.map(
-                //     methodName => data.methods.find(m => m.name == methodName))
-                // let called = boundMethodsWithInfo.map(x => x.calls).flat().map(calledName =>
-                //     data.methods.find(m => m.name == calledName)
-                // )
-
-                // let boundMethodsWithInfoAndCalled = boundMethodsWithInfo.concat(called)
-                // let methodAccessesDot = boundMethodsWithInfoAndCalled.map(methodAccesses).flat().flat().join("\n")
-
-                // //TODO code deduplication
-
-                // let boundComputedVariablesWithInfo = data.boundComputedVariables.map(
-                //     name => data.computed.find(m => m.name == name))
-                // let computedCalled = boundComputedVariablesWithInfo.map(x => x.calls).flat().map(calledName =>
-                //     data.computed.find(m => m.name == calledName)
-                // )
-
-                // let boundComputedVariablesWithInfoAndCalled = boundComputedVariablesWithInfo.concat(computedCalled)
-                // console.log(boundComputedVariablesWithInfo)
-
-                // let computedAccessesDot = boundComputedVariablesWithInfoAndCalled.map(methodAccesses).flat().flat().join("\n")
-
-                // let bindingsDot = data.bindings.map(binding).join("\n")
-                // console.log(bindingsDot)
-                //TODO how to handle call depth ? a(b) b(c) etc
-                //NOTE should be handled by doing depth 1, right? is a graph
-
-                // let initDot = initMethod(data.calledInInit).join("\n")
                 d3.select("#graph").graphviz()
                     .renderDot(
                         `digraph graphname {
@@ -131,22 +69,15 @@
                             shape=box;
 
                             nodesep=0.6;
-                            //bindingsDot
+                               
                             subgraph cluster_0 {
-                               // scopedVarsDot
-                             //   scopedMethodsDot
-                               // scopedComputedVarsDot
-                              //
                               ${otherDot}
-                            }
-                           // initDot
+                            } 
+                            ${initDot}
                             subgraph cluster_1 {
                                 ${tagsDot}
-                                //htmlTagsDot
                             }
                             ${edgesDot}
-                           // methodAccessesDot
-                           // computedAccessesDot
                         }`
                     );
             })

@@ -355,10 +355,9 @@
       "value": {
         "name": "accuracy",
         "opts": {
-          "type": "id"
+          "type": "computed"
         }
-      },
-      "parent": "this"
+      }
     },
     {
       "v": "span_68_4_68_58",
@@ -398,6 +397,15 @@
         }
       },
       "parent": "this.problems.problems[0]"
+    },
+    {
+      "v": "this.created",
+      "value": {
+        "name": "created",
+        "opts": {
+          "type": "init"
+        }
+      }
     },
     {
       "v": "this.problems.length",
@@ -598,7 +606,11 @@
       "w": "this.count_wrong"
     },
     {
-      "v": "this",
+      "v": "this.count_wrong",
+      "w": "this.accuracy"
+    },
+    {
+      "v": "this.count_right",
       "w": "this.accuracy"
     },
     {
@@ -616,6 +628,10 @@
     {
       "v": "span_68_4_68_58",
       "w": "this.problems.problems[0].a"
+    },
+    {
+      "v": "this.created",
+      "w": "this.add_problem()"
     },
     {
       "v": "this.problems",
