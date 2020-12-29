@@ -25,9 +25,9 @@
       "parent": "this"
     },
     {
-      "v": "this.count_right",
+      "v": "this.count_right_add",
       "value": {
-        "name": "count_right",
+        "name": "count_right_add",
         "opts": {
           "type": "id"
         }
@@ -35,9 +35,9 @@
       "parent": "this"
     },
     {
-      "v": "this.count_wrong",
+      "v": "this.count_wrong_add",
       "value": {
-        "name": "count_wrong",
+        "name": "count_wrong_add",
         "opts": {
           "type": "id"
         }
@@ -45,9 +45,9 @@
       "parent": "this"
     },
     {
-      "v": "this.nested",
+      "v": "this.count_right_sub",
       "value": {
-        "name": "nested",
+        "name": "count_right_sub",
         "opts": {
           "type": "id"
         }
@@ -55,14 +55,14 @@
       "parent": "this"
     },
     {
-      "v": "this.nested.property",
+      "v": "this.count_wrong_sub",
       "value": {
-        "name": "property",
+        "name": "count_wrong_sub",
         "opts": {
           "type": "id"
         }
       },
-      "parent": "this.nested"
+      "parent": "this"
     },
     {
       "v": "span_7_12_7_40",
@@ -104,18 +104,66 @@
       "parent": "this.problems.problems[i]"
     },
     {
-      "v": "span_7_43_7_72",
+      "v": "span_8_12_8_56",
+      "value": {
+        "name": "+",
+        "opts": {
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 12
+            },
+            "end": {
+              "line": 8,
+              "column": 56
+            }
+          },
+          "type": "tag"
+        }
+      }
+    },
+    {
+      "v": "this.problems.problems[i].isAddProblem",
+      "value": {
+        "name": "isAddProblem",
+        "opts": {
+          "type": "id"
+        }
+      },
+      "parent": "this.problems.problems[i]"
+    },
+    {
+      "v": "span_9_12_9_57",
+      "value": {
+        "name": "-",
+        "opts": {
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 12
+            },
+            "end": {
+              "line": 9,
+              "column": 57
+            }
+          },
+          "type": "tag"
+        }
+      }
+    },
+    {
+      "v": "span_10_12_10_41",
       "value": {
         "name": "problems[i].b",
         "opts": {
           "loc": {
             "start": {
-              "line": 7,
-              "column": 43
+              "line": 10,
+              "column": 12
             },
             "end": {
-              "line": 7,
-              "column": 72
+              "line": 10,
+              "column": 41
             }
           },
           "type": "tag"
@@ -133,17 +181,17 @@
       "parent": "this.problems.problems[i]"
     },
     {
-      "v": "input_8_18_8_69",
+      "v": "input_11_18_11_69",
       "value": {
         "name": "problems[i].answer",
         "opts": {
           "loc": {
             "start": {
-              "line": 8,
+              "line": 11,
               "column": 18
             },
             "end": {
-              "line": 8,
+              "line": 11,
               "column": 69
             }
           },
@@ -162,17 +210,17 @@
       "parent": "this.problems.problems[i]"
     },
     {
-      "v": "button_9_12_17_21",
+      "v": "button_12_12_20_21",
       "value": {
         "name": "Check",
         "opts": {
           "loc": {
             "start": {
-              "line": 9,
+              "line": 12,
               "column": 12
             },
             "end": {
-              "line": 17,
+              "line": 20,
               "column": 21
             }
           },
@@ -219,17 +267,17 @@
       }
     },
     {
-      "v": "button_18_12_25_21",
+      "v": "button_21_12_28_21",
       "value": {
         "name": "Right",
         "opts": {
           "loc": {
             "start": {
-              "line": 18,
+              "line": 21,
               "column": 12
             },
             "end": {
-              "line": 25,
+              "line": 28,
               "column": 21
             }
           },
@@ -238,17 +286,17 @@
       }
     },
     {
-      "v": "button_26_12_33_21",
+      "v": "button_29_12_36_21",
       "value": {
         "name": "Wrong",
         "opts": {
           "loc": {
             "start": {
-              "line": 26,
+              "line": 29,
               "column": 12
             },
             "end": {
-              "line": 33,
+              "line": 36,
               "column": 21
             }
           },
@@ -257,17 +305,17 @@
       }
     },
     {
-      "v": "button_34_12_40_21",
+      "v": "button_37_12_43_21",
       "value": {
         "name": "New Problem",
         "opts": {
           "loc": {
             "start": {
-              "line": 34,
+              "line": 37,
               "column": 12
             },
             "end": {
-              "line": 40,
+              "line": 43,
               "column": 21
             }
           },
@@ -294,18 +342,18 @@
       }
     },
     {
-      "v": "span_57_12_57_43",
+      "v": "span_62_12_62_47",
       "value": {
-        "name": "count_right",
+        "name": "count_right_add",
         "opts": {
           "loc": {
             "start": {
-              "line": 57,
+              "line": 62,
               "column": 12
             },
             "end": {
-              "line": 57,
-              "column": 43
+              "line": 62,
+              "column": 47
             }
           },
           "type": "tag"
@@ -313,18 +361,18 @@
       }
     },
     {
-      "v": "span_60_12_60_43",
+      "v": "span_65_12_65_47",
       "value": {
-        "name": "count_wrong",
+        "name": "count_wrong_add",
         "opts": {
           "loc": {
             "start": {
-              "line": 60,
+              "line": 65,
               "column": 12
             },
             "end": {
-              "line": 60,
-              "column": 43
+              "line": 65,
+              "column": 47
             }
           },
           "type": "tag"
@@ -332,18 +380,18 @@
       }
     },
     {
-      "v": "span_63_12_63_40",
+      "v": "span_68_12_68_44",
       "value": {
-        "name": "accuracy",
+        "name": "accuracy_add",
         "opts": {
           "loc": {
             "start": {
-              "line": 63,
+              "line": 68,
               "column": 12
             },
             "end": {
-              "line": 63,
-              "column": 40
+              "line": 68,
+              "column": 44
             }
           },
           "type": "tag"
@@ -351,27 +399,27 @@
       }
     },
     {
-      "v": "this.accuracy",
+      "v": "this.accuracy_add",
       "value": {
-        "name": "accuracy",
+        "name": "accuracy_add",
         "opts": {
           "type": "computed"
         }
       }
     },
     {
-      "v": "span_68_4_68_58",
+      "v": "span_77_12_77_47",
       "value": {
-        "name": "First Problem",
+        "name": "count_right_sub",
         "opts": {
           "loc": {
             "start": {
-              "line": 68,
-              "column": 4
+              "line": 77,
+              "column": 12
             },
             "end": {
-              "line": 68,
-              "column": 58
+              "line": 77,
+              "column": 47
             }
           },
           "type": "tag"
@@ -379,24 +427,51 @@
       }
     },
     {
-      "v": "this.problems.problems[0]",
+      "v": "span_80_12_80_47",
       "value": {
-        "name": "problems[0]",
+        "name": "count_wrong_sub",
         "opts": {
-          "type": "position-numeric"
+          "loc": {
+            "start": {
+              "line": 80,
+              "column": 12
+            },
+            "end": {
+              "line": 80,
+              "column": 47
+            }
+          },
+          "type": "tag"
         }
-      },
-      "parent": "this.problems"
+      }
     },
     {
-      "v": "this.problems.problems[0].a",
+      "v": "span_83_12_83_44",
       "value": {
-        "name": "a",
+        "name": "accuracy_sub",
         "opts": {
-          "type": "id"
+          "loc": {
+            "start": {
+              "line": 83,
+              "column": 12
+            },
+            "end": {
+              "line": 83,
+              "column": 44
+            }
+          },
+          "type": "tag"
         }
-      },
-      "parent": "this.problems.problems[0]"
+      }
+    },
+    {
+      "v": "this.accuracy_sub",
+      "value": {
+        "name": "accuracy_sub",
+        "opts": {
+          "type": "computed"
+        }
+      }
     },
     {
       "v": "this.created",
@@ -416,46 +491,6 @@
         }
       },
       "parent": "this.problems"
-    },
-    {
-      "v": "this.problems.problems[0].b",
-      "value": {
-        "name": "b",
-        "opts": {
-          "type": "id"
-        }
-      },
-      "parent": "this.problems.problems[0]"
-    },
-    {
-      "v": "this.problems.problems[0].answer",
-      "value": {
-        "name": "answer",
-        "opts": {
-          "type": "id"
-        }
-      },
-      "parent": "this.problems.problems[0]"
-    },
-    {
-      "v": "this.problems.problems[0].right",
-      "value": {
-        "name": "right",
-        "opts": {
-          "type": "id"
-        }
-      },
-      "parent": "this.problems.problems[0]"
-    },
-    {
-      "v": "this.problems.problems[0].c",
-      "value": {
-        "name": "c",
-        "opts": {
-          "type": "id"
-        }
-      },
-      "parent": "this.problems.problems[0]"
     }
   ],
   "edges": [
@@ -465,19 +500,19 @@
     },
     {
       "v": "this",
-      "w": "this.count_right"
+      "w": "this.count_right_add"
     },
     {
       "v": "this",
-      "w": "this.count_wrong"
+      "w": "this.count_wrong_add"
     },
     {
       "v": "this",
-      "w": "this.nested"
+      "w": "this.count_right_sub"
     },
     {
-      "v": "this.nested",
-      "w": "this.nested.property"
+      "v": "this",
+      "w": "this.count_wrong_sub"
     },
     {
       "v": "this.problems",
@@ -493,18 +528,30 @@
     },
     {
       "v": "this.problems.problems[i]",
+      "w": "this.problems.problems[i].isAddProblem"
+    },
+    {
+      "v": "this.problems.problems[i].isAddProblem",
+      "w": "span_8_12_8_56"
+    },
+    {
+      "v": "this.problems.problems[i].isAddProblem",
+      "w": "span_9_12_9_57"
+    },
+    {
+      "v": "this.problems.problems[i]",
       "w": "this.problems.problems[i].b"
     },
     {
       "v": "this.problems.problems[i].b",
-      "w": "span_7_43_7_72"
+      "w": "span_10_12_10_41"
     },
     {
       "v": "this.problems.problems[i]",
       "w": "this.problems.problems[i].answer"
     },
     {
-      "v": "input_8_18_8_69",
+      "v": "input_11_18_11_69",
       "w": "this.problems.problems[i].answer",
       "value": {
         "type": "event"
@@ -512,7 +559,7 @@
     },
     {
       "v": "this.problems.problems[i].answer",
-      "w": "input_8_18_8_69"
+      "w": "input_11_18_11_69"
     },
     {
       "v": "this.problems.problems[i]",
@@ -528,11 +575,11 @@
     },
     {
       "v": "this.may_check(this.problems.problems[i])",
-      "w": "button_9_12_17_21"
+      "w": "button_12_12_20_21"
     },
     {
       "v": "this.problems.problems[i]",
-      "w": "button_9_12_17_21"
+      "w": "button_12_12_20_21"
     },
     {
       "v": "this.problems.problems[i]",
@@ -547,6 +594,10 @@
       "w": "this.check_answer(this.problems.problems[i])"
     },
     {
+      "v": "this.problems.problems[i].isAddProblem",
+      "w": "this.check_answer(this.problems.problems[i])"
+    },
+    {
       "v": "this.problems.problems[i].right",
       "w": "this.check_answer(this.problems.problems[i])"
     },
@@ -556,21 +607,29 @@
     },
     {
       "v": "this.check_answer(this.problems.problems[i])",
-      "w": "this.count_right"
+      "w": "this.count_right_add"
     },
     {
       "v": "this.check_answer(this.problems.problems[i])",
-      "w": "this.count_wrong"
+      "w": "this.count_wrong_add"
     },
     {
-      "v": "button_9_12_17_21",
+      "v": "this.check_answer(this.problems.problems[i])",
+      "w": "this.count_right_sub"
+    },
+    {
+      "v": "this.check_answer(this.problems.problems[i])",
+      "w": "this.count_wrong_sub"
+    },
+    {
+      "v": "button_12_12_20_21",
       "w": "this.check_answer(this.problems.problems[i])",
       "value": {
         "type": "event"
       }
     },
     {
-      "v": "button_9_12_17_21",
+      "v": "button_12_12_20_21",
       "w": "this.problems.problems[i]",
       "value": {
         "type": "event"
@@ -578,11 +637,11 @@
     },
     {
       "v": "this.problems.problems[i].right",
-      "w": "button_18_12_25_21"
+      "w": "button_21_12_28_21"
     },
     {
       "v": "this.problems.problems[i].right",
-      "w": "button_26_12_33_21"
+      "w": "button_29_12_36_21"
     },
     {
       "v": "this.new_problem()",
@@ -592,43 +651,51 @@
       }
     },
     {
-      "v": "button_34_12_40_21",
+      "v": "button_37_12_43_21",
       "w": "this.new_problem()",
       "value": {
         "type": "event"
       }
     },
     {
-      "v": "this.count_right",
-      "w": "span_57_12_57_43"
+      "v": "this.count_right_add",
+      "w": "span_62_12_62_47"
     },
     {
-      "v": "this.count_wrong",
-      "w": "span_60_12_60_43"
+      "v": "this.count_wrong_add",
+      "w": "span_65_12_65_47"
     },
     {
-      "v": "this.count_wrong",
-      "w": "this.accuracy"
+      "v": "this.count_wrong_add",
+      "w": "this.accuracy_add"
     },
     {
-      "v": "this.count_right",
-      "w": "this.accuracy"
+      "v": "this.count_right_add",
+      "w": "this.accuracy_add"
     },
     {
-      "v": "this.accuracy",
-      "w": "span_63_12_63_40"
+      "v": "this.accuracy_add",
+      "w": "span_68_12_68_44"
     },
     {
-      "v": "this.problems",
-      "w": "this.problems.problems[0]"
+      "v": "this.count_right_sub",
+      "w": "span_77_12_77_47"
     },
     {
-      "v": "this.problems.problems[0]",
-      "w": "this.problems.problems[0].a"
+      "v": "this.count_wrong_sub",
+      "w": "span_80_12_80_47"
     },
     {
-      "v": "this.problems.problems[0].a",
-      "w": "span_68_4_68_58"
+      "v": "this.count_wrong_sub",
+      "w": "this.accuracy_sub"
+    },
+    {
+      "v": "this.count_right_sub",
+      "w": "this.accuracy_sub"
+    },
+    {
+      "v": "this.accuracy_sub",
+      "w": "span_83_12_83_44"
     },
     {
       "v": "this.created",
@@ -648,70 +715,6 @@
     {
       "v": "this.add_problem()",
       "w": "this.problems"
-    },
-    {
-      "v": "this.problems.problems[0]",
-      "w": "this.problems.problems[0].b"
-    },
-    {
-      "v": "this.problems.problems[0]",
-      "w": "this.problems.problems[0].answer"
-    },
-    {
-      "v": "input_8_18_8_69",
-      "w": "this.problems.problems[0].answer"
-    },
-    {
-      "v": "this.problems.problems[0]",
-      "w": "this.problems.problems[0].right"
-    },
-    {
-      "v": "this.check_answer(this.problems.problems[i])",
-      "w": "this.problems.problems[0].right"
-    },
-    {
-      "v": "this.problems.problems[0]",
-      "w": "this.problems.problems[0].c"
-    },
-    {
-      "v": "this.problems.problems[0].a",
-      "w": "span_7_12_7_40"
-    },
-    {
-      "v": "this.problems.problems[0].b",
-      "w": "span_7_43_7_72"
-    },
-    {
-      "v": "this.problems.problems[0].answer",
-      "w": "input_8_18_8_69"
-    },
-    {
-      "v": "this.problems.problems[0].answer",
-      "w": "this.may_check(this.problems.problems[i])"
-    },
-    {
-      "v": "this.problems.problems[0].answer",
-      "w": "this.check_answer(this.problems.problems[i])"
-    },
-    {
-      "v": "this.problems.problems[0].right",
-      "w": "this.may_check(this.problems.problems[i])"
-    },
-    {
-      "v": "this.problems.problems[0].right",
-      "w": "this.check_answer(this.problems.problems[i])"
-    },
-    {
-      "v": "this.problems.problems[0].right",
-      "w": "button_18_12_25_21"
-    },
-    {
-      "v": "this.problems.problems[0].right",
-      "w": "button_26_12_33_21"
-    },
-    {
-      "v": "this.problems.problems[0].c",
-      "w": "this.check_answer(this.problems.problems[i])"
     }
   ]
 }

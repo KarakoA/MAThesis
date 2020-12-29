@@ -56,6 +56,9 @@
                 let init = nodes.filter(x => x.opts?.type === "init")
                 let initDot = init.map(initFormat).join("\n")
 
+                console.log(tagsDot)
+                console.log(edgesDot)
+                console.log(initDot)
                 d3.select("#graph").graphviz()
                     .renderDot(
                         `digraph graphname {

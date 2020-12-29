@@ -3,7 +3,7 @@ const fs = require("fs");
 const { compute } = require("./generator/transformer.js");
 const { computeScenarios } = require("./scenarios/scenarios.js");
 async function main() {
-  let r = await new ESLinter().lintFiles(["./src/test-files/test-lists.vue"]);
+  let r = await new ESLinter().lintFiles(["./src/test-files/test-add-sub.vue"]);
 
   //  console.log(r[0].topLevelData);
   r = compute(r[0]);
