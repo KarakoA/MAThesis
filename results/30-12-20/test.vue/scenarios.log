@@ -3,10 +3,15 @@
 > node src/generate-data.js "/Users/KarakoA/Documents/Personal/AI-LAST/MAThesis/src/test-files//test.vue" "/Users/KarakoA/Documents/Personal/AI-LAST/MAThesis/results/30-12-20/test.vue/data.json"
 
 l(answer) -> answer, Check
+l(New Problem) -> a, b, Check, Right, Wrong
 l(created) -> a, b, Check, Right, Wrong
 
 Unique scenarios (A) of up to 3 elements:
-[ [ 'created' ], [ 'created', 'answer' ] ]
+[
+  [ 'created' ],
+  [ 'created', 'answer' ],
+  [ 'created', 'New Problem' ]
+]
 Scenario: 'created'
 	When 'created'
 	Then 'a'
@@ -20,4 +25,13 @@ Scenario: 'created', 'answer'
 	When 'answer'
 	Then 'answer'
 	And 'Check'
+
+Scenario: 'created', 'New Problem'
+	Given 'created'
+	When 'New Problem'
+	Then 'a'
+	And 'b'
+	And 'Check'
+	And 'Right'
+	And 'Wrong'
 

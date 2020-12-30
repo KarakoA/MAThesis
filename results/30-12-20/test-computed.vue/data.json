@@ -208,6 +208,43 @@
       }
     },
     {
+      "v": "button_32_8_38_17",
+      "value": {
+        "name": "New Problem",
+        "opts": {
+          "loc": {
+            "start": {
+              "line": 32,
+              "column": 8
+            },
+            "end": {
+              "line": 38,
+              "column": 17
+            }
+          },
+          "type": "tag"
+        }
+      }
+    },
+    {
+      "v": "this.new_problem()",
+      "value": {
+        "name": "new_problem()",
+        "opts": {
+          "type": "method"
+        }
+      }
+    },
+    {
+      "v": "this.add_problem()",
+      "value": {
+        "name": "add_problem()",
+        "opts": {
+          "type": "method"
+        }
+      }
+    },
+    {
       "v": "span_53_12_53_43",
       "value": {
         "name": "count_right",
@@ -281,15 +318,6 @@
           "type": "init"
         }
       }
-    },
-    {
-      "v": "this.add_problem()",
-      "value": {
-        "name": "add_problem()",
-        "opts": {
-          "type": "method"
-        }
-      }
     }
   ],
   "edges": [
@@ -359,6 +387,20 @@
     {
       "v": "this.right",
       "w": "button_24_8_31_17"
+    },
+    {
+      "v": "this.new_problem()",
+      "w": "this.add_problem()",
+      "value": {
+        "type": "calls"
+      }
+    },
+    {
+      "v": "button_32_8_38_17",
+      "w": "this.new_problem()",
+      "value": {
+        "type": "event"
+      }
     },
     {
       "v": "this.count_right",

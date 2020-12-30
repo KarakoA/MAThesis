@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div style="margin-left: 5px; margin-top: 20px;">
+    <div style="margin-left: 5px; margin-top: 20px">
       <form @submit.prevent>
-        <span>{{ a }}</span> + <span> {{ b }}</span> = 
-        <span><input class="question" v-model="answer"/></span>
+        <span>{{ a }}</span> + <span> {{ b }}</span> =
+        <span><input class="question" v-model="answer" /></span>
         <button
           class="btn btn-primary"
           style="margin-left: 5px"
@@ -32,7 +32,7 @@
         <button
           class="btn btn-info"
           style="margin-left: 5px"
-          @click="new_problem"
+          @click="new_problem()"
         >
           New Problem
         </button>
@@ -75,12 +75,12 @@ export default {
       right: undefined,
       count_right: 0,
       count_wrong: 0,
-      topLevel:{otherLevel:0}
+      topLevel: { otherLevel: 0 },
     };
   },
-  created: function() {
+  created: function () {
     //this.a = 12 // TODO not yet implemented
-   // let g = this.c
+    // let g = this.c
     this.add_problem();
   },
   methods: {
