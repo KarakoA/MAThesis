@@ -1,0 +1,23 @@
+
+> thesis@1.0.0 generate /Users/KarakoA/Documents/Personal/AI-LAST/MAThesis
+> node src/generate-data.js "/Users/KarakoA/Documents/Personal/AI-LAST/MAThesis/src/test-files//test-computed.vue" "/Users/KarakoA/Documents/Personal/AI-LAST/MAThesis/results/12-30-20/test-computed.vue/data.json"
+
+l(answer) -> answer, Check
+l(created) -> a, b, Check, Right, Wrong
+
+Unique scenarios (A) of up to 3 elements:
+[ [ 'created' ], [ 'created', 'answer' ] ]
+Scenario: 'created'
+	When 'created'
+	Then 'a'
+	And 'b'
+	And 'Check'
+	And 'Right'
+	And 'Wrong'
+
+Scenario: 'created', 'answer'
+	Given 'created'
+	When 'answer'
+	Then 'answer'
+	And 'Check'
+

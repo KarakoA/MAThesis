@@ -305,9 +305,9 @@
       }
     },
     {
-      "v": "button_37_12_43_21",
+      "v": "button_37_12_44_21",
       "value": {
-        "name": "New Problem",
+        "name": "New Sub Problem",
         "opts": {
           "loc": {
             "start": {
@@ -315,7 +315,7 @@
               "column": 12
             },
             "end": {
-              "line": 43,
+              "line": 44,
               "column": 21
             }
           },
@@ -324,11 +324,40 @@
       }
     },
     {
-      "v": "this.new_problem()",
+      "v": "this.problems.length",
       "value": {
-        "name": "new_problem()",
+        "name": "length",
+        "opts": {
+          "type": "id"
+        }
+      },
+      "parent": "this.problems"
+    },
+    {
+      "v": "this.sub_problem()",
+      "value": {
+        "name": "sub_problem()",
         "opts": {
           "type": "method"
+        }
+      }
+    },
+    {
+      "v": "button_45_12_52_21",
+      "value": {
+        "name": "New Add Problem",
+        "opts": {
+          "loc": {
+            "start": {
+              "line": 45,
+              "column": 12
+            },
+            "end": {
+              "line": 52,
+              "column": 21
+            }
+          },
+          "type": "tag"
         }
       }
     },
@@ -342,17 +371,17 @@
       }
     },
     {
-      "v": "span_62_12_62_47",
+      "v": "span_71_12_71_47",
       "value": {
         "name": "count_right_add",
         "opts": {
           "loc": {
             "start": {
-              "line": 62,
+              "line": 71,
               "column": 12
             },
             "end": {
-              "line": 62,
+              "line": 71,
               "column": 47
             }
           },
@@ -361,17 +390,17 @@
       }
     },
     {
-      "v": "span_65_12_65_47",
+      "v": "span_74_12_74_47",
       "value": {
         "name": "count_wrong_add",
         "opts": {
           "loc": {
             "start": {
-              "line": 65,
+              "line": 74,
               "column": 12
             },
             "end": {
-              "line": 65,
+              "line": 74,
               "column": 47
             }
           },
@@ -380,17 +409,17 @@
       }
     },
     {
-      "v": "span_68_12_68_44",
+      "v": "span_77_12_77_44",
       "value": {
         "name": "accuracy_add",
         "opts": {
           "loc": {
             "start": {
-              "line": 68,
+              "line": 77,
               "column": 12
             },
             "end": {
-              "line": 68,
+              "line": 77,
               "column": 44
             }
           },
@@ -408,17 +437,17 @@
       }
     },
     {
-      "v": "span_77_12_77_47",
+      "v": "span_86_12_86_47",
       "value": {
         "name": "count_right_sub",
         "opts": {
           "loc": {
             "start": {
-              "line": 77,
+              "line": 86,
               "column": 12
             },
             "end": {
-              "line": 77,
+              "line": 86,
               "column": 47
             }
           },
@@ -427,17 +456,17 @@
       }
     },
     {
-      "v": "span_80_12_80_47",
+      "v": "span_89_12_89_47",
       "value": {
         "name": "count_wrong_sub",
         "opts": {
           "loc": {
             "start": {
-              "line": 80,
+              "line": 89,
               "column": 12
             },
             "end": {
-              "line": 80,
+              "line": 89,
               "column": 47
             }
           },
@@ -446,17 +475,17 @@
       }
     },
     {
-      "v": "span_83_12_83_44",
+      "v": "span_92_12_92_44",
       "value": {
         "name": "accuracy_sub",
         "opts": {
           "loc": {
             "start": {
-              "line": 83,
+              "line": 92,
               "column": 12
             },
             "end": {
-              "line": 83,
+              "line": 92,
               "column": 44
             }
           },
@@ -481,16 +510,6 @@
           "type": "init"
         }
       }
-    },
-    {
-      "v": "this.problems.length",
-      "value": {
-        "name": "length",
-        "opts": {
-          "type": "id"
-        }
-      },
-      "parent": "this.problems"
     }
   ],
   "edges": [
@@ -637,26 +656,54 @@
       "w": "button_29_12_36_21"
     },
     {
-      "v": "this.new_problem()",
-      "w": "this.add_problem()",
-      "value": {
-        "type": "calls"
-      }
+      "v": "this.problems",
+      "w": "this.problems.length"
     },
     {
-      "v": "button_37_12_43_21",
-      "w": "this.new_problem()",
+      "v": "this.problems.length",
+      "w": "this.sub_problem()"
+    },
+    {
+      "v": "this.sub_problem()",
+      "w": "this.problems"
+    },
+    {
+      "v": "button_37_12_44_21",
+      "w": "this.sub_problem()",
       "value": {
         "type": "event"
       }
     },
     {
+      "v": "this.problems.problems[i].isAddProblem",
+      "w": "button_37_12_44_21"
+    },
+    {
+      "v": "this.problems.length",
+      "w": "this.add_problem()"
+    },
+    {
+      "v": "this.add_problem()",
+      "w": "this.problems"
+    },
+    {
+      "v": "button_45_12_52_21",
+      "w": "this.add_problem()",
+      "value": {
+        "type": "event"
+      }
+    },
+    {
+      "v": "this.problems.problems[i].isAddProblem",
+      "w": "button_45_12_52_21"
+    },
+    {
       "v": "this.count_right_add",
-      "w": "span_62_12_62_47"
+      "w": "span_71_12_71_47"
     },
     {
       "v": "this.count_wrong_add",
-      "w": "span_65_12_65_47"
+      "w": "span_74_12_74_47"
     },
     {
       "v": "this.count_wrong_add",
@@ -668,15 +715,15 @@
     },
     {
       "v": "this.accuracy_add",
-      "w": "span_68_12_68_44"
+      "w": "span_77_12_77_44"
     },
     {
       "v": "this.count_right_sub",
-      "w": "span_77_12_77_47"
+      "w": "span_86_12_86_47"
     },
     {
       "v": "this.count_wrong_sub",
-      "w": "span_80_12_80_47"
+      "w": "span_89_12_89_47"
     },
     {
       "v": "this.count_wrong_sub",
@@ -688,7 +735,7 @@
     },
     {
       "v": "this.accuracy_sub",
-      "w": "span_83_12_83_44"
+      "w": "span_92_12_92_44"
     },
     {
       "v": "this.created",
@@ -696,18 +743,6 @@
       "value": {
         "type": "calls"
       }
-    },
-    {
-      "v": "this.problems",
-      "w": "this.problems.length"
-    },
-    {
-      "v": "this.problems.length",
-      "w": "this.add_problem()"
-    },
-    {
-      "v": "this.add_problem()",
-      "w": "this.problems"
     }
   ]
 }
