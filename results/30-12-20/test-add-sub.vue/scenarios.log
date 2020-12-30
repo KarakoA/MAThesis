@@ -1,7 +1,3 @@
-
-> thesis@1.0.0 generate /Users/KarakoA/Documents/Personal/AI-LAST/MAThesis
-> node src/generate-data.js "/Users/KarakoA/Documents/Personal/AI-LAST/MAThesis/src/test-files//test-add-sub.vue" "/Users/KarakoA/Documents/Personal/AI-LAST/MAThesis/results/30-12-20/test-add-sub.vue/data.json"
-
 l(problems[i].answer) -> problems[i].answer, Check
 l(Check) -> Check, Right, Wrong, count_right_add, accuracy_add, count_wrong_add, count_right_sub, accuracy_sub, count_wrong_sub
 l(New Problem) -> problems[i].a, +, -, problems[i].b, Check, Right, Wrong
