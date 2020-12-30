@@ -1,6 +1,6 @@
 
 > thesis@1.0.0 generate /Users/KarakoA/Documents/Personal/AI-LAST/MAThesis
-> node src/generate-data.js "/Users/KarakoA/Documents/Personal/AI-LAST/MAThesis/src/test-files//test-lists.vue" "/Users/KarakoA/Documents/Personal/AI-LAST/MAThesis/results/12-30-20/test-lists.vue/data.json"
+> node src/generate-data.js "/Users/KarakoA/Documents/Personal/AI-LAST/MAThesis/src/test-files//test-lists.vue" "/Users/KarakoA/Documents/Personal/AI-LAST/MAThesis/results/30-12-20/test-lists.vue/data.json"
 
 l(problems[i].answer) -> problems[i].answer, Check
 l(Check) -> Check, Right, Wrong, count_right, accuracy, count_wrong

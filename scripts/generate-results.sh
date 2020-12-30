@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TODAY=`date +"%m-%d-%y"`
+TODAY=`date +"%d-%m-%y"`
 cd ..
 OUT_PATH=`pwd`/results/$TODAY
 mkdir -p $OUT_PATH
