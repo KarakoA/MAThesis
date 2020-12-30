@@ -44,6 +44,10 @@ function computeScenarios(jsonGraph, depth = 3) {
   let scenarios = createScenarios(init, clickable, ls, depth);
   let uniqScenarios = uniqueScenarios(scenarios);
 
+  ls.map((x) => `l(${x.name}) -> ${x.updates.join(", ")}`).map((x) =>
+    console.log(x)
+  );
+  console.log();
   console.log(`Unique scenarios (A) of up to ${depth} elements:`);
   console.log(uniqScenarios);
 
