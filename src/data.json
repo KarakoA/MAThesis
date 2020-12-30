@@ -629,13 +629,6 @@
       }
     },
     {
-      "v": "button_12_12_20_21",
-      "w": "this.problems.problems[i]",
-      "value": {
-        "type": "event"
-      }
-    },
-    {
       "v": "this.problems.problems[i].right",
       "w": "button_21_12_28_21"
     },

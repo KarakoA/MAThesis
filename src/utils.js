@@ -156,4 +156,5 @@ module.exports = {
   methodOrProperty,
   vForExpression,
   getNamesFromTopLevelObject,
+  isRootCallExpression,
 };

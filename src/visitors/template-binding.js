@@ -14,7 +14,8 @@ module.exports = {
       "VAttribute[key.name.name=on] >  VExpressionContainer :matches(MemberExpression, Identifier, CallExpression)"(
         node
       ) {
-        if (utils.isRootNameNode(node))
+        //TODO assumes click handlers are always methods(call expressions, might not be the case, should only filter out args)
+        if (utils.isRootCallExpression(node))
           state.identifierOrExpressionNew(node, bindingType.EVENT);
       },
 
