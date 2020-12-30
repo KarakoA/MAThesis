@@ -3,6 +3,7 @@
 > node src/generate-data.js "/Users/KarakoA/Documents/Personal/AI-LAST/MAThesis/src/test-files//test-computed.vue" "/Users/KarakoA/Documents/Personal/AI-LAST/MAThesis/results/30-12-20/test-computed.vue/data.json"
 
 l(answer) -> answer, Check
+l(Check) -> Check, Right, Wrong, count_right, accuracy, count_wrong
 l(New Problem) -> a, b, Check, Right, Wrong
 l(created) -> a, b, Check, Right, Wrong
 
@@ -10,7 +11,10 @@ Unique scenarios (A) of up to 3 elements:
 [
   [ 'created' ],
   [ 'created', 'answer' ],
-  [ 'created', 'New Problem' ]
+  [ 'created', 'Check' ],
+  [ 'created', 'New Problem' ],
+  [ 'created', 'answer', 'Check' ],
+  [ 'created', 'New Problem', 'Check' ]
 ]
 Scenario: 'created'
 	When 'created'
@@ -26,6 +30,16 @@ Scenario: 'created', 'answer'
 	Then 'answer'
 	And 'Check'
 
+Scenario: 'created', 'Check'
+	Given 'created'
+	When 'Check'
+	Then 'Check'
+	And 'Right'
+	And 'Wrong'
+	And 'count_right'
+	And 'accuracy'
+	And 'count_wrong'
+
 Scenario: 'created', 'New Problem'
 	Given 'created'
 	When 'New Problem'
@@ -34,4 +48,26 @@ Scenario: 'created', 'New Problem'
 	And 'Check'
 	And 'Right'
 	And 'Wrong'
+
+Scenario: 'created', 'answer', 'Check'
+	Given 'created'
+	And 'answer'
+	When 'Check'
+	Then 'Check'
+	And 'Right'
+	And 'Wrong'
+	And 'count_right'
+	And 'accuracy'
+	And 'count_wrong'
+
+Scenario: 'created', 'New Problem', 'Check'
+	Given 'created'
+	And 'New Problem'
+	When 'Check'
+	Then 'Check'
+	And 'Right'
+	And 'Wrong'
+	And 'count_right'
+	And 'accuracy'
+	And 'count_wrong'
 

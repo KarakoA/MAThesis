@@ -190,6 +190,15 @@
       }
     },
     {
+      "v": "this.check_answer()",
+      "value": {
+        "name": "check_answer()",
+        "opts": {
+          "type": "method"
+        }
+      }
+    },
+    {
       "v": "button_16_8_23_17",
       "value": {
         "name": "Right",
@@ -379,6 +388,37 @@
     {
       "v": "this.may_check()",
       "w": "button_7_8_15_17"
+    },
+    {
+      "v": "this.c",
+      "w": "this.check_answer()"
+    },
+    {
+      "v": "this.answer",
+      "w": "this.check_answer()"
+    },
+    {
+      "v": "this.right",
+      "w": "this.check_answer()"
+    },
+    {
+      "v": "this.check_answer()",
+      "w": "this.right"
+    },
+    {
+      "v": "this.check_answer()",
+      "w": "this.count_right"
+    },
+    {
+      "v": "this.check_answer()",
+      "w": "this.count_wrong"
+    },
+    {
+      "v": "button_7_8_15_17",
+      "w": "this.check_answer()",
+      "value": {
+        "type": "event"
+      }
     },
     {
       "v": "this.right",

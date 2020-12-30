@@ -9,7 +9,7 @@
           style="margin-left: 5px"
           :disabled="!may_check()"
           type="submit"
-          @click="check_answer"
+          @click="check_answer()"
         >
           Check
         </button>
