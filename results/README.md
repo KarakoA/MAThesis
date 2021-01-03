@@ -14,8 +14,16 @@ Alternatively can be viewed via `npm run results` and navigating to `localhost:8
 
 3) and `<files>` consists of the following:
  
-* `data.json` - raw output of the interaction diagram graph data
-* `scenarios.txt` - generated scenarios, including l(A) and S_0 ... S_n (currently just as text)
-* `index.html` - displays the interaction diagram
-* `diagram.png`- the diagram as a png
-* `<script>.vue` - the code for which all of the above was generated
+* `data.json` raw output of the interaction diagram graph data
+* `scenarios.txt` generated scenarios, including l(A) and S_0 ... S_n (currently just as text)
+* `index.html` displays the interaction diagram
+* `diagram.png` the diagram as a png
+* `<script>.vue` the code for which all of the above was generated
+
+
+`<script>` files:
+- `test.vue` example from the paper
+- `test-computed.vue` including computed property `accuracy`
+- `test-lists.vue` including a list of problems
+- `test-add-sub.vue` Addition and Subtraction
+- `test-add-sub-v2.vue`Addition and Subtraction alternative modelling
