@@ -1,20 +1,19 @@
 #!/bin/bash
 
 TODAY=`date +"%d-%m-%y"`
-cd ..
 
 if [ $# -eq 0 ]
 then
-   OUT_PATH=`pwd`/results/$TODAY
+   OUT_PATH=${INIT_CWD}/results/$TODAY
 else 
-    OUT_PATH=$1
+   OUT_PATH=$1
 fi
 
 mkdir -p $OUT_PATH
 echo "Output Path:"
 echo $OUT_PATH
 
-TEST_FILES_PATH=`pwd`/src/test-files/
+TEST_FILES_PATH=${INIT_CWD}/src/test-files/
 TEST_FILES=`ls -p $TEST_FILES_PATH`
 
 
@@ -32,4 +31,3 @@ cp $TEST_FILES_PATH/$FILE $OUT_PATH_FILE/$FILE
 echo 
 done
 echo "Done"
-cd scripts
