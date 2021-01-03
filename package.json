@@ -6,16 +6,11 @@
   "scripts": {
     "lint": "eslint --ext .js src",
     "test": "jest",
-    "test:regression":"cd scripts && ./generate-results.sh ./resources/output && cd .. && git diff -- ./resources/output | wc -l | exit",
+    "test:regression": "cd scripts && ./generate-results.sh ./resources/output && cd .. && git diff -- ./resources/output | wc -l | exit",
     "generate": "babel-node src/generate-data.js",
     "serve": "light-server -s src -p 8000",
     "create-results": "cd scripts && ./generate-results.sh",
     "results": "light-server -s results -p 8001"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ]
   },
   "repository": {
     "type": "git",
@@ -35,11 +30,13 @@
     "eslint-plugin-jest": "^24.1.3",
     "eslint-plugin-vue": "^7.1.0",
     "jest": "^26.6.3",
+    "regenerator-runtime": "^0.13.7",
     "vue-eslint-parser": "^7.1.1"
   },
   "dependencies": {
     "@dagrejs/graphlib": "^2.1.4",
     "babel-eslint": "^10.1.0",
+    "babel-jest": "^26.6.3",
     "d3-graphviz": "^3.1.0",
     "deep-equal": "^2.0.5",
     "immutable": "^4.0.0-rc.12",
