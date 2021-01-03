@@ -9,7 +9,7 @@
     "create-results": "cd scripts && ./generate-results.sh",
     "results": "light-server -s results -p 8001",
     "generate": "babel-node src/generate-data.js",
-    "lint": "eslint --ext .js ."
+    "lint": "eslint --ext .js src"
   },
   "babel": {
     "presets": [
