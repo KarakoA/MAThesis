@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint --ext .js src",
     "test": "jest",
-    "regression":"cd scripts && ./generate-results.sh ./resources/output",
+    "test:regression":"cd scripts && ./generate-results.sh ./resources/output && cd .. && git diff -- ./resources/output | wc -l | exit",
     "generate": "babel-node src/generate-data.js",
     "serve": "light-server -s src -p 8000",
     "create-results": "cd scripts && ./generate-results.sh",
