@@ -1,9 +1,9 @@
-const utils = require("../utils");
-const { Method, Methods } = require("../models/visitors");
-const assert = require("assert");
-const { isEqual } = require("lodash");
+import * as utils from "../utils.js";
+import { Method, Methods } from "../models/visitors.js";
+import assert from "assert";
+import { isEqual } from "lodash";
 
-const accessType = {
+export const accessType = {
   WRITES: "writes",
   CALLS: "calls",
   DECLARES: "declares",
@@ -11,13 +11,13 @@ const accessType = {
   ALL: "all",
 };
 
-const methodType = {
+export const methodType = {
   INIT: "init",
   METHOD: "method",
   COMPUTED: "computed",
 };
 
-class FunctionState {
+export class FunctionState {
   constructor() {
     this.reset();
   }
@@ -133,5 +133,3 @@ class FunctionState {
     return [...new Set(reads)];
   }
 }
-
-module.exports = { FunctionState, accessType, methodType };

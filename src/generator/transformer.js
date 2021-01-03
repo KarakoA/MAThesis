@@ -1,11 +1,11 @@
-const { ExtendedGraph } = require("./graph.js");
-const graphlib = require("@dagrejs/graphlib");
-const { bindingType } = require("../models/visitors.js");
-const { Identifier, Identifiers } = require("../models/identifiers.js");
-const { Node } = require("../models/graph.js");
-const lodash = require("lodash");
-const { MethodResolver } = require("./method-resolver.js");
-function compute(visitorsResult) {
+import { ExtendedGraph } from "./graph.js";
+import * as graphlib from "@dagrejs/graphlib";
+import { bindingType } from "../models/visitors.js";
+import { Identifier, Identifiers } from "../models/identifiers.js";
+import { Node } from "../models/graph.js";
+import * as lodash from "lodash";
+import { MethodResolver } from "./method-resolver.js";
+export function compute(visitorsResult) {
   let graph = new ExtendedGraph();
   let methodResolver = new MethodResolver(
     visitorsResult.methods
@@ -212,5 +212,3 @@ function addEdgeBasedOnType(graph, tag, item, type) {
       throw new Error(`Unknown binding type: ${type}!`);
   }
 }
-
-module.exports = { compute };

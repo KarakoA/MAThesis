@@ -1,10 +1,10 @@
-const { Graph } = require("@dagrejs/graphlib");
-//const { Identifiers } = require("../models/visitors.js");
-const assert = require("assert");
-const { Node } = require("../models/graph.js");
-const lodash = require("lodash");
-const { identifierTypes } = require("../models/identifiers.js");
-class ExtendedGraph {
+import { Graph } from "@dagrejs/graphlib";
+//import { Identifiers } from "../models/visitors.js";
+import assert from "assert";
+import { Node } from "../models/graph.js";
+import lodash from "lodash";
+import { identifierTypes } from "../models/identifiers.js";
+export class ExtendedGraph {
   constructor() {
     this.graph = new Graph({
       directed: true,
@@ -116,4 +116,3 @@ class ExtendedGraph {
     return Object.freeze(this.graph);
   }
 }
-module.exports = { ExtendedGraph };

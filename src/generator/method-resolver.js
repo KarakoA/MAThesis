@@ -1,8 +1,8 @@
-const lodash = require("lodash");
-const { Identifiers, Identifier } = require("../models/identifiers.js");
-const assert = require("assert");
+import * as lodash from "lodash";
+import { Identifiers, Identifier } from "../models/identifiers.js";
+import assert from "assert";
 
-class MethodResolver {
+export class MethodResolver {
   constructor(methods, topLevel) {
     this.methods = methods;
     this.topLevel = topLevel;
@@ -108,5 +108,3 @@ class MethodResolver {
     throw new Error("Unknown arg type!");
   }
 }
-
-module.exports = { MethodResolver };

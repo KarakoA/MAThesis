@@ -1,5 +1,5 @@
-const { ESLinter } = require("../../eslinter");
-const { NAME } = require("../../visitors/computed");
+import { ESLinter } from "../../eslinter.js";
+import { NAME } from "../../visitors/computed.js";
 let code = `<template></template><script>
 export default {
     name: "HelloWorld",

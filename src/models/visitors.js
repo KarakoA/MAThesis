@@ -1,18 +1,18 @@
-const assert = require("assert");
-const lodash = require("lodash");
+import assert from "assert";
+import * as lodash from "lodash";
 
-const bindingType = {
+export const bindingType = {
   EVENT: "event",
   ONE_WAY: "one-way",
   TWO_WAY: "two-way",
 };
 
-const dataType = {
+export const dataType = {
   ARRAY: "array",
   OTHER: "other",
 };
 
-class Access {
+export class Access {
   constructor(id, type) {
     assert(id);
     assert(type);
@@ -21,7 +21,7 @@ class Access {
   }
 }
 
-class MethodAccess extends Access {
+export class MethodAccess extends Access {
   //id is of type identifier chain
   constructor(id, args = []) {
     super(id, "method");
@@ -29,13 +29,13 @@ class MethodAccess extends Access {
   }
 }
 
-class PropertyAccess extends Access {
+export class PropertyAccess extends Access {
   constructor(id) {
     super(id, "property");
   }
 }
 
-class Tag {
+export class Tag {
   constructor(id, loc, position = undefined, name = undefined) {
     assert(id);
     this.id = id;
@@ -44,14 +44,14 @@ class Tag {
     this.position = position;
   }
 }
-class TopLevelVariable {
+export class TopLevelVariable {
   constructor(id) {
     assert(id);
     this.id = id;
   }
 }
 
-class Method {
+export class Method {
   constructor(name, args, reads, writes, calls) {
     this.name = name;
     this.args = args;
@@ -60,15 +60,3 @@ class Method {
     this.calls = lodash.uniqWith(calls, lodash.isEqual);
   }
 }
-
-module.exports = {
-  Method,
-  //NEW ONES
-  MethodAccess,
-  PropertyAccess,
-  Tag,
-  bindingType,
-  dataType,
-  Access,
-  TopLevelVariable,
-};

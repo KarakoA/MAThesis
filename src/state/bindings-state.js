@@ -1,10 +1,10 @@
-let utils = require("../utils");
-const { Tag } = require("../models/visitors.js");
-const { Identifiers } = require("../models/identifiers.js");
-const lodash = require("lodash");
+import * as utils from "../utils.js";
+import { Tag } from "../models/visitors.js";
+import { Identifiers } from "../models/identifiers.js";
+import * as lodash from "lodash";
 //@here
-require("util").inspect.defaultOptions.depth = 12;
-function determineNodeName(node, firstBindingName = undefined) {
+//require("util").inspect.defaultOptions.depth = 12;
+export function determineNodeName(node, firstBindingName = undefined) {
   //simple name, raw string
   let firstVText = node.children
     .find((x) => x.type === "VText" && x.value.trim())
@@ -48,7 +48,7 @@ function substituteVFor(replacements, data) {
   });
 }
 
-class BindingsState {
+export class BindingsState {
   constructor() {
     this.reset();
   }
@@ -107,5 +107,3 @@ class BindingsState {
     return result;
   }
 }
-
-module.exports = { BindingsState };

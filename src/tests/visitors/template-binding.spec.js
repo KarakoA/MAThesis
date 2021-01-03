@@ -1,5 +1,5 @@
-const { ESLinter } = require("../../eslinter");
-const { NAME } = require("../../visitors/template-binding");
+import { ESLinter } from "../../eslinter.js";
+import { NAME } from "../../visitors/template-binding.js";
 function template(tags) {
   return `
   <template>

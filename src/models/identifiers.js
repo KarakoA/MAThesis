@@ -1,10 +1,10 @@
-const assert = require("assert");
+import assert from "assert";
 
-const utils2 = require("../utils2");
+import * as utils2 from "../utils2.js";
 
-const lodash = require("lodash");
+import * as lodash from "lodash";
 
-class Identifiers {
+export class Identifiers {
   static create(data) {
     assert(data.length > 0);
     return data;
@@ -61,14 +61,14 @@ class Identifiers {
   }
 }
 
-const identifierTypes = {
+export const identifierTypes = {
   GENERIC_POSITION: "position-generic",
   NUMERIC_POSITION: "position-numeric",
   ID: "id",
   THIS: "this",
 };
 
-class Identifier {
+export class Identifier {
   static createNumericPosition(name) {
     return this.create({ name, type: identifierTypes.NUMERIC_POSITION });
   }
@@ -121,4 +121,3 @@ class Identifier {
     return this.isPosition(that) ? `[${that.name}]` : that.name;
   }
 }
-module.exports = { Identifier, Identifiers, identifierTypes };

@@ -1,6 +1,6 @@
-const graphlib = require("@dagrejs/graphlib");
-const lodash = require("lodash");
-function computeScenarios(jsonGraph, depth = 3) {
+import * as graphlib from "@dagrejs/graphlib";
+import * as lodash from "lodash";
+export function computeScenarios(jsonGraph, depth = 3) {
   let graph = graphlib.json.read(jsonGraph);
   let nodes = graph.nodes().map((id) => {
     return { id, ...graph.node(id) };
@@ -184,5 +184,3 @@ function l(graph, node) {
     .filter((x) => x.opts?.type === "tag");
   return withInfo;
 }
-
-module.exports = { computeScenarios };

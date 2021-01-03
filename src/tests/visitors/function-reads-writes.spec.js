@@ -1,5 +1,5 @@
-const { ESLinter } = require("../../eslinter");
-const { NAME } = require("../../visitors/function-reads-writes");
+import { ESLinter } from "../../eslinter.js";
+import { NAME } from "../../visitors/function-reads-writes.js";
 function template(methods) {
   return `
   <template>

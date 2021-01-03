@@ -1,13 +1,13 @@
-const {
+import {
   PropertyAccess,
   MethodAccess,
   TopLevelVariable,
-} = require("./models/visitors.js");
+} from "./models/visitors.js";
 
-const lodash = require("lodash");
-const { Identifier, Identifiers } = require("./models/identifiers.js");
+import * as lodash from "lodash";
+import { Identifier, Identifiers } from "./models/identifiers.js";
 
-function firstParentOfType(elem, typeString) {
+export function firstParentOfType(elem, typeString) {
   return elem.parent
     ? elem.parent.type == typeString
       ? elem.parent
@@ -15,7 +15,7 @@ function firstParentOfType(elem, typeString) {
     : undefined;
 }
 
-function vForExpression(node) {
+export function vForExpression(node) {
   let vFor = node.startTag.attributes?.find((x) => x.key?.name?.name === "for");
   return vFor ? vFor.value.expression : undefined;
 }
@@ -23,24 +23,24 @@ function vForExpression(node) {
 //inside call expressions, triggered once for the call expression itself and a second time for each identifier/member chain
 //TODO this triggers twice for the method name
 // also for nested call expressions each time
-function isRootNameNode(node) {
+export function isRootNameNode(node) {
   return isRootCallExpression(node) || isRootName(node);
 }
 
 //TODO naming
-function isRootName(node) {
+export function isRootName(node) {
   return (
     (node.type === "MemberExpression" || node.type === "Identifier") &&
     node.parent.type !== "MemberExpression"
   );
 }
-function isRootCallExpression(node) {
+export function isRootCallExpression(node) {
   return (
     node.type === "CallExpression" && node.parent.type !== "CallExpression"
   );
 }
 
-function isNameIdentifier(name) {
+export function isNameIdentifier(name) {
   return (
     name === "Identifier" ||
     name === "MemberExpression" ||
@@ -50,7 +50,7 @@ function isNameIdentifier(name) {
 
 //TODO handle binary expressions
 //TODO not so nice abstraction
-function methodOrProperty(node) {
+export function methodOrProperty(node) {
   if (node.type === "CallExpression") {
     let methodName = getNameFromExpression(node.callee);
     let args = lodash.flattenDeep(
@@ -73,7 +73,7 @@ function methodOrProperty(node) {
 //.key (identifier always)
 //.value (back to top or )
 //.value actually expression
-function getNamesFromTopLevelObject(node) {
+export function getNamesFromTopLevelObject(node) {
   function func(node, prev) {
     switch (node.type) {
       case "Property": {
@@ -108,7 +108,7 @@ function getNamesFromTopLevelObject(node) {
   return lodash.flattenDeep(func(node, []));
 }
 
-function getNameFromExpression(node, prev = []) {
+export function getNameFromExpression(node, prev = []) {
   if (node.type === "Identifier")
     return Identifiers.create(
       prev.concat(Identifier.createIdentifier(node.name)).reverse()
@@ -131,11 +131,11 @@ function getNameFromExpression(node, prev = []) {
   } else throw new Error(`Unknown node type: ${node.type}. prev: ${prev}`);
 }
 
-function firstVElementParent(elem) {
+export function firstVElementParent(elem) {
   return firstParentOfType(elem, "VElement");
 }
 
-function id(element) {
+export function id(element) {
   let locId =
     element.loc.start.line +
     "_" +
@@ -146,15 +146,3 @@ function id(element) {
     element.loc.end.column;
   return `${element.name}_${locId}`;
 }
-
-module.exports = {
-  id,
-  firstParentOfType,
-  firstVElementParent,
-  getNameFromExpression,
-  isRootNameNode,
-  methodOrProperty,
-  vForExpression,
-  getNamesFromTopLevelObject,
-  isRootCallExpression,
-};

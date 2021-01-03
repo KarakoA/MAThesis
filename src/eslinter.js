@@ -1,12 +1,12 @@
-const { ESLint } = require("eslint");
-const path = require("path");
+import { ESLint } from "eslint";
+import * as path from "path";
 
-class ESLinter {
+export class ESLinter {
   constructor() {
     this.eslint = new ESLint({
       rulePaths: ["./src/visitors"],
       useEslintrc: false,
-      overrideConfigFile: "./src/eslintrc-generation.js",
+      overrideConfigFile: "./src/eslintrc-generation.cjs",
     });
   }
 
@@ -42,4 +42,3 @@ class ESLinter {
     return { name: name, ...data };
   }
 }
-module.exports = { ESLinter };
