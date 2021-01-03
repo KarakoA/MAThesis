@@ -1,5 +1,5 @@
-import * as utils from "../utils.js";
-import { Method } from "../models/visitors.js";
+import * as utils from "../utils";
+import { Method } from "../models/visitors";
 import assert from "assert";
 import { isEqual } from "lodash";
 

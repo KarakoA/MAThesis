@@ -1,7 +1,7 @@
-import { BindingsState } from "../state/bindings-state.js";
+import { BindingsState } from "../state/bindings-state";
 
-import { bindingType } from "../models/visitors.js";
-import * as utils from "../utils.js";
+import { bindingType } from "../models/visitors";
+import * as utils from "../utils";
 
 let state = new BindingsState();
 export const NAME = "template-binding";

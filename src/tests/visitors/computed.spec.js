@@ -1,5 +1,5 @@
-import { ESLinter } from "../../eslinter.js";
-import { NAME } from "../../visitors/computed.js";
+import { ESLinter } from "../../eslinter";
+import { NAME } from "../../visitors/computed";
 let code = `<template></template><script>
 export default {
     name: "HelloWorld",

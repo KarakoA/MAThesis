@@ -1,7 +1,7 @@
-import { ESLinter } from "./eslinter.js";
+import { ESLinter } from "./eslinter";
 import fs from "fs";
-import { compute } from "./generator/transformer.js";
-import { computeScenarios } from "./scenarios/scenarios.js";
+import { compute } from "./generator/transformer";
+import { computeScenarios } from "./scenarios/scenarios";
 import process from "process";
 async function main() {
   let args = process.argv.slice(2);

@@ -1,6 +1,6 @@
-import * as utils from "../utils.js";
-import { Tag } from "../models/visitors.js";
-import { Identifiers } from "../models/identifiers.js";
+import * as utils from "../utils";
+import { Tag } from "../models/visitors";
+import { Identifiers } from "../models/identifiers";
 import lodash from "lodash";
 //@here
 //require("util").inspect.defaultOptions.depth = 12;

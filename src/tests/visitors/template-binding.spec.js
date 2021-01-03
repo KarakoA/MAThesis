@@ -1,5 +1,5 @@
-import { ESLinter } from "../../eslinter.js";
-import { NAME } from "../../visitors/template-binding.js";
+import { ESLinter } from "../../eslinter";
+import { NAME } from "../../visitors/template-binding";
 function template(tags) {
   return `
   <template>

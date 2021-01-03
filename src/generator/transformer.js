@@ -1,10 +1,10 @@
-import { ExtendedGraph } from "./graph.js";
+import { ExtendedGraph } from "./graph";
 import graphlib from "@dagrejs/graphlib";
-import { bindingType } from "../models/visitors.js";
-import { Identifier, Identifiers } from "../models/identifiers.js";
-import { Node } from "../models/graph.js";
+import { bindingType } from "../models/visitors";
+import { Identifier, Identifiers } from "../models/identifiers";
+import { Node } from "../models/graph";
 import lodash from "lodash";
-import { MethodResolver } from "./method-resolver.js";
+import { MethodResolver } from "./method-resolver";
 export function compute(visitorsResult) {
   let graph = new ExtendedGraph();
   let methodResolver = new MethodResolver(

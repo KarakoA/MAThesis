@@ -1,5 +1,5 @@
 import lodash from "lodash";
-import { Identifiers } from "../models/identifiers.js";
+import { Identifiers } from "../models/identifiers";
 import assert from "assert";
 
 export class MethodResolver {

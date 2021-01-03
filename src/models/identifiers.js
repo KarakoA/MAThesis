@@ -1,6 +1,6 @@
 import assert from "assert";
 
-import * as utils2 from "../utils2.js";
+import * as utils2 from "../utils2";
 
 import lodash from "lodash";
 

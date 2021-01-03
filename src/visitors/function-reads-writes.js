@@ -1,9 +1,5 @@
-import {
-  FunctionState,
-  accessType,
-  methodType,
-} from "../state/function-state.js";
-import * as utils from "../utils.js";
+import { FunctionState, accessType, methodType } from "../state/function-state";
+import * as utils from "../utils";
 
 let state = new FunctionState();
 

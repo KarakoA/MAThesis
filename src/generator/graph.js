@@ -1,9 +1,9 @@
 import { Graph } from "@dagrejs/graphlib";
-//import { Identifiers } from "../models/visitors.js";
+//import { Identifiers } from "../models/visitors";
 import assert from "assert";
-import { Node } from "../models/graph.js";
+import { Node } from "../models/graph";
 import lodash from "lodash";
-import { identifierTypes } from "../models/identifiers.js";
+import { identifierTypes } from "../models/identifiers";
 export class ExtendedGraph {
   constructor() {
     this.graph = new Graph({

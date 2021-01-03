@@ -1,4 +1,4 @@
-import { ESLinter } from "../../eslinter.js";
+import { ESLinter } from "../../eslinter";
 import { NAME } from "../../visitors/function-reads-writes";
 let code = `<template></template><script>
 export default {

@@ -1,5 +1,5 @@
-import { ESLinter } from "../../eslinter.js";
-import { NAME } from "../../visitors/function-reads-writes.js";
+import { ESLinter } from "../../eslinter";
+import { NAME } from "../../visitors/function-reads-writes";
 function template(methods) {
   return `
   <template>

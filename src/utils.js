@@ -2,10 +2,10 @@ import {
   PropertyAccess,
   MethodAccess,
   TopLevelVariable,
-} from "./models/visitors.js";
+} from "./models/visitors";
 
 import lodash from "lodash";
-import { Identifier, Identifiers } from "./models/identifiers.js";
+import { Identifier, Identifiers } from "./models/identifiers";
 
 export function firstParentOfType(elem, typeString) {
   return elem.parent
