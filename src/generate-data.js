@@ -1,8 +1,8 @@
 import { ESLinter } from "./eslinter.js";
-import * as fs from "fs";
+import fs from "fs";
 import { compute } from "./generator/transformer.js";
 import { computeScenarios } from "./scenarios/scenarios.js";
-import * as process from "process";
+import process from "process";
 async function main() {
   let args = process.argv.slice(2);
   let file = args[0] ?? "./src/test-files/test-add-sub.vue";

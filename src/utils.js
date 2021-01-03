@@ -4,7 +4,7 @@ import {
   TopLevelVariable,
 } from "./models/visitors.js";
 
-import * as lodash from "lodash";
+import lodash from "lodash";
 import { Identifier, Identifiers } from "./models/identifiers.js";
 
 export function firstParentOfType(elem, typeString) {

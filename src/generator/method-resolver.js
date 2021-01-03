@@ -1,4 +1,4 @@
-import * as lodash from "lodash";
+import lodash from "lodash";
 import { Identifiers } from "../models/identifiers.js";
 import assert from "assert";
 

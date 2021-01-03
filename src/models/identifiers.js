@@ -2,7 +2,7 @@ import assert from "assert";
 
 import * as utils2 from "../utils2.js";
 
-import * as lodash from "lodash";
+import lodash from "lodash";
 
 export class Identifiers {
   static create(data) {

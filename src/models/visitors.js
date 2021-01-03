@@ -1,5 +1,5 @@
 import assert from "assert";
-import * as lodash from "lodash";
+import lodash from "lodash";
 
 export const bindingType = {
   EVENT: "event",

@@ -1,5 +1,5 @@
-import * as graphlib from "@dagrejs/graphlib";
-import * as lodash from "lodash";
+import graphlib from "@dagrejs/graphlib";
+import lodash from "lodash";
 export function computeScenarios(jsonGraph, depth = 3) {
   let graph = graphlib.json.read(jsonGraph);
   let nodes = graph.nodes().map((id) => {

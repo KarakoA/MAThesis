@@ -1,9 +1,9 @@
 import { ExtendedGraph } from "./graph.js";
-import * as graphlib from "@dagrejs/graphlib";
+import graphlib from "@dagrejs/graphlib";
 import { bindingType } from "../models/visitors.js";
 import { Identifier, Identifiers } from "../models/identifiers.js";
 import { Node } from "../models/graph.js";
-import * as lodash from "lodash";
+import lodash from "lodash";
 import { MethodResolver } from "./method-resolver.js";
 export function compute(visitorsResult) {
   let graph = new ExtendedGraph();

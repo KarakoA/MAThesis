@@ -1,5 +1,5 @@
 import { ESLint } from "eslint";
-import * as path from "path";
+import path from "path";
 
 export class ESLinter {
   constructor() {

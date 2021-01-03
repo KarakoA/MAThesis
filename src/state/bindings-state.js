@@ -1,7 +1,7 @@
 import * as utils from "../utils.js";
 import { Tag } from "../models/visitors.js";
 import { Identifiers } from "../models/identifiers.js";
-import * as lodash from "lodash";
+import lodash from "lodash";
 //@here
 //require("util").inspect.defaultOptions.depth = 12;
 export function determineNodeName(node, firstBindingName = undefined) {
