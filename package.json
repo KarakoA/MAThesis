@@ -11,6 +11,7 @@
     "generate": "node src/generate-data.js",
     "lint": "eslint --ext .js ."
   },
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/KarakoA/MAThesis.git"
@@ -35,6 +36,7 @@
     "deep-equal": "^2.0.5",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.20",
+    "node": "^15.4.0",
     "serialize-javascript": "^5.0.1"
   }
 }
