@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint --ext .js src",
     "test": "jest",
+    "regression":"cd scripts && ./generate-results.sh ./resources/output",
+    "generate": "babel-node src/generate-data.js",
     "serve": "light-server -s src -p 8000",
     "create-results": "cd scripts && ./generate-results.sh",
-    "results": "light-server -s results -p 8001",
-    "generate": "babel-node src/generate-data.js",
-    "lint": "eslint --ext .js src"
+    "results": "light-server -s results -p 8001"
   },
   "babel": {
     "presets": [

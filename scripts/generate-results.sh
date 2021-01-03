@@ -2,7 +2,14 @@
 
 TODAY=`date +"%d-%m-%y"`
 cd ..
-OUT_PATH=`pwd`/results/$TODAY
+
+if [ $# -eq 0 ]
+then
+   OUT_PATH=`pwd`/results/$TODAY
+else 
+    OUT_PATH=$1
+fi
+
 mkdir -p $OUT_PATH
 echo "Output Path:"
 echo $OUT_PATH
