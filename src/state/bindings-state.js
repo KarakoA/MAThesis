@@ -101,7 +101,7 @@ export class BindingsState {
     }
   }
 
-  finish() {
+  finished() {
     let result = { bindings: [...this.bindings] };
     this.reset();
     return result;

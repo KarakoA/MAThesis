@@ -4,7 +4,7 @@ import { bindingType } from "../models/visitors";
 import * as utils from "../utils";
 
 let state = new BindingsState();
-export const NAME = "template-binding";
+export const NAME = "template-bindings";
 
 export function create(context) {
   return context.parserServices.defineTemplateBodyVisitor({
