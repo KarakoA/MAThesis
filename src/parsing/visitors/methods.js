@@ -1,7 +1,11 @@
-import { FunctionState, accessType, methodType } from "../state/function-state";
+import {
+  MethodsBuilder,
+  AccessType,
+  MethodType,
+} from "../builders/methods-builder";
 import * as utils from "../utils";
 
-let state = new FunctionState();
+let builder = new MethodsBuilder();
 
 export const NAME = "methods";
 export function create(context) {
@@ -12,61 +16,61 @@ export function create(context) {
 
       //start of init
       "Property[key.name = created]"(node) {
-        state.newMethod(node, methodType.INIT);
+        builder.newMethod(node, MethodType.INIT);
       },
 
       //start of any method
       "Property[key.name = methods] Property[value.type=FunctionExpression]"(
         node
       ) {
-        state.newMethod(node, methodType.METHOD);
+        builder.newMethod(node, MethodType.METHOD);
       },
       //start of computed
       "Property[key.name = computed] Property[value.type=FunctionExpression]"(
         node
       ) {
-        state.newMethod(node, methodType.COMPUTED);
+        builder.newMethod(node, MethodType.COMPUTED);
       },
 
       //end of any method or init
       "Property[value.type=FunctionExpression]:exit"() {
-        state.nodeExited();
+        builder.nodeExited();
       },
       //writes left side of assignment expression
       ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) AssignmentExpression"(
         node
       ) {
-        state.identifierOrExpressionNew(node.left, accessType.WRITES);
+        builder.identifierOrExpressionNew(node.left, AccessType.WRITES);
       },
       //method calls
       ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) CallExpression "(
         node
       ) {
         // if (utils.isRootNameNode(node))
-        state.identifierOrExpressionNew(node, accessType.CALLS);
+        builder.identifierOrExpressionNew(node, AccessType.CALLS);
       },
       //declares
       ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) VariableDeclarator"(
         node
       ) {
-        state.identifierOrExpressionNew(node.id, accessType.DECLARES);
+        builder.identifierOrExpressionNew(node.id, AccessType.DECLARES);
       },
       //all expressions
       ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) FunctionExpression :matches(MemberExpression, Identifier)"(
         node
       ) {
         if (utils.isRootNameNode(node))
-          state.identifierOrExpressionNew(node, accessType.ALL);
+          builder.identifierOrExpressionNew(node, AccessType.ALL);
       },
       //:not(:matches(Property[method = true],Property[computed = true]))
       ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) FunctionExpression Property[method = false]"(
         node
       ) {
-        state.identifierOrExpressionNew(node.key, accessType.OBJECT_PROPERTY);
+        builder.identifierOrExpressionNew(node.key, AccessType.OBJECT_PROPERTY);
       },
       //returned back to the top of the parsing tree
       "ExportDefaultDeclaration:exit"(node) {
-        let methods = state.finished();
+        let methods = builder.build();
         context.report({ node: node, message: JSON.stringify(methods) });
       },
     }

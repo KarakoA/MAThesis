@@ -4,7 +4,7 @@ import { Identifiers } from "../../models2/identifiers";
 export interface Entity {
   id: Identifiers;
 }
-export class BaseEntity implements Entity {
+class BaseEntity implements Entity {
   id: Identifiers;
   constructor(id: Identifiers) {
     assert(id);
@@ -13,8 +13,8 @@ export class BaseEntity implements Entity {
 }
 
 export class Method extends BaseEntity {
-  args: ReadonlyArray<Method | Property>;
-  constructor(id: Identifiers, args: ReadonlyArray<Method | Property> = []) {
+  args: Array<Method | Property>;
+  constructor(id: Identifiers, args: Array<Method | Property> = []) {
     super(id);
     this.args = args;
   }

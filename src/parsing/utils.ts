@@ -32,6 +32,7 @@ export function isRootNameNode(node: AST.ESLintExpression): boolean {
 }
 
 //TODO naming
+//TODO  use SupportedNamedExpression here
 export function isRootName(node: AST.ESLintExpression): boolean {
   return (
     (node.type === AST_NODE_TYPES.MemberExpression ||
@@ -83,7 +84,7 @@ function resolveArg(node: AST.ESLintExpression): Array<Method | Property> {
   } else throw new Error(`Unsupported node type: ${node.type}`);
 }
 
-type SupportedTopLevelExpression =
+export type SupportedTopLevelExpression =
   | AST.ESLintObjectExpression
   | AST.ESLintProperty
   | AST.ESLintMemberExpression;
@@ -156,7 +157,7 @@ export function getNamesFromTopLevelObject(
   return _.flattenDeep(func(node, []));
 }
 
-type SupportedNamedExpression =
+export type SupportedNamedExpression =
   //| AST.ESLintLiteral
   AST.ESLintIdentifier | AST.ESLintThisExpression | AST.ESLintMemberExpression;
 

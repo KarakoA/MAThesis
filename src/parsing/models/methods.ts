@@ -1,20 +1,21 @@
 import _ from "lodash/fp";
+import { Identifiers } from "../../models2/identifiers";
 import { Method, Property } from "./shared";
 
 export class MethodDefintition {
-  name: Property;
+  id: Identifiers;
   args: ReadonlyArray<Method | Property>;
   reads: ReadonlyArray<Property>;
   writes: ReadonlyArray<Property>;
   calls: ReadonlyArray<Method>;
   constructor(
-    name: Property,
+    id: Identifiers,
     args: ReadonlyArray<Method | Property>,
     reads: ReadonlyArray<Property>,
     writes: ReadonlyArray<Property>,
     calls: ReadonlyArray<Method>
   ) {
-    this.name = name;
+    this.id = id;
     this.args = args;
     this.writes = _.uniqWith(_.isEqual, writes);
 
@@ -23,4 +24,19 @@ export class MethodDefintition {
   }
 }
 
-export type MethodDefintitions = ReadonlyArray<MethodDefintition>;
+export class MethodsResult {
+  init?: MethodDefintition;
+  computed: MethodDefintitions;
+  methods: MethodDefintitions;
+  constructor(
+    computed: MethodDefintitions,
+    methods: MethodDefintitions,
+    init?: MethodDefintition
+  ) {
+    this.init = init;
+    this.computed = computed;
+    this.methods = methods;
+  }
+}
+
+export type MethodDefintitions = Array<MethodDefintition>;

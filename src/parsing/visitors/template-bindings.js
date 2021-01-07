@@ -1,4 +1,4 @@
-import { BindingsState } from "../state/bindings-state";
+import { BindingsState } from "../builders/bindings-builder";
 
 import { bindingType } from "../models/visitors";
 import * as utils from "../utils";
