@@ -1,5 +1,5 @@
 import assert from "assert";
-import { Identifiers } from "../identifiers";
+import { Identifiers } from "../../models2/identifiers";
 
 export enum BindingType {
   EVENT,

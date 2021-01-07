@@ -43,8 +43,8 @@ class ThisIdentifier extends BaseIdentifier {
 export const This = new ThisIdentifier("this");
 
 export class NumericIndex extends BaseIndexIdentifier {
-  constructor(name: string) {
-    super(name);
+  constructor(name: number) {
+    super(name.toString());
   }
 }
 
@@ -63,9 +63,9 @@ export class NameIdentifier extends BaseIdentifier {
 /**
  * Returns the next index based on previous.
  * If previous is a {@link GenericPosition}, next is the following character in the sequence i,j,k,l,m..., otherwise 'i'.
- * @param previous the previous position
+ * @param previous the previous position or undefined
  */
-export function nextIndex(previous: Identifier): GenericIndex {
+export function nextIndex(previous: Identifier | undefined): GenericIndex {
   const index =
     previous instanceof GenericIndex ? nextChar(previous.name) : "i";
   return new GenericIndex(index);

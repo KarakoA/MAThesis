@@ -1,78 +1,103 @@
+import { TopLevelVariable } from "./models/top-level-variables";
+
+import { Method, Property } from "./models/shared";
+
+import _ from "lodash/fp";
 import {
-  PropertyAccess,
-  MethodAccess,
-  TopLevelVariable,
-} from "./models/visitors";
+  This,
+  NameIdentifier,
+  NumericIndex,
+  Identifier,
+  nextIndex,
+} from "../models2/identifier";
+import { create, Identifiers } from "../models2/identifiers";
+import { AST } from "vue-eslint-parser";
 
-import lodash from "lodash";
-import { Identifier, Identifiers } from "./models/identifiers";
-import { AST, Rule } from "eslint";
+import { AST_NODE_TYPES } from "@typescript-eslint/types";
+import { assert } from "console";
 
-import { TSESTree,AST_NODE_TYPES } from "@typescript-eslint/experimental-utils";
-
-
-
-export function firstParentOfType(elem: AST_NODE_TYPES, typeString) {
-    TSESTree.
-  return elem.parent
-    ? elem.parent.type == typeString
-      ? elem.parent
-      : firstParentOfType(elem.parent, typeString)
-    : undefined;
-}
-CallExpression 
-
-export function vForExpression(node) {
-  let vFor = node.startTag.attributes?.find((x) => x.key?.name?.name === "for");
-  return vFor ? vFor.value.expression : undefined;
+export function vForExpression(node: AST.VElement): AST.VForExpression {
+  const maybeVFor = node.startTag.attributes?.find(
+    (x) => (x.key.name as AST.VIdentifier)?.name === "for"
+  );
+  return (maybeVFor?.value as AST.VExpressionContainer)
+    .expression as AST.VForExpression;
 }
 
 //inside call expressions, triggered once for the call expression itself and a second time for each identifier/member chain
 //TODO this triggers twice for the method name
 // also for nested call expressions each time
-export function isRootNameNode(node) {
+export function isRootNameNode(node: AST.ESLintExpression): boolean {
   return isRootCallExpression(node) || isRootName(node);
 }
 
 //TODO naming
-export function isRootName(node) {
+export function isRootName(node: AST.ESLintExpression): boolean {
   return (
-    (node.type === "MemberExpression" || node.type === "Identifier") &&
-    node.parent.type !== "MemberExpression"
+    (node.type === AST_NODE_TYPES.MemberExpression ||
+      node.type === AST_NODE_TYPES.Identifier) &&
+    node.parent?.type !== AST_NODE_TYPES.MemberExpression
   );
 }
-export function isRootCallExpression(node) {
+export function isRootCallExpression(node: AST.ESLintExpression): boolean {
   return (
-    node.type === "CallExpression" && node.parent.type !== "CallExpression"
-  );
-}
-
-export function isNameIdentifier(name) {
-  return (
-    name === "Identifier" ||
-    name === "MemberExpression" ||
-    name === "ThisExpression"
+    node.type === AST_NODE_TYPES.CallExpression &&
+    node.parent?.type !== AST_NODE_TYPES.CallExpression
   );
 }
 
-//TODO handle binary expressions
-//TODO not so nice abstraction
-export function methodOrProperty(node) {
-  if (node.type === "CallExpression") {
-    let methodName = getNameFromExpression(node.callee);
-    let args = lodash.flattenDeep(
-      node.arguments.map((x) => methodOrProperty(x))
-    );
-    return new MethodAccess(methodName, args);
-  } else if (node.type === "BinaryExpression") {
-    let left = methodOrProperty(node.left);
-    let right = methodOrProperty(node.right);
-    return [left, right];
-  } else if (node.type === "Literal") {
+export function property(node: SupportedNamedExpression): Property {
+  return new Property(getNameFromExpression(node));
+}
+
+export function method(node: AST.ESLintCallExpression): Method {
+  const methodName = determineName(node.callee as AST.ESLintExpression);
+  const args = resolveArgs(node.arguments);
+  return new Method(methodName, args);
+}
+function determineName(node: AST.ESLintExpression): Identifiers {
+  if (!isSupportedNameExpression(node))
+    throw new Error(`Unsupported node type ${node.type} for name!`);
+  return getNameFromExpression(node);
+}
+
+function resolveArgs(nodes: any[]): Array<Method | Property> {
+  //@unsafe
+  const nodesTyped = nodes.map((x) => x as AST.ESLintExpression);
+  return _.flatMap(resolveArg, nodesTyped);
+}
+//TODO if dropping binary alltogether (or trying to resolve to one branch) could become Method | Property
+function resolveArg(node: AST.ESLintExpression): Array<Method | Property> {
+  if (node.type === AST_NODE_TYPES.CallExpression) {
+    const methodName = determineName(node.callee as AST.ESLintExpression);
+    const args = resolveArgs(node.arguments);
+    return [new Method(methodName, args)];
+  } else if (node.type === AST_NODE_TYPES.BinaryExpression) {
+    const left = resolveArg(node.left);
+    const right = resolveArg(node.right);
+    return [...left, ...right];
+  } else if (node.type === AST_NODE_TYPES.Literal) {
     return [];
-  } else if (isNameIdentifier(node.type)) {
-    return new PropertyAccess(getNameFromExpression(node));
-  } else throw new Error(`Unknown node type: ${node.type}`);
+  } else if (isSupportedNameExpression(node)) {
+    return [property(node)];
+  } else throw new Error(`Unsupported node type: ${node.type}`);
+}
+
+type SupportedTopLevelExpression =
+  | AST.ESLintObjectExpression
+  | AST.ESLintProperty
+  | AST.ESLintMemberExpression;
+
+//user defined type guard
+function isSupportedTopLevelExpression(
+  arg: AST.ESLintNode
+): arg is SupportedNamedExpression {
+  const types = [
+    AST_NODE_TYPES.ObjectExpression,
+    AST_NODE_TYPES.Property,
+    AST_NODE_TYPES.MemberExpression,
+  ];
+  return types.includes(arg.type as AST_NODE_TYPES);
 }
 
 //ObjectExpression
@@ -80,70 +105,118 @@ export function methodOrProperty(node) {
 //.key (identifier always)
 //.value (back to top or )
 //.value actually expression
-export function getNamesFromTopLevelObject(node) {
-  function func(node, prev) {
+export function getNamesFromTopLevelObject(
+  node: AST.ESLintObjectExpression
+): Identifiers[] {
+  function func(node: SupportedTopLevelExpression, prev: Identifier[]): any {
     switch (node.type) {
-      case "Property": {
-        let name = node.key.name;
-        let value = node.value;
-        if (value.type === "ObjectExpression")
-          return func(
-            node.value,
-            prev.concat(Identifier.createIdentifier(name))
-          );
-        //@Future array type distinguish here
-        else if (value.type === "ArrayExpression")
-          //TODO encapsulate this logic in ctor's
-          return new TopLevelVariable(
-            Identifiers.create(prev.concat(Identifier.createIdentifier(name)))
-          );
-        //@Future other type distinguish here
-        else
-          return new TopLevelVariable(
-            Identifiers.create(prev.concat(Identifier.createIdentifier(name)))
-          );
+      case AST_NODE_TYPES.Property: {
+        //assert node.key.type is identifier
+        assert(node.key.type === AST_NODE_TYPES.Identifier);
+        const name = (node.key as AST.ESLintIdentifier).name;
+        const value = node.value;
+        switch (value.type) {
+          case AST_NODE_TYPES.ObjectExpression:
+            assert(isSupportedTopLevelExpression(node.value));
+            return func(
+              node.value as SupportedTopLevelExpression,
+              prev.concat(new NameIdentifier(name))
+            );
+          //@Future array type distinguish here
+          case AST_NODE_TYPES.ArrayExpression:
+            return new TopLevelVariable(
+              create(...prev, new NameIdentifier(name))
+            );
+          //@Future other type distinguish here
+          default:
+            return new TopLevelVariable(
+              create(...prev, new NameIdentifier(name))
+            );
+        }
       }
-      case "ObjectExpression":
-        return [node.properties.map((x) => func(x, prev))];
-      case "MemberExpression":
+      case AST_NODE_TYPES.ObjectExpression:
+        assert(
+          _.all(
+            (x) => isSupportedTopLevelExpression(x as AST.ESLintNode),
+            node.properties
+          )
+        );
+        return [
+          node.properties.map((x) =>
+            func(x as SupportedTopLevelExpression, prev)
+          ),
+        ];
+      case AST_NODE_TYPES.MemberExpression:
         //should never be the case for top level data object
         return [getNameFromExpression(node)];
       default:
-        throw new Error(`Unknown node type: ${node.type}`);
+        throw new Error(`Unsupported node type: ${node.type}`);
     }
   }
-  return lodash.flattenDeep(func(node, []));
+  return _.flattenDeep(func(node, []));
 }
 
-export function getNameFromExpression(node, prev = []) {
-  if (node.type === "Identifier")
-    return Identifiers.create(
-      prev.concat(Identifier.createIdentifier(node.name)).reverse()
-    );
-  else if (node.type === "ThisExpression") {
-    return Identifiers.create(prev.concat(Identifier.createThis()).reverse());
-  } else if (node.type === "MemberExpression") {
-    //index accessor
-    if (node.computed) {
-      let position =
-        node.property.type === "Literal"
-          ? Identifier.createNumericPosition(node.property.value)
-          : Identifier.nextPosition(lodash.head(prev));
-      return getNameFromExpression(node.object, prev.concat(position));
-    } else
+type SupportedNamedExpression =
+  //| AST.ESLintLiteral
+  AST.ESLintIdentifier | AST.ESLintThisExpression | AST.ESLintMemberExpression;
+
+//user defined type guard
+function isSupportedNameExpression(
+  arg: AST.ESLintNode
+): arg is SupportedNamedExpression {
+  const types = [
+    AST_NODE_TYPES.Identifier,
+    AST_NODE_TYPES.ThisExpression,
+    AST_NODE_TYPES.MemberExpression,
+  ];
+  return types.includes(arg.type as AST_NODE_TYPES);
+}
+
+export function getNameFromExpression(
+  node: SupportedNamedExpression,
+  prev: Identifier[] = []
+): Identifiers {
+  switch (node.type) {
+    case AST_NODE_TYPES.Identifier: {
+      const ids = prev.concat(new NameIdentifier(node.name));
+      return create(...ids.reverse());
+    }
+    case AST_NODE_TYPES.ThisExpression: {
+      const ids = prev.concat(This);
+      return create(...ids.reverse());
+    }
+
+    case AST_NODE_TYPES.MemberExpression: {
+      let next: Identifier;
+      //index accessor (i.e. X[Z] or X[1] or X[Z+1+y])
+      if (node.computed) {
+        //X[Z] => 'i',X[1] => 1, X[Z+1+y] => 'i' or 'j' if prev is 'i' etc.
+        next =
+          node.property.type === AST_NODE_TYPES.Literal
+            ? //TODO @unsafe-cast has also other values, safer cast?
+              new NumericIndex(node.property.value as number)
+            : nextIndex(_.head(prev));
+      } else {
+        if ("name" in node.property)
+          next = new NameIdentifier(node.property.name);
+        else
+          throw new Error(
+            `node.property of type ${node.property.type} does not have a name.`
+          );
+      }
+      assert(isSupportedNameExpression(node.object));
       return getNameFromExpression(
-        node.object,
-        prev.concat(Identifier.createIdentifier(node.property.name))
+        node.object as SupportedNamedExpression,
+        prev.concat(next)
       );
-  } else throw new Error(`Unknown node type: ${node.type}. prev: ${prev}`);
+    }
+    default:
+      throw new Error(`Unknown node type: ${node.type}. prev: ${prev}`);
+  }
 }
 
-export function firstVElementParent(elem) {
-  return firstParentOfType(elem, "VElement");
-}
-
-export function id(element) {
-  let locId =
+export function id(element: AST.VElement): string {
+  const locId =
     element.loc.start.line +
     "_" +
     element.loc.start.column +
