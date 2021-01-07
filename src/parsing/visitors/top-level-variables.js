@@ -1,5 +1,4 @@
 import * as utils from "../utils";
-import { AST } from "vue-eslint-parser";
 
 export const NAME = "top-level-variables";
 
@@ -10,9 +9,7 @@ export function create(context) {
     {},
     {
       //V - top level variables (properties within data )
-      "Property[key.name = data]  ReturnStatement > ObjectExpression"(
-        node: AST.VElement
-      ) {
+      "Property[key.name = data]  ReturnStatement > ObjectExpression"(node) {
         const result = { topLevelData: utils.getNamesFromTopLevelObject(node) };
         context.report({ node: node, message: JSON.stringify(result) });
       },

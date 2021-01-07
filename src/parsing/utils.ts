@@ -18,12 +18,14 @@ import { AST_NODE_TYPES } from "@typescript-eslint/types";
 import { assert } from "console";
 
 export { AST_NODE_TYPES, AST };
-export function vForExpression(node: AST.VElement): AST.VForExpression {
+export function vForExpression(
+  node: AST.VElement
+): AST.VForExpression | undefined {
   const maybeVFor = node.startTag.attributes?.find(
     (x) => (x.key.name as AST.VIdentifier)?.name === "for"
   );
   return (maybeVFor?.value as AST.VExpressionContainer)
-    .expression as AST.VForExpression;
+    ?.expression as AST.VForExpression;
 }
 
 //inside call expressions, triggered once for the call expression itself and a second time for each identifier/member chain

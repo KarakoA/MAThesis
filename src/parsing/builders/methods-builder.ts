@@ -7,6 +7,8 @@ import { AST } from "vue-eslint-parser";
 import { AST_NODE_TYPES } from "@typescript-eslint/types";
 import { MethodDefintition, MethodsResult } from "../models/methods";
 
+import * as util from "util";
+util.inspect.defaultOptions.depth = 13;
 export enum AccessType {
   WRITES,
   CALLS,
@@ -44,10 +46,8 @@ class MethodDefintitionBuilder {
   reads(): (Method | Property)[] {
     const other = this.allExceptReads();
     const reads = [...this.all];
-
     other.forEach((el) => {
-      //TODO @check was id comparison, this should even be better
-      const i = reads.findIndex((x) => _.isEqual(x, el));
+      const i = reads.findIndex((x) => _.isEqual(x.id, el.id));
       assert(i != -1);
 
       reads.splice(i, 1);

@@ -19,7 +19,7 @@ class BaseIdentifier implements Identifier {
     this.name = name;
   }
   render(): string {
-    return name;
+    return this.name;
   }
 }
 
@@ -28,7 +28,7 @@ class BaseIndexIdentifier extends BaseIdentifier {
     super(name);
   }
   render(): string {
-    return `[${name}]`;
+    return `[${this.name}]`;
   }
 }
 

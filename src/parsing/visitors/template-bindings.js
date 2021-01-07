@@ -1,6 +1,6 @@
 import { BindingsBuilder } from "../builders/bindings-builder";
 
-import { bindingType } from "../models/visitors";
+import { BindingType } from "../models/template-bindings";
 import * as utils from "../utils";
 
 let builder = new BindingsBuilder();
@@ -14,7 +14,7 @@ export function create(context) {
     ) {
       //TODO assumes click handlers are always methods(call expressions, might not be the case, should only filter out args)
       if (utils.isRootCallExpression(node))
-        builder.identifierOrExpressionNew(node, bindingType.EVENT);
+        builder.identifierOrExpressionNew(node, BindingType.EVENT);
     },
 
     //two way binding
@@ -22,7 +22,7 @@ export function create(context) {
       node
     ) {
       if (utils.isRootNameNode(node))
-        builder.identifierOrExpressionNew(node, bindingType.TWO_WAY);
+        builder.identifierOrExpressionNew(node, BindingType.TWO_WAY);
     },
 
     //other identifiers
@@ -32,7 +32,7 @@ export function create(context) {
       node
     ) {
       if (utils.isRootNameNode(node))
-        builder.identifierOrExpressionNew(node, bindingType.ONE_WAY);
+        builder.identifierOrExpressionNew(node, BindingType.ONE_WAY);
     },
 
     // all html tags

@@ -4,7 +4,7 @@ import path from "path";
 export class ESLinter {
   constructor() {
     this.eslint = new ESLint({
-      rulePaths: ["./src/visitors"],
+      rulePaths: ["./src/parsing/visitors"],
       useEslintrc: false,
       overrideConfigFile: "./src/eslintrc-generation.cjs",
     });
@@ -24,9 +24,10 @@ export class ESLinter {
     const lintResults = await this.eslint.lintFiles(paths);
     //employing a bit of a hack,
     //output of each rule is stored as stringified json in it's message
-    return lintResults.map((result) =>
-      this.transformToJSON(result, outputOnlyFileName)
-    );
+    return lintResults.map((result) => {
+      console.log(result);
+      this.transformToJSON(result, outputOnlyFileName);
+    });
   }
 
   transformToJSON(lintResult, outputOnlyFileName) {
