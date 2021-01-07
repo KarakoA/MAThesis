@@ -14,8 +14,10 @@ import { create, Identifiers } from "../models2/identifiers";
 import { AST } from "vue-eslint-parser";
 
 import { AST_NODE_TYPES } from "@typescript-eslint/types";
+
 import { assert } from "console";
 
+export { AST_NODE_TYPES, AST };
 export function vForExpression(node: AST.VElement): AST.VForExpression {
   const maybeVFor = node.startTag.attributes?.find(
     (x) => (x.key.name as AST.VIdentifier)?.name === "for"

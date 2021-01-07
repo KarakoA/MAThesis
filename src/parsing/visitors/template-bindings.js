@@ -1,9 +1,9 @@
-import { BindingsState } from "../builders/bindings-builder";
+import { BindingsBuilder } from "../builders/bindings-builder";
 
 import { bindingType } from "../models/visitors";
 import * as utils from "../utils";
 
-let state = new BindingsState();
+let builder = new BindingsBuilder();
 export const NAME = "template-bindings";
 
 export function create(context) {
@@ -14,7 +14,7 @@ export function create(context) {
     ) {
       //TODO assumes click handlers are always methods(call expressions, might not be the case, should only filter out args)
       if (utils.isRootCallExpression(node))
-        state.identifierOrExpressionNew(node, bindingType.EVENT);
+        builder.identifierOrExpressionNew(node, bindingType.EVENT);
     },
 
     //two way binding
@@ -22,7 +22,7 @@ export function create(context) {
       node
     ) {
       if (utils.isRootNameNode(node))
-        state.identifierOrExpressionNew(node, bindingType.TWO_WAY);
+        builder.identifierOrExpressionNew(node, bindingType.TWO_WAY);
     },
 
     //other identifiers
@@ -32,26 +32,26 @@ export function create(context) {
       node
     ) {
       if (utils.isRootNameNode(node))
-        state.identifierOrExpressionNew(node, bindingType.ONE_WAY);
+        builder.identifierOrExpressionNew(node, bindingType.ONE_WAY);
     },
 
     // all html tags
     VElement(node) {
       let vFor = utils.vForExpression(node);
-      if (vFor) state.elementWithVForStarted(vFor);
+      if (vFor) builder.elementWithVForStarted(vFor);
     },
     // all html tags
     "VElement:exit"(node) {
-      state.nodeExited(node);
+      builder.nodeExited(node);
       let vFor = utils.vForExpression(node);
-      if (vFor) state.elementWithVForExited();
+      if (vFor) builder.elementWithVForExited();
     },
     //last node on the way to top
     "VElement[name=template]:exit"(node) {
-      let result = state.finished();
+      let result = builder.build();
 
       context.report({ node: node, message: JSON.stringify(result) });
-      state.reset();
+      builder.reset();
     },
   });
 }

@@ -1,6 +1,7 @@
 import assert from "assert";
 import { Identifiers } from "../../models2/identifiers";
 
+import { Method, Property } from "./shared";
 export enum BindingType {
   EVENT,
   ONE_WAY,
@@ -19,12 +20,12 @@ export interface Location {
 }
 
 export class Tag {
-  id: Identifiers;
+  id: string;
   loc: Location;
   name: string;
   position?: string;
 
-  constructor(id: Identifiers, loc: Location, name: string, position?: string) {
+  constructor(id: string, loc: Location, name: string, position?: string) {
     assert(id);
     this.id = id;
     this.name = name;
@@ -32,3 +33,13 @@ export class Tag {
     this.position = position;
   }
 }
+
+export class BindingValue {
+  item: Method | Property;
+  bindingType: BindingType;
+  constructor(item: Method | Property, bindingType: BindingType) {
+    this.item = item;
+    this.bindingType = bindingType;
+  }
+}
+export type BindingsResult = Map<Tag, Array<BindingValue>>;

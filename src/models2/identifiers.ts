@@ -69,7 +69,7 @@ export function replaceLast(
   return _.flow(_.dropRight(1), _.concat(replacement))(that);
 }
 
-export function appendIdentifiers(that: Identifiers): Identifiers {
+export function addIndex(that: Identifiers): Identifiers {
   const last = _.last(that);
   if (last) {
     const next = nextIndex(last);
