@@ -79,8 +79,6 @@ export default {
     };
   },
   created: function () {
-    //this.a = 12 // TODO not yet implemented
-    // let g = this.c
     this.add_problem();
   },
   methods: {
