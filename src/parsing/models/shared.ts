@@ -1,27 +1,24 @@
-import assert from "assert";
 import { Identifiers } from "../../models2/identifiers";
 
-export interface Entity {
-  id: Identifiers;
-}
-class BaseEntity implements Entity {
-  id: Identifiers;
-  constructor(id: Identifiers) {
-    assert(id);
-    this.id = id;
-  }
+export enum EntityType {
+  PROPERTY = "property",
+  METHOD = "method",
 }
 
-export class Method extends BaseEntity {
-  args: Array<Method | Property>;
-  constructor(id: Identifiers, args: Array<Method | Property> = []) {
-    super(id);
-    this.args = args;
-  }
-}
+export type Entity = Method | Property;
 
-export class Property extends BaseEntity {
-  constructor(id: Identifiers) {
-    super(id);
-  }
+export interface Property {
+  id: Identifiers;
+  discriminator: EntityType.PROPERTY;
+}
+export function isProperty(e: Entity): e is Property {
+  return e.discriminator === EntityType.PROPERTY;
+}
+export function isMethod(e: Entity): e is Method {
+  return e.discriminator === EntityType.METHOD;
+}
+export interface Method {
+  id: Identifiers;
+  args: Array<Entity>;
+  discriminator: EntityType.METHOD;
 }

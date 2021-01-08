@@ -1,6 +1,4 @@
-import { TopLevelVariable } from "./models/top-level-variables";
-
-import { Method, Property } from "./models/shared";
+import { Method, Property, EntityType, Entity } from "./models/shared";
 
 import _ from "lodash/fp";
 import {
@@ -52,13 +50,20 @@ export function isRootCallExpression(node: AST.ESLintExpression): boolean {
 }
 
 export function property(node: SupportedNamedExpression): Property {
-  return new Property(getNameFromExpression(node));
+  return {
+    id: getNameFromExpression(node),
+    discriminator: EntityType.PROPERTY,
+  };
 }
 
 export function method(node: AST.ESLintCallExpression): Method {
   const methodName = determineName(node.callee as AST.ESLintExpression);
   const args = resolveArgs(node.arguments);
-  return new Method(methodName, args);
+  return {
+    id: methodName,
+    args,
+    discriminator: EntityType.METHOD,
+  };
 }
 function determineName(node: AST.ESLintExpression): Identifiers {
   if (!isSupportedNameExpression(node))
@@ -66,17 +71,15 @@ function determineName(node: AST.ESLintExpression): Identifiers {
   return getNameFromExpression(node);
 }
 
-function resolveArgs(nodes: any[]): Array<Method | Property> {
+function resolveArgs(nodes: any[]): Array<Entity> {
   //@unsafe
   const nodesTyped = nodes.map((x) => x as AST.ESLintExpression);
   return _.flatMap(resolveArg, nodesTyped);
 }
-//TODO if dropping binary alltogether (or trying to resolve to one branch) could become Method | Property
-function resolveArg(node: AST.ESLintExpression): Array<Method | Property> {
+//TODO if dropping binary alltogether (or trying to resolve to one branch) could become Entity
+function resolveArg(node: AST.ESLintExpression): Array<Entity> {
   if (node.type === AST_NODE_TYPES.CallExpression) {
-    const methodName = determineName(node.callee as AST.ESLintExpression);
-    const args = resolveArgs(node.arguments);
-    return [new Method(methodName, args)];
+    return [method(node)];
   } else if (node.type === AST_NODE_TYPES.BinaryExpression) {
     const left = resolveArg(node.left);
     const right = resolveArg(node.right);
@@ -129,14 +132,16 @@ export function getNamesFromTopLevelObject(
             );
           //@Future array type distinguish here
           case AST_NODE_TYPES.ArrayExpression:
-            return new TopLevelVariable(
-              create(...prev, new NameIdentifier(name))
-            );
+            return {
+              id: create(...prev, new NameIdentifier(name)),
+              discriminator: EntityType.PROPERTY,
+            };
           //@Future other type distinguish here
           default:
-            return new TopLevelVariable(
-              create(...prev, new NameIdentifier(name))
-            );
+            return {
+              id: create(...prev, new NameIdentifier(name)),
+              discriminator: EntityType.PROPERTY,
+            };
         }
       }
       case AST_NODE_TYPES.ObjectExpression:

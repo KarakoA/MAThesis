@@ -1,4 +1,3 @@
-import { Identifiers } from "../identifiers";
 import { Property } from "./shared";
 
 export enum DataType {
@@ -6,8 +5,8 @@ export enum DataType {
   OTHER,
 }
 
-export class TopLevelVariable extends Property {
-  constructor(id: Identifiers) {
-    super(id);
-  }
+type TopLevelVariables = Array<Property>;
+
+export interface TopLevelVariablesResult {
+  topLevel: TopLevelVariables;
 }

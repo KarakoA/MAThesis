@@ -94,7 +94,7 @@ export class BindingsState {
       //let position = this.VForReplacement[0];
 
       let position = this.VForReplacement.length == 0 ? undefined : "i";
-      let tag = new Tag(id, node.loc, position, name);
+      //let tag = new TagI(id, node.loc, position, name);
 
       this.bindings.set(tag, filterOutMethodNamesAsIdentifiers(this.latest));
       this.latest = [];

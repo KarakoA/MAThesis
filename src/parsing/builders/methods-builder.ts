@@ -2,7 +2,14 @@ import * as utils from "../utils";
 
 import assert from "assert";
 import _ from "lodash/fp";
-import { Method, Property } from "../models/shared";
+import {
+  EntityType,
+  isMethod,
+  Method,
+  Property,
+  Entity,
+  isProperty,
+} from "../models/shared";
 import { AST } from "vue-eslint-parser";
 import { AST_NODE_TYPES } from "@typescript-eslint/types";
 import { MethodDefintition, MethodsResult } from "../models/methods";
@@ -23,17 +30,17 @@ export enum MethodType {
 }
 
 class MethodDefintitionBuilder {
-  all: (Method | Property)[];
+  all: Entity[];
 
-  writes: (Method | Property)[];
+  writes: Property[];
   calls: Method[];
-  declares: (Method | Property)[];
-  objectProps: (Method | Property)[];
+  declares: Entity[];
+  objectProps: Entity[];
 
   method: Method;
   methodType: MethodType;
 
-  allExceptReads(): (Method | Property)[] {
+  allExceptReads(): Entity[] {
     return [
       ...this.writes,
       ...this.calls,
@@ -43,7 +50,8 @@ class MethodDefintitionBuilder {
     ];
   }
 
-  reads(): (Method | Property)[] {
+  //TODO resolve this
+  reads(): Property[] {
     const other = this.allExceptReads();
     const reads = [...this.all];
     other.forEach((el) => {
@@ -55,20 +63,21 @@ class MethodDefintitionBuilder {
     return reads;
   }
 
-  add(item: Method | Property, accessType: AccessType) {
+  add(item: Entity, accessType: AccessType) {
     switch (accessType) {
       case AccessType.ALL:
         this.all.push(item);
         break;
       case AccessType.CALLS:
-        if (item instanceof Method) this.calls.push(item);
+        if (isMethod(item)) this.calls.push(item);
         else throw new Error(`Calls can only contain methods! Got property.`);
         break;
       case AccessType.DECLARES:
         this.declares.push(item);
         break;
       case AccessType.WRITES:
-        this.writes.push(item);
+        if (isProperty(item)) this.writes.push(item);
+        else throw new Error(`Calls can only contain methods! Got property.`);
         break;
       case AccessType.OBJECT_PROPERTY:
         this.objectProps.push(item);
@@ -89,13 +98,13 @@ class MethodDefintitionBuilder {
     this.objectProps = [];
   }
   build(): MethodDefintition {
-    return new MethodDefintition(
-      this.method.id,
-      this.method.args,
-      this.reads(),
-      this.writes,
-      this.calls
-    );
+    return {
+      id: this.method.id,
+      args: this.method.args,
+      reads: _.uniqWith(_.isEqual, this.reads()),
+      writes: _.uniqWith(_.isEqual, this.writes),
+      calls: _.uniqWith(_.isEqual, this.calls),
+    };
   }
 }
 
@@ -138,7 +147,7 @@ export class MethodsBuilder {
     const id = utils.getNameFromExpression(
       node.key as utils.SupportedNamedExpression
     );
-    const method = new Method(id, args);
+    const method: Method = { id, args, discriminator: EntityType.METHOD };
     this.latestMethodBuilder = new MethodDefintitionBuilder(method, methodType);
   }
 
@@ -161,7 +170,11 @@ export class MethodsBuilder {
   }
 
   build(): MethodsResult {
-    const methods = new MethodsResult(this.computed, this.methods, this.init);
+    const methods: MethodsResult = {
+      computed: this.computed,
+      methods: this.methods,
+      init: this.init,
+    };
     this.reset();
     return methods;
   }

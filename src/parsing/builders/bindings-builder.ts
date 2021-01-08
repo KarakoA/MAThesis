@@ -13,7 +13,13 @@ import {
   replaceFront,
 } from "../../models2/identifiers";
 import _ from "lodash/fp";
-import { Method, Property } from "../models/shared";
+import {
+  EntityType,
+  isMethod,
+  isProperty,
+  Method,
+  Property,
+} from "../models/shared";
 
 export function determineNodeName(
   node: AST.VElement,
@@ -33,14 +39,12 @@ function filterOutMethodNamesAsIdentifiers(
 ): BindingValue[] {
   //TODO toSet has better perfornamce, but can't compare with isEqual
   const methodNames = latest
-    .filter((x) => x.item instanceof Method)
+    .filter((x) => isMethod(x.item))
     .map((x) => x.item.id);
 
   //TODO @maybe (isEqual replaced based on rule)
   const inNames = (x: Identifiers) => _.some(_.isEqual(x), methodNames);
-  return latest.filter(
-    (x) => !(x.item instanceof Property && inNames(x.item.id))
-  );
+  return latest.filter((x) => !(isProperty(x.item) && inNames(x.item.id)));
 }
 
 function substituteVFor(
@@ -51,12 +55,13 @@ function substituteVFor(
     data.forEach((x) => {
       x.item.id = replaceFront(x.item.id, replacement.left, replacement.right);
       //TODO needs to be recursive probably for nested methods (if supported)
-      if (x.item instanceof Method)
+      if (isMethod(x.item))
         x.item.args = x.item.args?.map((arg) => {
-          return arg instanceof Property
-            ? new Property(
-                replaceFront(arg.id, replacement.left, replacement.right)
-              )
+          return isProperty(arg)
+            ? {
+                id: replaceFront(arg.id, replacement.left, replacement.right),
+                discriminator: EntityType.PROPERTY,
+              }
             : arg;
         });
     });
@@ -64,7 +69,7 @@ function substituteVFor(
 }
 
 export class BindingsBuilder {
-  bindings!: BindingsResult;
+  bindings!: Map<Tag, Array<BindingValue>>;
   latest!: BindingValue[];
   VForReplacement!: { left: Identifiers; right: Identifiers }[];
   constructor() {
@@ -84,7 +89,7 @@ export class BindingsBuilder {
       node.type === AST_NODE_TYPES.CallExpression
         ? utils.method(node)
         : utils.property(node);
-    this.latest.push(new BindingValue(item, bindingType));
+    this.latest.push({ item, bindingType });
   }
 
   elementWithVForStarted(vforAttributeNode: AST.VForExpression): void {
@@ -124,8 +129,8 @@ export class BindingsBuilder {
       //let position = this.VForReplacement[0];
 
       const position = this.VForReplacement.length == 0 ? undefined : "i";
-      const tag = new Tag(id, node.loc, name, position);
-
+      //const tag = new TagI(id, node.loc, name, position);
+      const tag: Tag = { id, loc: node.loc, name, position };
       this.bindings.set(tag, filterOutMethodNamesAsIdentifiers(this.latest));
       this.latest = [];
     }
@@ -133,7 +138,9 @@ export class BindingsBuilder {
 
   build(): BindingsResult {
     const result = _.clone(this.bindings);
+
     this.reset();
-    return result;
+
+    return { bindings: result };
   }
 }

@@ -70,8 +70,9 @@ export function create(context) {
       },
       //returned back to the top of the parsing tree
       "ExportDefaultDeclaration:exit"(node) {
-        let methods = builder.build();
-        context.report({ node: node, message: JSON.stringify(methods) });
+        const result = builder.build();
+        const json = JSON.stringify(result);
+        context.report({ node: node, message: json });
       },
     }
   );
