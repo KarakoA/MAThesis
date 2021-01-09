@@ -36,7 +36,6 @@ export class MethodResolver {
 
     let calls = callsOrMethodCallOfTopLevel
       .filter((x) => !x.topLevel)
-
       .map((m) => {
         let mArgs = m.args.map((arg) => {
           this.resolveArg(arg, method.args, args);

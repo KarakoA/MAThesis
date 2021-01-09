@@ -1,4 +1,4 @@
-import * as utils from "../utils";
+import { TopLevelVariablesBuilder } from "../builders/top-level-builder";
 
 export const NAME = "top-level-variables";
 
@@ -8,9 +8,7 @@ export function create(context) {
     {
       //V - top level variables (properties within data )
       "Property[key.name = data]  ReturnStatement > ObjectExpression"(node) {
-        const data = utils.getNamesFromTopLevelObject(node);
-
-        const result = { topLevel: data };
+        const result = new TopLevelVariablesBuilder().build(node);
         const json = JSON.stringify(result);
         context.report({ node: node, message: json });
       },

@@ -15,6 +15,7 @@ import { AST_NODE_TYPES } from "@typescript-eslint/types";
 import { MethodDefintition, MethodsResult } from "../models/methods";
 
 import * as util from "util";
+import { prefixThis } from "../../models2/identifiers";
 util.inspect.defaultOptions.depth = 13;
 export enum AccessType {
   WRITES,
@@ -99,7 +100,7 @@ class MethodDefintitionBuilder {
   }
   build(): MethodDefintition {
     return {
-      id: this.method.id,
+      id: prefixThis(this.method.id),
       args: this.method.args,
       reads: _.uniqWith(_.isEqual, this.reads()),
       writes: _.uniqWith(_.isEqual, this.writes),

@@ -9,6 +9,7 @@ async function main() {
   let file = args[0] ?? "./src/test-files/test-add-sub.vue";
   let outPath = args[1] ?? "./src/data.json";
   let r = await new ESLinter().lintFiles([file]);
+  console.log(r);
   r = compute(r[0]);
   computeScenarios(r);
 

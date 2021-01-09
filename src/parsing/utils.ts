@@ -116,7 +116,10 @@ function isSupportedTopLevelExpression(
 export function getNamesFromTopLevelObject(
   node: AST.ESLintObjectExpression
 ): Identifiers[] {
-  function func(node: SupportedTopLevelExpression, prev: Identifier[]): any {
+  function func(
+    node: SupportedTopLevelExpression,
+    prev: Identifier[]
+  ): Identifiers[] {
     switch (node.type) {
       case AST_NODE_TYPES.Property: {
         //assert node.key.type is identifier
@@ -132,16 +135,10 @@ export function getNamesFromTopLevelObject(
             );
           //@Future array type distinguish here
           case AST_NODE_TYPES.ArrayExpression:
-            return {
-              id: create(...prev, new NameIdentifier(name)),
-              discriminator: EntityType.PROPERTY,
-            };
+            return [create(...prev, new NameIdentifier(name))];
           //@Future other type distinguish here
           default:
-            return {
-              id: create(...prev, new NameIdentifier(name)),
-              discriminator: EntityType.PROPERTY,
-            };
+            return [create(...prev, new NameIdentifier(name))];
         }
       }
       case AST_NODE_TYPES.ObjectExpression:
@@ -151,11 +148,12 @@ export function getNamesFromTopLevelObject(
             node.properties
           )
         );
-        return [
+        //TODO might need _.flattenDeep here
+        return _.flatten(
           node.properties.map((x) =>
             func(x as SupportedTopLevelExpression, prev)
-          ),
-        ];
+          )
+        );
       case AST_NODE_TYPES.MemberExpression:
         //should never be the case for top level data object
         return [getNameFromExpression(node)];
@@ -163,7 +161,7 @@ export function getNamesFromTopLevelObject(
         throw new Error(`Unsupported node type: ${node.type}`);
     }
   }
-  return _.flattenDeep(func(node, []));
+  return func(node, []);
 }
 
 export type SupportedNamedExpression =

@@ -76,3 +76,36 @@ export function addIndex(that: Identifiers): Identifiers {
     return _.concat(next)(that);
   } else return that;
 }
+
+export function isEqualIgnoringThis(x: Identifiers, y: Identifiers): boolean {
+  return _.isEqual(x, y) || _.isEqual(prefixThis(x), prefixThis(y));
+}
+
+function longestMatchWithIndex(
+  id: Identifiers,
+  topLevel: Identifiers[]
+): [Identifiers, number] | undefined {
+  //TODO verify if non-matching is undefined
+  const longestMatch = _.flow([
+    //zip with index
+    _.zip(_.range(0, topLevel.length)),
+    _.map(([x, y]) => (startsWith(x, id) ? [x, y] : undefined)),
+    _.maxBy(([x, y]) => x?.length),
+  ])(topLevel);
+  return longestMatch;
+}
+export function findLongestMatch(
+  id: Identifiers,
+  topLevel: Identifiers[]
+): Identifiers | undefined {
+  const result = longestMatchWithIndex(id, topLevel);
+  return result?.[0];
+}
+
+export function findLongestMatchIndex(
+  id: Identifiers,
+  topLevel: Identifiers[]
+): number {
+  const result = longestMatchWithIndex(id, topLevel);
+  return result?.[1] ?? -1;
+}
