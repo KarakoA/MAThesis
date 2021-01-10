@@ -3,11 +3,11 @@ import assert from "assert";
 import _ from "lodash/fp";
 
 import {
-  GenericIndex,
   Identifier,
-  NumericIndex,
   This,
   nextIndex,
+  render as renderIdentifier,
+  isIndex,
 } from "./identifier";
 
 export type Identifiers = ReadonlyArray<Identifier>;
@@ -20,11 +20,9 @@ export function create(...data: Identifier[]): Identifiers {
 export function render(that: Identifiers, includeThis = true): string {
   const arr = startsWithThis(that) && !includeThis ? _.tail(that) : that;
   return _.reduce((acc: string, c: Identifier) => {
-    const s = c.render();
+    const s = renderIdentifier(c);
     if (!acc) return s;
-    return c instanceof GenericIndex || c instanceof NumericIndex
-      ? acc.concat(s)
-      : acc.concat("." + s);
+    return isIndex(c) ? acc.concat(s) : acc.concat("." + s);
   })("")(arr);
 }
 
@@ -73,7 +71,7 @@ export function addIndex(that: Identifiers): Identifiers {
   const last = _.last(that);
   if (last) {
     const next = nextIndex(last);
-    return _.concat(next)(that);
+    return _.concat(that, next);
   } else return that;
 }
 

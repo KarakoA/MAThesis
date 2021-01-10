@@ -3,10 +3,9 @@ import { Method, Property, EntityType, Entity } from "./models/shared";
 import _ from "lodash/fp";
 import {
   This,
-  NameIdentifier,
-  NumericIndex,
   Identifier,
   nextIndex,
+  IdentifierType,
 } from "../models2/identifier";
 import { create, Identifiers } from "../models2/identifiers";
 import { AST } from "vue-eslint-parser";
@@ -131,14 +130,27 @@ export function getNamesFromTopLevelObject(
             assert(isSupportedTopLevelExpression(node.value));
             return func(
               node.value as SupportedTopLevelExpression,
-              prev.concat(new NameIdentifier(name))
+              prev.concat({
+                name,
+                discriminator: IdentifierType.NAME_IDENTIFIER,
+              })
             );
           //@Future array type distinguish here
           case AST_NODE_TYPES.ArrayExpression:
-            return [create(...prev, new NameIdentifier(name))];
+            return [
+              create(...prev, {
+                name,
+                discriminator: IdentifierType.NAME_IDENTIFIER,
+              }),
+            ];
           //@Future other type distinguish here
           default:
-            return [create(...prev, new NameIdentifier(name))];
+            return [
+              create(...prev, {
+                name,
+                discriminator: IdentifierType.NAME_IDENTIFIER,
+              }),
+            ];
         }
       }
       case AST_NODE_TYPES.ObjectExpression:
@@ -186,7 +198,10 @@ export function getNameFromExpression(
 ): Identifiers {
   switch (node.type) {
     case AST_NODE_TYPES.Identifier: {
-      const ids = prev.concat(new NameIdentifier(node.name));
+      const ids = prev.concat({
+        name: node.name,
+        discriminator: IdentifierType.NAME_IDENTIFIER,
+      });
       return create(...ids.reverse());
     }
     case AST_NODE_TYPES.ThisExpression: {
@@ -201,12 +216,18 @@ export function getNameFromExpression(
         //X[Z] => 'i',X[1] => 1, X[Z+1+y] => 'i' or 'j' if prev is 'i' etc.
         next =
           node.property.type === AST_NODE_TYPES.Literal
-            ? //TODO @unsafe-cast has also other values, safer cast?
-              new NumericIndex(node.property.value as number)
+            ? {
+                //@unsafe
+                name: node.property.value as string,
+                discriminator: IdentifierType.NUMERIC_INDEX,
+              }
             : nextIndex(_.head(prev));
       } else {
         if ("name" in node.property)
-          next = new NameIdentifier(node.property.name);
+          next = {
+            name: node.property.name,
+            discriminator: IdentifierType.NAME_IDENTIFIER,
+          };
         else
           throw new Error(
             `node.property of type ${node.property.type} does not have a name.`

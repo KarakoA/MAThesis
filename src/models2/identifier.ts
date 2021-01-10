@@ -1,63 +1,60 @@
-import assert from "assert";
-
 import { nextChar } from "../utils2";
 
 /**
  * Represents an identifier.
  */
-export interface Identifier {
+export interface BaseIdentifier {
   readonly name: string;
-  render(): string;
 }
 
-/* #region  Local */
-
-class BaseIdentifier implements Identifier {
-  name: string;
-  constructor(name: string) {
-    assert(name);
-    this.name = name;
-  }
-  render(): string {
-    return this.name;
-  }
+export enum IdentifierType {
+  THIS = "this",
+  NUMERIC_INDEX = "numeric-index",
+  GENERIC_INDEX = "generic-index",
+  NAME_IDENTIFIER = "name-identifier",
 }
 
-class BaseIndexIdentifier extends BaseIdentifier {
-  constructor(name: string) {
-    super(name);
-  }
-  render(): string {
-    return `[${this.name}]`;
-  }
+export const This = {
+  name: "this",
+  discriminator: IdentifierType.THIS,
+};
+
+export type Identifier =
+  | typeof This
+  | NameIdentifier
+  | NumericIndex
+  | GenericIndex;
+
+export interface NumericIndex extends BaseIdentifier {
+  discriminator: IdentifierType.NUMERIC_INDEX;
+}
+export interface GenericIndex extends BaseIdentifier {
+  discriminator: IdentifierType.GENERIC_INDEX;
+}
+export interface NameIdentifier extends BaseIdentifier {
+  discriminator: IdentifierType.NAME_IDENTIFIER;
 }
 
-class ThisIdentifier extends BaseIdentifier {
-  constructor(name: string) {
-    super(name);
-  }
+export function isNumericIndex(id: Identifier): id is NumericIndex {
+  return id.discriminator === IdentifierType.NUMERIC_INDEX;
+}
+export function isGenericIndex(id: Identifier): id is GenericIndex {
+  return id.discriminator === IdentifierType.GENERIC_INDEX;
 }
 
-/* #endregion */
-
-export const This = new ThisIdentifier("this");
-
-export class NumericIndex extends BaseIndexIdentifier {
-  constructor(name: number) {
-    super(name.toString());
-  }
+export function isIndex(id: Identifier): id is NumericIndex | GenericIndex {
+  return isNumericIndex(id) || isGenericIndex(id);
+}
+//TODO check this works as expected
+export function isThis(id: Identifier): id is typeof This {
+  return id.discriminator === IdentifierType.THIS;
+}
+export function isNameIdentifier(id: Identifier): id is NameIdentifier {
+  return id.discriminator === IdentifierType.NAME_IDENTIFIER;
 }
 
-export class GenericIndex extends BaseIndexIdentifier {
-  constructor(name: string) {
-    super(name);
-  }
-}
-
-export class NameIdentifier extends BaseIdentifier {
-  constructor(name: string) {
-    super(name);
-  }
+export function render(id: Identifier): string {
+  return isIndex(id) ? `[${id.name}]` : id.name;
 }
 
 /**
@@ -67,6 +64,6 @@ export class NameIdentifier extends BaseIdentifier {
  */
 export function nextIndex(previous: Identifier | undefined): GenericIndex {
   const index =
-    previous instanceof GenericIndex ? nextChar(previous.name) : "i";
-  return new GenericIndex(index);
+    previous && isGenericIndex(previous) ? nextChar(previous.name) : "i";
+  return { name: index, discriminator: IdentifierType.GENERIC_INDEX };
 }
