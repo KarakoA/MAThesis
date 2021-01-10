@@ -1,3 +1,4 @@
+import { Identifier } from "../../models2/identifier";
 import { Identifiers } from "../../models2/identifiers";
 
 export enum EntityType {

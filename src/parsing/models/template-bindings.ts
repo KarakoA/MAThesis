@@ -1,5 +1,7 @@
 import { Method, Property, Entity } from "./shared";
 import _ from "lodash/fp";
+import type { LocationRange as Location } from "vue-eslint-parser/ast";
+
 export type { LocationRange as Location } from "vue-eslint-parser/ast";
 export enum BindingType {
   EVENT = "event",

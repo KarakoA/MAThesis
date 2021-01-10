@@ -77,7 +77,7 @@ export class ExtendedGraph {
 
   //TODO refactor this
   numericPositions() {
-    let numerics = this.nodesWithLabels().filter(
+    const numerics = this.nodesWithLabels().filter(
       (x) => x.opts?.type === identifierTypes.NUMERIC_POSITION
     );
     numerics.map((x) => this.process(x));
@@ -85,19 +85,19 @@ export class ExtendedGraph {
 
   //TODO refactor this
   process(numeric) {
-    let parent = this.graph.parent(numeric.id);
+    const parent = this.graph.parent(numeric.id);
     //TODO @check could there be more (shouldn't be the case)
-    let generic = this.graph
+    const generic = this.graph
       .children(parent)
       .map((x) => this.nodeWithLabels(x))
       .find((x) => x.opts.type === identifierTypes.GENERIC_POSITION);
-    let oldIds = this.indirectChildren(generic.id);
+    const oldIds = this.indirectChildren(generic.id);
 
-    let ids = oldIds.map((id) => {
+    const ids = oldIds.map((id) => {
       return { id, newId: id.replace(generic.id, numeric.id) };
     });
 
-    let nodes = ids.map((x) => {
+    const nodes = ids.map((x) => {
       return new Node({
         ...this.graph.node(x.id),
         id: x.newId,
@@ -108,17 +108,17 @@ export class ExtendedGraph {
     this.addNodes(nodes);
 
     //TODO labels not set ( not used(can't be events), but this)
-    let newOutEdges = ids.map((x) =>
+    const newOutEdges = ids.map((x) =>
       this.graph.outEdges(x.id).map((edge) => {
         return { v: x.newId, w: edge.w };
       })
     );
-    let newInEdges = ids.map((x) =>
+    const newInEdges = ids.map((x) =>
       this.graph.inEdges(x.id).map((edge) => {
         return { v: edge.v === generic.id ? numeric.id : edge.v, w: x.newId };
       })
     );
-    let flat = lodash.flattenDeep(newInEdges.concat(newOutEdges));
+    const flat = lodash.flattenDeep(newInEdges.concat(newOutEdges));
     flat.forEach((x) => this.graph.setEdge(x.v, x.w));
   }
 

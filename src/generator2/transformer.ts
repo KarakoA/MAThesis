@@ -1,219 +1,246 @@
 import { ExtendedGraph } from "./graph";
 import graphlib from "graphlib";
-import { Identifier, Identifiers } from "../models/identifiers";
-import { Node } from "../models/graph";
+
 import _ from "lodash/fp";
 import { MethodResolver } from "./method-resolver";
 import { Result } from "../parsing/models/result";
 import { MethodDefintitions, MethodDefintion } from "../parsing/models/methods";
-import { BindingsResult } from "../parsing/models/template-bindings";
-import { isMethod, isProperty } from "../parsing/models/shared";
-export function compute(visitorsResult: Result): Object {
-  const graph = new ExtendedGraph();
-  const methodResolver = new MethodResolver(
-    visitorsResult.methods,
-    visitorsResult.topLevel
-  );
-  const isComputedF = isComputed(visitorsResult.methods.computed);
-  addTopLevel(graph, visitorsResult.topLevel);
-  addBindings(
-    graph,
-    methodResolver,
-    visitorsResult.bindings,
-    isComputedF,
-    visitorsResult.methods.init
-  );
+import * as identifiers from "../models2/identifiers";
+import { Identifiers } from "../models2/identifiers";
+import {
+  BindingType,
+  BindingValue,
+  Tag,
+} from "../parsing/models/template-bindings";
+import {
+  Entity,
+  EntityType,
+  isMethod,
+  isProperty,
+  Method,
+} from "../parsing/models/shared";
+import { MethodCache } from "./method-cache";
+import { NodeType, TagNode, Node, EdgeType, MethodNode } from "./models/graph";
+import { TopLevelVariables } from "../parsing/models/top-level-variables";
+import {
+  CalledMethod,
+  ResolvedMethodDefintition,
+} from "./models/method-resolver";
 
-  resolveDifferentDisplays(graph);
-  const g = graph.execute();
+export class Transformer {
+  graph: ExtendedGraph;
+  methodCache: MethodCache;
 
-  return graphlib.json.write(g);
-}
+  computedIds: Identifiers[];
 
-function isComputed(computed: MethodDefintitions): (x: Identifiers) => boolean {
-  //TODO with proper equality can be more efficient
-  const computedIds = computed.map((x) => x.id);
-  return (item: Identifiers) => {
-    return _.find(_.isEqual(item), computedIds) !== undefined;
-  };
-}
-function resolveDifferentDisplays(graph: ExtendedGraph) {
-  graph.numericPositions();
-}
+  bindings: [Tag, BindingValue[]][];
+  methods: MethodDefintitions;
+  topLevel: TopLevelVariables;
+  init?: MethodDefintion;
 
-//TODO refactor (split up mainly)
-function addBindings(
-  graph: ExtendedGraph,
-  methodResolver: MethodResolver,
-  bindings: BindingsResult,
-  isComputedF: (x: Identifiers) => boolean,
-  init?: MethodDefintion
-) {
-  //TODO keep track of those in method resolver?
-  let methodsDone = [];
-  let methodsToDo = [];
-  Array.from(bindings.bindings).forEach(([tag, boundItems]) => {
-    const tagNode = new Node({
-      id: tag.id,
-      name: tag.name,
-      opts: { loc: tag.loc, type: "tag" },
-    });
-    graph.addNode(tagNode);
+  constructor(visitorsResult: Result) {
+    this.graph = new ExtendedGraph();
+    const methodResolver = new MethodResolver(
+      visitorsResult.methods,
+      visitorsResult.topLevel
+    );
 
-    boundItems.forEach((binding) => {
-      if (isProperty(binding.item)) {
-        if (isComputedF(binding.item.id)) {
-          //TODO abstract
-          const resolved = methodResolver.called({
-            id: binding.item.id,
-            args: [],
-          });
+    this.methodCache = new MethodCache(methodResolver);
 
-          const node = methodLikeNode(resolved, "computed");
-          methodsDone.push(node);
-          methodsToDo = methodsToDo.concat(resolved.calls);
-          addEdgesMethod(graph, node, resolved);
-
-          addEdgeBasedOnType(graph, tagNode, node, binding.bindingType);
-        } else {
-          const item = prefix(binding.item);
-          const last = addIdentifierChain(graph, item);
-          addEdgeBasedOnType(graph, tagNode, last, binding.bindingType);
-        }
-      }
-      if (isMethod(binding.item)) {
-        //TODO abstract
-        const resolved = methodResolver.called(binding.item);
-        const node = methodNode(resolved);
-        methodsDone.push(node);
-        methodsToDo = methodsToDo.concat(resolved.calls);
-        addEdgesMethod(graph, node, resolved);
-
-        addEdgeBasedOnType(graph, tagNode, node, binding.bindingType);
-      }
-    });
-  });
-
-  //TODO abstract
-  const resolved = methodResolver.called({ id: init.name, args: init.args });
-  //type:init
-  const node = methodLikeNode(resolved, "init");
-  //TODO can contain duplicates(not an issue, but proper equals would be great )
-  methodsDone.push(node);
-  methodsToDo = methodsToDo.concat(resolved.calls);
-
-  addEdgesMethod(graph, node, resolved);
-
-  //TODO abstraction level
-  //TODO simplify, if can use proper equals this is just a contains query
-  while (
-    !(
-      lodash.isEmpty(methodsToDo) ||
-      lodash.every(methodsToDo, (todo) =>
-        lodash.some(methodsDone, (done) =>
-          lodash.isEqual(done.id, methodNode(todo).id)
-        )
-      )
-    )
-  ) {
-    const item = methodsToDo.pop();
-    const resolved = methodResolver.called(item);
-    if (resolved) {
-      const node = methodNode(resolved);
-      methodsDone.push(node);
-      methodsToDo = methodsToDo.concat(resolved.calls);
-      addEdgesMethod(graph, node, resolved);
-    }
+    this.topLevel = visitorsResult.topLevel.topLevel;
+    this.init = visitorsResult.methods.init;
+    this.methods = visitorsResult.methods.methods;
+    this.bindings = Array.from(visitorsResult.bindings.bindings);
+    this.computedIds = visitorsResult.methods.computed.map((x) => x.id);
   }
-}
 
-function addEdgesMethod(graph, node, resolved) {
-  let readNodes = resolved.reads.map((x) => addIdentifierChain(graph, x));
-  readNodes.map((x) => graph.addEdge(x, node));
+  private resolveDifferentDisplays() {
+    this.graph.numericPositions();
+  }
 
-  let writeNodes = resolved.writes.map((x) => addIdentifierChain(graph, x));
-  writeNodes.map((x) => graph.addEdge(node, x));
+  /**
+   * Creates a node from the given method definition, based on it's id and args.
+   * If it's a computed property, brackets are ommited.
+   * @param method method to create node from
+   * @param isComputed if the method is a computed property
+   */
+  private nodeFromMethod(
+    method: ResolvedMethodDefintition | CalledMethod
+  ): MethodNode {
+    if (this.isComputedProperty(method.id))
+      return {
+        id: identifiers.render(method.id),
+        name: identifiers.render(method.id, false),
+        discriminator: NodeType.METHOD,
+      };
+    const argsIdsString = method.args
+      .map((arg) => {
+        if (isProperty(arg))
+          return _.last(this.identifierChainToNodes(arg.id))?.toString() ?? "";
+        return arg.toString();
+      })
+      .join(",");
 
-  let callNodes = resolved.calls.map(methodNode);
-  callNodes.map((x) => graph.addEdge(node, x, { type: "calls" }));
-}
-//TODO better abstraction
+    const id = `${identifiers.render(method.id)}(${argsIdsString})`;
+
+    const argsString = method.args
+      .map((arg) =>
+        isProperty(arg) ? identifiers.render(arg.id, false) : arg.toString()
+      )
+      .join(",");
+
+    const name = `${identifiers.render(method.id, false)}(${argsString})`;
+
+    return { id: id, name: name, discriminator: NodeType.METHOD };
+  }
+
+  compute(): Object {
+    this.addTopLevel();
+
+    this.resolveDifferentDisplays();
+    const g = this.graph.execute();
+
+    return graphlib.json.write(g);
+  }
+  private isComputedProperty(item: identifiers.Identifiers): boolean {
+    return _.find(_.isEqual(item), this.computedIds) !== undefined;
+  }
+
+  private addTopLevel(): void {
+    this.topLevel.forEach((topLevel) => this.addIdentifierChain(topLevel));
+  }
+
+  addBindings(): void {
+    this.bindings.forEach(([tag, boundItems]) => {
+      const tagNode: TagNode = {
+        id: tag.id,
+        name: tag.name,
+        loc: tag.loc,
+        discriminator: NodeType.TAG,
+      };
+      //add the tag itself
+      this.graph.addNode(tagNode);
+
+      boundItems.forEach((binding) => {
+        if (isProperty(binding.item)) {
+          //compute property, treat as method
+          if (this.isComputedProperty(binding.item.id)) {
+            /*
+            
 function methodLikeNode(item, type) {
   let id = Identifiers.toString(item.id);
   let name = Identifiers.toString(item.id, false);
 
   return new Node({ id, name, opts: { type: type } });
-}
-function methodNode(method) {
-  //
-  let id = `${Identifiers.toString(method.id)}(${method.args
-    //TODO @this.problems.push() is undefined only
-    .map((arg) => (arg ? lodash.last(identifierChainToNodes(arg)).id : ""))
-    .join(",")})`;
-  let name = `${Identifiers.toString(
-    method.id,
-    false
-  )}(${method.args.map((arg) => Identifiers.toString(arg, false)).join(",")})`;
-
-  return new Node({ id, name, opts: { type: "method" } });
-}
-function addTopLevel(graph, topLevel) {
-  topLevel = prefixAll(topLevel);
-  topLevel.forEach((topLevel) => addIdentifierChain(graph, topLevel));
-}
-
-function addIdentifierChain(graph, x, opts = undefined) {
-  let nodes = identifierChainToNodes(x.id ?? x, opts);
-
-  graph.addNodes(nodes);
-  graph.connect(nodes);
-
-  return lodash.last(nodes);
-}
-
-function prefix(acessor) {
-  return { id: Identifiers.prefixThis(acessor.id) };
-}
-
-function prefixAll(acessors) {
-  return acessors.map((a) => prefix(a));
-}
-
-function identifierChainToNodes(identifiers, opts) {
-  let prev = [];
-  let nodes = identifiers.map((current) => {
-    let nodeName = Identifier.isPosition(current)
-      ? Identifier.createIdentifier(
-          lodash.last(prev).name + Identifier.toString(current)
-        )
-      : current;
-    //TODO @check guaranteed to be only one?
-    let parent = Identifiers.toString(prev);
-    prev = prev.concat(nodeName);
-
-    return new Node({
-      id: Identifiers.toString(prev),
-      name: Identifier.toString(nodeName),
-      opts: { ...opts, type: current.type },
-      parent,
+}*/
+            const itemAsMethod: Method = {
+              id: binding.item.id,
+              args: [],
+              discriminator: EntityType.METHOD,
+            };
+            //TODO not like this, see above
+            const resolved = this.methodCache.called(itemAsMethod);
+            const node = this.nodeFromMethod(resolved);
+            this.addEdgeBasedOnBindingType(tagNode, node, binding.bindingType);
+            //regular property
+          } else {
+            const item = {
+              ...binding.item,
+              id: identifiers.prefixThis(binding.item.id),
+            };
+            const last = this.addIdentifierChain(item);
+            this.addEdgeBasedOnBindingType(tagNode, last, binding.bindingType);
+          }
+        }
+        if (isMethod(binding.item)) {
+          const resolved = this.methodCache.called(binding.item);
+          const node = this.nodeFromMethod(resolved);
+          this.addEdgeBasedOnBindingType(tagNode, node, binding.bindingType);
+        }
+      });
     });
-  });
-  return nodes;
-}
 
-function addEdgeBasedOnType(graph, tag, item, type) {
-  switch (type) {
-    case bindingType.EVENT:
-      graph.addEdge(tag, item, { type: bindingType.EVENT });
-      break;
-    case bindingType.ONE_WAY:
-      graph.addEdge(item, tag);
-      break;
-    case bindingType.TWO_WAY:
-      graph.addEdge(tag, item, { type: bindingType.EVENT });
-      graph.addEdge(item, tag);
-      break;
-    default:
-      throw new Error(`Unknown binding type: ${type}!`);
+    const allCalled = this.methodCache.allCalledMethods();
+    const methods = _.filter((x) => !isProperty(x), allCalled);
+
+    methods.forEach((resolved) => {
+      const node = this.nodeFromMethod(resolved);
+      this.addEdgesMethod(node, resolved);
+    });
+    //TODO
+    //those are problem.item.push() etc, but only the actual name
+    const properties = _.filter(isProperty(allCalled));
+  }
+
+  //TODO rename add Entity or smth
+  private addIdentifierChain(x: Entity): Node {
+    const nodes = this.identifierChainToNodes(x.id);
+
+    this.graph.addNodes(nodes);
+    this.graph.connect(nodes);
+
+    const last = _.last(nodes);
+    if (!last)
+      throw new Error("Got empty identifier. this should not be possible");
+    return last;
+  }
+
+  //TODO rename
+  identifierChainToNodes(identifiers: Identifiers): Node[] {
+    let prev = [];
+    const nodes = identifiers.map((current) => {
+      //TODO missing,
+      let nodeName = Identifier.isPosition(current)
+        ? Identifier.createIdentifier(
+            lodash.last(prev).name + Identifier.toString(current)
+          )
+        : current;
+      //TODO @check guaranteed to be only one?
+      const parent = Identifiers.toString(prev);
+      prev = prev.concat(nodeName);
+
+      return new Node({
+        id: Identifiers.toString(prev),
+        name: Identifier.toString(nodeName),
+        opts: { ...opts, type: current.type },
+        parent,
+      });
+    });
+    return nodes;
+  }
+
+  private addEdgesMethod(
+    node: Node,
+    resolved: ResolvedMethodDefintition
+  ): void {
+    const readNodes = resolved.reads.map((x) => this.addIdentifierChain(x));
+    readNodes.forEach((x) => this.graph.addEdge(x, node));
+
+    const writeNodes = resolved.writes.map((x) => this.addIdentifierChain(x));
+    writeNodes.forEach((x) => this.graph.addEdge(node, x));
+
+    const callNodes = resolved.calls.map((x) => this.nodeFromMethod(x));
+    callNodes.forEach((x) => this.graph.addEdge(node, x, EdgeType.CALLS));
+  }
+
+  private addEdgeBasedOnBindingType(
+    tag: TagNode,
+    item: Node,
+    type: BindingType
+  ) {
+    switch (type) {
+      case BindingType.EVENT:
+        this.graph.addEdge(tag, item, EdgeType.EVENT);
+        break;
+      case BindingType.ONE_WAY:
+        this.graph.addEdge(item, tag);
+        break;
+      case BindingType.TWO_WAY:
+        this.graph.addEdge(tag, item, EdgeType.EVENT);
+        this.graph.addEdge(item, tag);
+        break;
+      default:
+        throw new Error(`Unknown binding type: ${type}!`);
+    }
   }
 }
