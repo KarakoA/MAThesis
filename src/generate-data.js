@@ -1,6 +1,6 @@
 import { ESLinter } from "./parsing/eslinter";
 import fs from "fs";
-import { compute } from "./generator/transformer";
+//import { compute } from "./generator/transformer";
 import { computeScenarios } from "./scenarios/scenarios";
 import process from "process";
 

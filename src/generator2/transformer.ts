@@ -20,12 +20,21 @@ import {
   Method,
 } from "../parsing/models/shared";
 import { MethodCache } from "./method-cache";
-import { NodeType, TagNode, Node, EdgeType, MethodNode } from "./models/graph";
+import {
+  NodeType,
+  TagNode,
+  Node,
+  EdgeType,
+  MethodNode,
+  DataNode,
+} from "./models/graph";
 import { TopLevelVariables } from "../parsing/models/top-level-variables";
 import {
   CalledMethod,
   ResolvedMethodDefintition,
 } from "./models/method-resolver";
+import * as identifier from "../models2/identifier";
+import { Identifier } from "../models2/identifier";
 
 export class Transformer {
   graph: ExtendedGraph;
@@ -76,7 +85,7 @@ export class Transformer {
     const argsIdsString = method.args
       .map((arg) => {
         if (isProperty(arg))
-          return _.last(this.identifierChainToNodes(arg.id))?.toString() ?? "";
+          return _.last(this.identifierToDataNodes(arg.id))?.toString() ?? "";
         return arg.toString();
       })
       .join(",");
@@ -174,7 +183,7 @@ function methodLikeNode(item, type) {
 
   //TODO rename add Entity or smth
   private addIdentifierChain(x: Entity): Node {
-    const nodes = this.identifierChainToNodes(x.id);
+    const nodes = this.identifierToDataNodes(x.id);
 
     this.graph.addNodes(nodes);
     this.graph.connect(nodes);
@@ -185,26 +194,28 @@ function methodLikeNode(item, type) {
     return last;
   }
 
-  //TODO rename
-  identifierChainToNodes(identifiers: Identifiers): Node[] {
-    let prev = [];
-    const nodes = identifiers.map((current) => {
-      //TODO missing,
-      let nodeName = Identifier.isPosition(current)
-        ? Identifier.createIdentifier(
-            lodash.last(prev).name + Identifier.toString(current)
-          )
-        : current;
+  identifierToDataNodes(ids: Identifiers): DataNode[] {
+    let prev: identifier.Identifier[] = [];
+    const nodes = ids.map((current) => {
+      let nameId: Identifier;
+      if (identifier.isIndex(current)) {
+        const last = _.last(prev);
+        if (!last) throw new Error("Index as first element!");
+        nameId = { ...current, name: last.name + identifier.render(current) };
+      } else {
+        nameId = current;
+      }
       //TODO @check guaranteed to be only one?
-      const parent = Identifiers.toString(prev);
-      prev = prev.concat(nodeName);
+      const parent = identifiers.render(prev);
+      prev = prev.concat(nameId);
 
-      return new Node({
-        id: Identifiers.toString(prev),
-        name: Identifier.toString(nodeName),
-        opts: { ...opts, type: current.type },
+      const node: DataNode = {
+        id: identifiers.render(prev),
+        name: identifier.render(nameId),
         parent,
-      });
+        discriminator: NodeType.DATA,
+      };
+      return node;
     });
     return nodes;
   }
