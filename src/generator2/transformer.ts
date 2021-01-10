@@ -1,53 +1,59 @@
 import { ExtendedGraph } from "./graph";
-import graphlib from "@dagrejs/graphlib";
-//import { bindingType } from "../models/visitors";
+import graphlib from "graphlib";
 import { Identifier, Identifiers } from "../models/identifiers";
 import { Node } from "../models/graph";
-import lodash from "lodash";
+import _ from "lodash/fp";
 import { MethodResolver } from "./method-resolver";
-export function compute(visitorsResult) {
-  let graph = new ExtendedGraph();
-  let methodResolver = new MethodResolver(
-    visitorsResult.methods
-      .concat(visitorsResult.computed)
-      .concat(visitorsResult.init),
-    visitorsResult.topLevelData
+import { Result } from "../parsing/models/result";
+import { MethodDefintitions, MethodDefintion } from "../parsing/models/methods";
+import { BindingsResult } from "../parsing/models/template-bindings";
+import { isMethod, isProperty } from "../parsing/models/shared";
+export function compute(visitorsResult: Result): Object {
+  const graph = new ExtendedGraph();
+  const methodResolver = new MethodResolver(
+    visitorsResult.methods,
+    visitorsResult.topLevel
   );
-  let isComputedF = isComputed(visitorsResult.computed);
-  addTopLevel(graph, visitorsResult.topLevelData);
+  const isComputedF = isComputed(visitorsResult.methods.computed);
+  addTopLevel(graph, visitorsResult.topLevel);
   addBindings(
     graph,
     methodResolver,
     visitorsResult.bindings,
-    visitorsResult.init,
-    isComputedF
+    isComputedF,
+    visitorsResult.methods.init
   );
 
   resolveDifferentDisplays(graph);
-  //addInit(graph, visitorsResult.methods);
-  let g = graph.execute();
+  const g = graph.execute();
 
   return graphlib.json.write(g);
 }
 
-function isComputed(computed) {
+function isComputed(computed: MethodDefintitions): (x: Identifiers) => boolean {
   //TODO with proper equality can be more efficient
-  let allComputed = computed.map((x) => x.name);
-  return (item) => lodash.find(allComputed, (x) => lodash.isEqual(x, item));
+  const computedIds = computed.map((x) => x.id);
+  return (item: Identifiers) => {
+    return _.find(_.isEqual(item), computedIds) !== undefined;
+  };
 }
-function resolveDifferentDisplays(graph) {
+function resolveDifferentDisplays(graph: ExtendedGraph) {
   graph.numericPositions();
 }
 
 //TODO refactor (split up mainly)
-function addBindings(graph, methodResolver, bindings, init, isComputedF) {
+function addBindings(
+  graph: ExtendedGraph,
+  methodResolver: MethodResolver,
+  bindings: BindingsResult,
+  isComputedF: (x: Identifiers) => boolean,
+  init?: MethodDefintion
+) {
   //TODO keep track of those in method resolver?
   let methodsDone = [];
   let methodsToDo = [];
-  bindings.forEach((x) => {
-    let tag = x[0];
-    let boundItems = x[1];
-    let tagNode = new Node({
+  Array.from(bindings.bindings).forEach(([tag, boundItems]) => {
+    const tagNode = new Node({
       id: tag.id,
       name: tag.name,
       opts: { loc: tag.loc, type: "tag" },
@@ -55,30 +61,30 @@ function addBindings(graph, methodResolver, bindings, init, isComputedF) {
     graph.addNode(tagNode);
 
     boundItems.forEach((binding) => {
-      if (binding.item.type === "property") {
+      if (isProperty(binding.item)) {
         if (isComputedF(binding.item.id)) {
           //TODO abstract
-          let resolved = methodResolver.called({
+          const resolved = methodResolver.called({
             id: binding.item.id,
             args: [],
           });
 
-          let node = methodLikeNode(resolved, "computed");
+          const node = methodLikeNode(resolved, "computed");
           methodsDone.push(node);
           methodsToDo = methodsToDo.concat(resolved.calls);
           addEdgesMethod(graph, node, resolved);
 
           addEdgeBasedOnType(graph, tagNode, node, binding.bindingType);
         } else {
-          let item = prefix(binding.item);
-          let last = addIdentifierChain(graph, item);
+          const item = prefix(binding.item);
+          const last = addIdentifierChain(graph, item);
           addEdgeBasedOnType(graph, tagNode, last, binding.bindingType);
         }
       }
-      if (binding.item.type === "method") {
+      if (isMethod(binding.item)) {
         //TODO abstract
-        let resolved = methodResolver.called(binding.item);
-        let node = methodNode(resolved);
+        const resolved = methodResolver.called(binding.item);
+        const node = methodNode(resolved);
         methodsDone.push(node);
         methodsToDo = methodsToDo.concat(resolved.calls);
         addEdgesMethod(graph, node, resolved);
@@ -89,9 +95,9 @@ function addBindings(graph, methodResolver, bindings, init, isComputedF) {
   });
 
   //TODO abstract
-  let resolved = methodResolver.called({ id: init.name, args: init.args });
+  const resolved = methodResolver.called({ id: init.name, args: init.args });
   //type:init
-  let node = methodLikeNode(resolved, "init");
+  const node = methodLikeNode(resolved, "init");
   //TODO can contain duplicates(not an issue, but proper equals would be great )
   methodsDone.push(node);
   methodsToDo = methodsToDo.concat(resolved.calls);
@@ -110,10 +116,10 @@ function addBindings(graph, methodResolver, bindings, init, isComputedF) {
       )
     )
   ) {
-    let item = methodsToDo.pop();
-    let resolved = methodResolver.called(item);
+    const item = methodsToDo.pop();
+    const resolved = methodResolver.called(item);
     if (resolved) {
-      let node = methodNode(resolved);
+      const node = methodNode(resolved);
       methodsDone.push(node);
       methodsToDo = methodsToDo.concat(resolved.calls);
       addEdgesMethod(graph, node, resolved);
@@ -204,7 +210,6 @@ function addEdgeBasedOnType(graph, tag, item, type) {
       graph.addEdge(item, tag);
       break;
     case bindingType.TWO_WAY:
-      //TODO @maybe leave it at two way here an check later?
       graph.addEdge(tag, item, { type: bindingType.EVENT });
       graph.addEdge(item, tag);
       break;

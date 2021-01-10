@@ -1,21 +1,10 @@
 import { Method, Property, Entity } from "./shared";
 import _ from "lodash/fp";
-import { deserialize, serialize } from "v8";
+export type { LocationRange as Location } from "vue-eslint-parser/ast";
 export enum BindingType {
   EVENT = "event",
   ONE_WAY = "one-way",
   TWO_WAY = "two-way",
-}
-
-export interface Location {
-  start: {
-    column: number;
-    line: number;
-  };
-  end: {
-    column: number;
-    line: number;
-  };
 }
 
 export interface Tag {

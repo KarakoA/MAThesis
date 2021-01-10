@@ -1,10 +1,13 @@
-import { Graph } from "@dagrejs/graphlib";
+import { Graph } from "graphlib";
 //import { Identifiers } from "../models/visitors";
 import assert from "assert";
-import { Node } from "../models/graph";
+import { Node } from "./models/graph";
 import lodash from "lodash";
+import _ from "lodash/fp";
 import { identifierTypes } from "../models/identifiers";
 export class ExtendedGraph {
+  graph: Graph;
+  lastAddedNode?: Node;
   constructor() {
     this.graph = new Graph({
       directed: true,
@@ -14,9 +17,8 @@ export class ExtendedGraph {
     this.lastAddedNode = undefined;
   }
 
-  addNode(node) {
+  addNode(node: Node) {
     this.lastAddedNode = node;
-    assert(node instanceof Node);
     if (!this.graph.hasNode(node.id)) {
       this.graph.setNode(node.id, node.label);
       if (node.parent) {
@@ -92,13 +94,15 @@ export class ExtendedGraph {
   neighborsWithoutParent(node, parent) {
     return lodash.without(this.graph.neighbors(node), parent);
   }
-  indirectChildren(node) {
-    let directChildren = this.graph.children(node);
+
+  indirectChildren(vertex: string): string[] {
+    const directChildren = this.graph.children(vertex);
     if (lodash.isEmpty(directChildren)) {
-      return node;
+      return [vertex];
     }
 
-    return directChildren.map((x) => this.indirectChildren(x, node));
+    //TODO can I inline?
+    return _.flatMap((x) => this.indirectChildren(x), directChildren);
   }
 
   //TODO parent not set

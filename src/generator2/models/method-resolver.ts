@@ -25,7 +25,7 @@ export interface CalledMethod {
 }
 
 export function isCalledMethod(e: CalledMethod | Property): e is CalledMethod {
-  return "discriminator" in e;
+  return "args" in e;
 }
 
 //interface Method
