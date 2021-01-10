@@ -7,7 +7,7 @@ import {
 import _ from "lodash/fp";
 export class MethodCache {
   resolver: MethodResolver;
-  result: (ResolvedMethodDefintition | Property)[];
+  result: ResolvedMethodDefintition[];
   done: (Method | CalledMethod)[];
   constructor(resolver: MethodResolver) {
     this.resolver = resolver;
@@ -15,7 +15,7 @@ export class MethodCache {
     this.done = [];
   }
 
-  allCalledMethods(): ReadonlyArray<ResolvedMethodDefintition | Property> {
+  allCalledMethods(): ReadonlyArray<ResolvedMethodDefintition> {
     return this.result;
   }
 
@@ -33,9 +33,8 @@ export class MethodCache {
   ): ResolvedMethodDefintition | undefined {
     const resolved = this.resolver.called(e);
     this.done.push(e);
-    if (!resolved) return undefined;
+    if (!resolved || isProperty(resolved)) return undefined;
     this.result.push(resolved);
-    if (isProperty(resolved)) return undefined;
     //call recursively for called, that are not processed yet
     resolved.calls
       .filter((x) => !this.contains(x))

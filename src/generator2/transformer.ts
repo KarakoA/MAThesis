@@ -134,14 +134,6 @@ export class Transformer {
         if (isProperty(binding.item)) {
           //compute property, treat as method
           if (this.isComputedProperty(binding.item.id)) {
-            /*
-            
-function methodLikeNode(item, type) {
-  let id = Identifiers.toString(item.id);
-  let name = Identifiers.toString(item.id, false);
-
-  return new Node({ id, name, opts: { type: type } });
-}*/
             const itemAsMethod: Method = {
               id: binding.item.id,
               args: [],
@@ -169,16 +161,13 @@ function methodLikeNode(item, type) {
       });
     });
 
-    const allCalled = this.methodCache.allCalledMethods();
-    const methods = _.filter((x) => !isProperty(x), allCalled);
-
+    const methods = this.methodCache.allCalledMethods();
     methods.forEach((resolved) => {
       const node = this.nodeFromMethod(resolved);
       this.addEdgesMethod(node, resolved);
     });
-    //TODO
-    //those are problem.item.push() etc, but only the actual name
-    const properties = _.filter(isProperty(allCalled));
+    //TODO test with onClick="problem.item.push()" and see what happens if
+    // wrong , need to also handle Property in allCalledMethods
   }
 
   //TODO rename add Entity or smth
