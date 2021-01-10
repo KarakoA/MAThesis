@@ -46,7 +46,7 @@ export interface TagNode extends BaseNode {
 }
 
 export interface DataNode extends BaseNode {
-  parent: string;
+  parent?: string;
   discriminator: NodeType.DATA;
 }
 export interface MethodNode extends BaseNode {
