@@ -26,6 +26,7 @@ import {
   EdgeType,
   MethodNode,
   DataNode,
+  InitNode,
 } from "./models/graph";
 import { TopLevelVariables } from "../parsing/models/top-level-variables";
 import {
@@ -75,7 +76,14 @@ export class Transformer {
    */
   private nodeFromMethod(
     method: ResolvedMethodDefintition | CalledMethod
-  ): MethodNode {
+  ): MethodNode | InitNode {
+    if (this.isInit(method.id)) {
+      return {
+        id: identifiers.render(method.id),
+        name: identifiers.render(method.id, false),
+        discriminator: NodeType.INIT,
+      };
+    }
     if (this.isComputedProperty(method.id))
       return {
         id: identifiers.render(method.id),
@@ -105,7 +113,9 @@ export class Transformer {
 
   compute(): JSObject {
     this.addTopLevel();
-
+    this.addInit();
+    this.addBindings();
+    this.addIndirectlyCalledMethods();
     this.resolveDifferentDisplays();
 
     return serialize(this.graph);
@@ -113,13 +123,27 @@ export class Transformer {
   private isComputedProperty(item: identifiers.Identifiers): boolean {
     return _.find(_.isEqual(item), this.computedIds) !== undefined;
   }
+  private isInit(item: identifiers.Identifiers): boolean {
+    return _.equals(this.init?.id, item);
+  }
 
   private addTopLevel(): void {
     this.topLevel.forEach((topLevel) => this.addIdentifierChain(topLevel));
   }
 
-  //TODO add Init
-  addBindings(): void {
+  private addInit(): void {
+    if (!this.init) throw new Error("No init method!");
+
+    const initAsMethod: Method = {
+      id: this.init.id,
+      args: [],
+      discriminator: EntityType.METHOD,
+    };
+    const resolved = this.methodCache.called(initAsMethod);
+    const node = this.nodeFromMethod(resolved);
+    this.graph.addNode(node);
+  }
+  private addBindings(): void {
     this.bindings.forEach(([tag, boundItems]) => {
       const tagNode: TagNode = {
         id: tag.id,
@@ -139,7 +163,6 @@ export class Transformer {
               args: [],
               discriminator: EntityType.METHOD,
             };
-            //TODO not like this, see above
             const resolved = this.methodCache.called(itemAsMethod);
             const node = this.nodeFromMethod(resolved);
             this.addEdgeBasedOnBindingType(tagNode, node, binding.bindingType);
@@ -160,7 +183,8 @@ export class Transformer {
         }
       });
     });
-
+  }
+  private addIndirectlyCalledMethods() {
     const methods = this.methodCache.allCalledMethods();
     methods.forEach((resolved) => {
       const node = this.nodeFromMethod(resolved);
