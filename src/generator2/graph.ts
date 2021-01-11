@@ -1,21 +1,22 @@
-import { Graph } from "graphlib";
+import { Graph, json } from "graphlib";
 import {
+  DataNode,
   EdgeType,
   isDataNode,
   isTagNode,
   Node,
+  Edge,
   NodeType,
+  TagNode,
 } from "./models/graph";
-import lodash from "lodash";
 import _ from "lodash/fp";
-import { identifierTypes } from "../models/identifiers";
-import { Location } from "../parsing/models/template-bindings";
+import {
+  Identifier,
+  isGenericIndex,
+  isNumericIndex,
+} from "../models2/identifier";
+import { lift, JSObject } from "../utils2";
 
-interface NodeLabel {
-  name: string;
-  type: NodeType;
-  loc?: Location;
-}
 export class ExtendedGraph {
   graph: Graph;
   lastAddedNode?: Node;
@@ -35,7 +36,7 @@ export class ExtendedGraph {
   addNode(node: Node): void {
     this.lastAddedNode = node;
     if (!this.graph.hasNode(node.id)) {
-      const label = this.getLabel(node);
+      const label = node;
       this.graph.setNode(node.id, label);
       if (isDataNode(node) && node.parent) {
         this.graph.setParent(node.id, node.parent);
@@ -62,6 +63,12 @@ export class ExtendedGraph {
     this.addNode(sink);
     this.graph.setEdge(source.id, sink.id, label);
   }
+  //TODO merge
+  addEdge2(edge: Edge): void {
+    this.addNode(edge.source);
+    this.addNode(edge.sink);
+    this.graph.setEdge(edge.source.id, edge.sink.id, edge.label);
+  }
 
   /**
    * Connects the given nodes by adding edges between them with the given label.
@@ -70,92 +77,168 @@ export class ExtendedGraph {
    * @example connect(["A","B","C"]) results in the following edges: A -> B, B-> C
    */
   connect(nodes: Node[], label: EdgeType = EdgeType.SIMPLE): void {
-    _.zip(nodes, _.tail(nodes)).forEach(([a, b]) => {
-      if (a && b) this.addEdge(a, b, label);
+    _.zip(nodes, _.tail(nodes)).forEach(([source, sink]) => {
+      if (source && sink) this.addEdge(source, sink, label);
     });
   }
 
   //TODO refactor this
-  numericPositions() {
-    const numerics = this.nodesWithLabels().filter(
-      (x) => x.opts?.type === identifierTypes.NUMERIC_POSITION
-    );
-    numerics.map((x) => this.process(x));
+  numericPositions(): void {
+    const numerics = _.filter(
+      (x) => isDataNode(x) && isNumericIndex(x.identifier),
+      this.nodes()
+    ).map((x) => x as DataNode);
+
+    numerics.forEach((x) => this.process(x));
   }
 
   //TODO refactor this
-  process(numeric) {
-    const parent = this.graph.parent(numeric.id);
+  //connects ids of generic to the one of numeric
+  process(numeric: DataNode): void {
+    //get the parent of the numeric node
+    const parent = numeric.parent;
+    // should always be defined since a numeric index is always proceeded by named identifier
+    if (!parent) throw new Error(`Parent of ${numeric} is not defined!`);
     //TODO @check could there be more (shouldn't be the case)
-    const generic = this.graph
-      .children(parent)
-      .map((x) => this.nodeWithLabels(x))
-      .find((x) => x.opts.type === identifierTypes.GENERIC_POSITION);
-    const oldIds = this.indirectChildren(generic.id);
 
-    const ids = oldIds.map((id) => {
-      return { id, newId: id.replace(generic.id, numeric.id) };
-    });
+    //get all children of the parent
+    const childDataNode = _.filter(isDataNode)(
+      this.graph.children(parent).map((x) => this.node(x))
+    );
+    //only interested in those that are generic, should be only one
+    //it matches the numeric one.
+    //e.g if numeric is 0 and parent is problems (problems[0])
+    //this would result in problems, i  (problems[i])
+    const generic = childDataNode.find((x) => isGenericIndex(x.identifier));
+    //TODO assert is only one, else something failed
 
-    const nodes = ids.map((x) => {
-      return new Node({
-        ...this.graph.node(x.id),
-        id: x.newId,
+    //TODO this might be alright, what if accessing without there being a list?
+    //e.g. data[0] and no "for data[i]" <span>
+    if (!generic)
+      throw new Error(`Generic index does not exist in children of ${parent}!`);
+
+    //problems[i].data.a
+    // => node with id "problems[i].data.a"
+    const oldNodes = this.getLastChildren(generic.id);
+
+    //problems[i].data.a
+    //  id: "problems[i].data.a", newId: "problems[0].data.a"
+    const nodes = oldNodes.map((node) => {
+      const newNode: DataNode = {
+        id: node.id.replace(generic.id, numeric.id),
+        name: node.name,
+        discriminator: node.discriminator,
         parent: numeric.id,
-      });
+        //TODO doublecheck
+        identifier: node.identifier,
+      };
+      return { oldNode: node, newNode: newNode };
     });
 
-    this.addNodes(nodes);
+    this.addNodes(nodes.map((x) => x.newNode));
 
-    //TODO labels not set ( not used(can't be events), but this)
-    const newOutEdges = ids.map((x) =>
-      this.graph.outEdges(x.id).map((edge) => {
-        return { v: x.newId, w: edge.w };
-      })
+    const newOutEdges = _.flatMap(
+      (x) =>
+        this.outEdges(x.oldNode).map((edge) => {
+          return {
+            source: x.newNode,
+            sink: edge.sink,
+            label: edge.label,
+          } as Edge;
+        }),
+      nodes
     );
-    const newInEdges = ids.map((x) =>
-      this.graph.inEdges(x.id).map((edge) => {
-        return { v: edge.v === generic.id ? numeric.id : edge.v, w: x.newId };
-      })
+    const newInEdges = _.flatMap(
+      (x) =>
+        this.outEdges(x.oldNode).map((edge) => {
+          return {
+            source: edge.source == generic ? numeric : edge.source,
+            sink: x.newNode,
+            label: edge.label,
+          } as Edge;
+        }),
+      nodes
     );
-    const flat = lodash.flattenDeep(newInEdges.concat(newOutEdges));
-    flat.forEach((x) => this.graph.setEdge(x.v, x.w));
+    const edges = newInEdges.concat(newOutEdges);
+    edges.forEach((edge) => this.addEdge2(edge));
   }
 
-  neighborsWithoutParent(node, parent) {
-    return lodash.without(this.graph.neighbors(node), parent);
+  outEdges(node: string | Node): Edge[] {
+    const nodeId = _.isString(node) ? node : node.id;
+    const edges = this.graph.outEdges(nodeId);
+    if (!edges) return [];
+    return _.flatMap((x) => lift(this.edge(x.v, x.w)), edges);
   }
 
-  indirectChildren(vertex: string): string[] {
-    const directChildren = this.graph.children(vertex);
-    if (lodash.isEmpty(directChildren)) {
+  edge(source: string, sink: string): Edge | undefined {
+    const label = this.graph.edge(source, sink);
+    if (!label) return undefined;
+    return {
+      source: this.node(source),
+      sink: this.node(sink),
+      label: label as EdgeType,
+    };
+  }
+
+  children(parent: string | Node): DataNode[] {
+    const parentId = _.isString(parent) ? parent : parent.id;
+    const children = this.graph.children(parentId).map((x) => this.node(x));
+    //all of them are data node, only data nodes can have a parent
+    return _.filter(isDataNode, children);
+  }
+
+  /**
+   * Returns all indirect children of the given vertex.
+   * Indirect children are defined as the children,
+   * that can be reached via recursively calling .children on children of vertex.
+   * @param vertex  the vertex
+   */
+  // indirectChildren(vertex: string): string[] {
+  //   const directChildren = this.graph.children(vertex);
+  //   if (lodash.isEmpty(directChildren)) {
+  //     return [vertex];
+  //   }
+
+  //   //TODO can I inline?
+  //   return _.flatMap((x) => this.indirectChildren(x), directChildren);
+  // }
+  //TODO fix doc, that's not what it does
+  getLastChildren(vertex: string | DataNode): DataNode[] {
+    const directChildren = this.children(vertex);
+    if (_.isEmpty(directChildren)) {
+      if (_.isString(vertex)) {
+        const node = this.node(vertex);
+        if (isDataNode(node)) return [node];
+        else throw new Error(`${node} has to be a data node!`);
+      }
       return [vertex];
     }
 
     //TODO can I inline?
-    return _.flatMap((x) => this.indirectChildren(x), directChildren);
+    return _.flatMap((x) => this.getLastChildren(x), directChildren);
   }
 
-  //TODO parent not set
-  //instead use models.Node everywhere
-  nodeWithLabels(id) {
-    return { id, ...this.graph.node(id) };
+  node(id: string): Node {
+    return this.graph.node(id) as Node;
   }
 
-  nodesWithLabels() {
-    let nodes = this.graph.nodes().map((id) => this.nodeWithLabels(id));
+  nodes(): Node[] {
+    const nodes = this.graph.nodes().map((id) => this.node(id));
     return nodes;
   }
-
-  execute() {
-    return Object.freeze(this.graph);
+  edges(): Edge[] {
+    const edges = this.graph.edges();
+    const res = _.flatMap((x) => lift(this.edge(x.v, x.w)), edges);
+    return res;
   }
+}
 
-  private getLabel(node: Node): NodeLabel {
-    return {
-      name: node.name,
-      type: node.discriminator,
-      loc: isTagNode(node) ? node.loc : undefined,
-    };
-  }
+export function serialize(graph: ExtendedGraph): JSObject {
+  return json.write(graph.graph) as JSObject;
+}
+export function deserialize(jsonData: JSObject): ExtendedGraph {
+  const graphlibGraph = json.read(jsonData);
+  const graph = new ExtendedGraph();
+  graph.graph = graphlibGraph;
+  return graph;
 }

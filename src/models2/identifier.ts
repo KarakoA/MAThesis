@@ -35,22 +35,26 @@ export interface NameIdentifier extends BaseIdentifier {
   discriminator: IdentifierType.NAME_IDENTIFIER;
 }
 
-export function isNumericIndex(id: Identifier): id is NumericIndex {
-  return id.discriminator === IdentifierType.NUMERIC_INDEX;
+export function isNumericIndex(id: Identifier | undefined): id is NumericIndex {
+  return id?.discriminator === IdentifierType.NUMERIC_INDEX;
 }
-export function isGenericIndex(id: Identifier): id is GenericIndex {
-  return id.discriminator === IdentifierType.GENERIC_INDEX;
+export function isGenericIndex(id: Identifier | undefined): id is GenericIndex {
+  return id?.discriminator === IdentifierType.GENERIC_INDEX;
 }
 
-export function isIndex(id: Identifier): id is NumericIndex | GenericIndex {
+export function isIndex(
+  id: Identifier | undefined
+): id is NumericIndex | GenericIndex {
   return isNumericIndex(id) || isGenericIndex(id);
 }
 //TODO check this works as expected
-export function isThis(id: Identifier): id is typeof This {
-  return id.discriminator === IdentifierType.THIS;
+export function isThis(id: Identifier | undefined): id is typeof This {
+  return id?.discriminator === IdentifierType.THIS;
 }
-export function isNameIdentifier(id: Identifier): id is NameIdentifier {
-  return id.discriminator === IdentifierType.NAME_IDENTIFIER;
+export function isNameIdentifier(
+  id: Identifier | undefined
+): id is NameIdentifier {
+  return id?.discriminator === IdentifierType.NAME_IDENTIFIER;
 }
 
 export function render(id: Identifier): string {

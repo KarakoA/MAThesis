@@ -1,4 +1,4 @@
-import { ExtendedGraph } from "./graph";
+import { ExtendedGraph, serialize } from "./graph";
 import graphlib from "graphlib";
 
 import _ from "lodash/fp";
@@ -103,13 +103,12 @@ export class Transformer {
     return { id: id, name: name, discriminator: NodeType.METHOD };
   }
 
-  compute(): Object {
+  compute(): JSObject {
     this.addTopLevel();
 
     this.resolveDifferentDisplays();
-    const g = this.graph.execute();
 
-    return graphlib.json.write(g);
+    return serialize(this.graph);
   }
   private isComputedProperty(item: identifiers.Identifiers): boolean {
     return _.find(_.isEqual(item), this.computedIds) !== undefined;
@@ -119,6 +118,7 @@ export class Transformer {
     this.topLevel.forEach((topLevel) => this.addIdentifierChain(topLevel));
   }
 
+  //TODO add Init
   addBindings(): void {
     this.bindings.forEach(([tag, boundItems]) => {
       const tagNode: TagNode = {
@@ -200,8 +200,10 @@ export class Transformer {
 
       const node: DataNode = {
         id: identifiers.render(prev),
+        identifier: current,
         name: identifier.render(nameId),
         parent,
+
         discriminator: NodeType.DATA,
       };
       return node;

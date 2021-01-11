@@ -1,14 +1,5 @@
-//import { Location } from "../../parsing/models/template-bindings";
-
-import { Location, Tag } from "../../parsing/models/template-bindings";
-
-// export class Node {
-//   constructor({ id, name, opts = undefined, parent = undefined }) {
-//     this.id = id;
-//     this.parent = parent;
-//     this.label = { name, opts };
-//   }
-// }
+import { Identifier } from "../../models2/identifier";
+import { Location } from "../../parsing/models/template-bindings";
 
 export enum EdgeType {
   SIMPLE = "simple",
@@ -20,9 +11,16 @@ export enum NodeType {
   TAG = "tag",
   DATA = "data",
   METHOD = "method",
+  INIT = "init",
 }
 
-export type Node = TagNode | DataNode | MethodNode;
+export interface Edge {
+  source: Node;
+  sink: Node;
+  label: EdgeType;
+}
+
+export type Node = TagNode | DataNode | MethodNode | InitNode;
 
 export function isTagNode(n: Node): n is TagNode {
   return n.discriminator === NodeType.TAG;
@@ -33,6 +31,9 @@ export function isDataNode(n: Node): n is DataNode {
 
 export function isMethodNode(n: Node): n is MethodNode {
   return n.discriminator === NodeType.METHOD;
+}
+export function IsInitNode(n: Node): n is InitNode {
+  return n.discriminator === NodeType.INIT;
 }
 
 interface BaseNode {
@@ -47,8 +48,13 @@ export interface TagNode extends BaseNode {
 
 export interface DataNode extends BaseNode {
   parent?: string;
+  identifier: Identifier;
   discriminator: NodeType.DATA;
 }
 export interface MethodNode extends BaseNode {
   discriminator: NodeType.METHOD;
+}
+
+export interface InitNode extends BaseNode {
+  discriminator: NodeType.INIT;
 }

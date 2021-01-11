@@ -25,6 +25,7 @@ import {
   isCalledMethod,
   GeneralisedArgument,
 } from "./models/method-resolver";
+import { lift } from "../utils2";
 
 export class MethodResolver {
   methods: MethodDefintitions;
@@ -85,18 +86,18 @@ export class MethodResolver {
 
     ///substitude reads writes and calls with those arguments and  filter out those not starting with 'this'
     const reads = _.flatMap(
-      (x) => substituteAndFilterOutThis(x) ?? [],
+      (x) => lift(substituteAndFilterOutThis(x)),
       method.reads
     );
 
     const writes = _.flatMap(
-      (x) => substituteAndFilterOutThis(x) ?? [],
+      (x) => lift(substituteAndFilterOutThis(x)),
       method.writes
     );
 
     //for all calls do called with the actual args from definition
-    const calls = _.flatMap(
-      (m: Method) => this.substituteMethod(m, substituteAndFilterOutThis) ?? []
+    const calls = _.flatMap((m: Method) =>
+      lift(this.substituteMethod(m, substituteAndFilterOutThis))
     )(method.calls);
 
     // flatten it by discarding empty ones, appending properties to writes and the rest to calls
