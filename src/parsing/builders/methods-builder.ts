@@ -14,9 +14,8 @@ import { AST } from "vue-eslint-parser";
 import { AST_NODE_TYPES } from "@typescript-eslint/types";
 import { MethodDefintion, MethodsResult } from "../models/methods";
 
-import * as util from "util";
 import { prefixThis } from "../../models2/identifiers";
-util.inspect.defaultOptions.depth = 13;
+
 export enum AccessType {
   WRITES,
   CALLS,

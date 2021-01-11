@@ -5,6 +5,7 @@ import {
   ResolvedMethodDefintition,
 } from "./models/method-resolver";
 import _ from "lodash/fp";
+import { render } from "../models2/identifiers";
 export class MethodCache {
   resolver: MethodResolver;
   result: ResolvedMethodDefintition[];
@@ -22,7 +23,7 @@ export class MethodCache {
   //TODO test with onClick="problems.push()" or similar, that should return "property"
   called(e: Method): ResolvedMethodDefintition {
     const resolved = this.calledRec(e);
-    if (!resolved) throw new Error(`Failed to resolve ${e}!`);
+    if (!resolved) throw new Error(`Failed to resolve "${render(e.id)}" !`);
     return resolved;
   }
   private contains(m: Method | CalledMethod): boolean {
