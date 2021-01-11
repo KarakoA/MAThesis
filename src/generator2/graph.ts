@@ -8,6 +8,7 @@ import {
   Edge,
   NodeType,
   TagNode,
+  IsInitNode,
 } from "./models/graph";
 import _ from "lodash/fp";
 import {
@@ -165,9 +166,16 @@ export class ExtendedGraph {
 
   outEdges(node: string | Node): Edge[] {
     const nodeId = _.isString(node) ? node : node.id;
-    const edges = this.graph.outEdges(nodeId);
-    if (!edges) return [];
-    return _.flatMap((x) => lift(this.edge(x.v, x.w)), edges);
+    const outEdges = this.graph.outEdges(nodeId);
+    if (!outEdges) return [];
+    return _.flatMap((x) => lift(this.edge(x.v, x.w)), outEdges);
+  }
+
+  inEdges(node: string | Node): Edge[] {
+    const nodeId = _.isString(node) ? node : node.id;
+    const inEdgesEdges = this.graph.inEdges(nodeId);
+    if (!inEdgesEdges) return [];
+    return _.flatMap((x) => lift(this.edge(x.v, x.w)), inEdgesEdges);
   }
 
   edge(source: string, sink: string): Edge | undefined {
@@ -226,10 +234,19 @@ export class ExtendedGraph {
     const nodes = this.graph.nodes().map((id) => this.node(id));
     return nodes;
   }
+
   edges(): Edge[] {
     const edges = this.graph.edges();
     const res = _.flatMap((x) => lift(this.edge(x.v, x.w)), edges);
     return res;
+  }
+  init(): Node {
+    const initNodes = _.filter(IsInitNode, this.nodes());
+    if (initNodes.length != 1)
+      throw new Error(
+        `Graph must contain exactly one init node! It contains ${initNodes.length} nodes!`
+      );
+    return initNodes[0];
   }
 }
 
