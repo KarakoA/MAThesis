@@ -1,5 +1,4 @@
 import { ExtendedGraph, serialize } from "./graph";
-import graphlib from "graphlib";
 
 import _ from "lodash/fp";
 import { MethodResolver } from "./method-resolver";

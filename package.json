@@ -44,7 +44,6 @@
     "vue-eslint-parser": "^7.1.1"
   },
   "dependencies": {
-    "@dagrejs/graphlib": "^2.1.4",
     "@types/eslint": "^7.2.6",
     "@types/estree": "0.0.45",
     "@types/graphlib": "^2.1.7",
@@ -52,6 +51,7 @@
     "babel-jest": "^26.6.3",
     "d3-graphviz": "^3.1.0",
     "deep-equal": "^2.0.5",
+    "graphlib": "^2.1.8",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.20",
     "node": "^15.4.0",
