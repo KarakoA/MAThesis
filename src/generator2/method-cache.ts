@@ -1,4 +1,4 @@
-import { isProperty, Method, Property } from "../parsing/models/shared";
+import { isProperty, Method } from "../parsing/models/shared";
 import { MethodResolver } from "./method-resolver";
 import {
   CalledMethod,

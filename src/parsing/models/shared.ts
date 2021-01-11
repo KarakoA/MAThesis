@@ -1,4 +1,3 @@
-import { Identifier } from "../../models2/identifier";
 import { Identifiers } from "../../models2/identifiers";
 
 export enum EntityType {
@@ -13,10 +12,10 @@ export interface Property {
   discriminator: EntityType.PROPERTY;
 }
 export function isProperty(e: any): e is Property {
-  return e.discriminator === EntityType.PROPERTY;
+  return e?.discriminator === EntityType.PROPERTY;
 }
 export function isMethod(e: any): e is Method {
-  return e.discriminator === EntityType.METHOD;
+  return e?.discriminator === EntityType.METHOD;
 }
 export interface Method {
   id: Identifiers;

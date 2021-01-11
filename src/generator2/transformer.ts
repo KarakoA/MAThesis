@@ -159,7 +159,7 @@ export class Transformer {
           //compute property, treat as method
           if (this.isComputedProperty(binding.item.id)) {
             const itemAsMethod: Method = {
-              id: binding.item.id,
+              id: identifiers.prefixThis(binding.item.id),
               args: [],
               discriminator: EntityType.METHOD,
             };
@@ -177,7 +177,10 @@ export class Transformer {
           }
         }
         if (isMethod(binding.item)) {
-          const resolved = this.methodCache.called(binding.item);
+          const resolved = this.methodCache.called({
+            ...binding.item,
+            id: identifiers.prefixThis(binding.item.id),
+          });
           const node = this.nodeFromMethod(resolved);
           this.addEdgeBasedOnBindingType(tagNode, node, binding.bindingType);
         }

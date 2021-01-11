@@ -14,17 +14,17 @@ export enum IdentifierType {
   NAME_IDENTIFIER = "name-identifier",
 }
 
-export const This = {
+export type Identifier = This | NameIdentifier | NumericIndex | GenericIndex;
+
+export const ThisInstance: This = {
   name: "this",
   discriminator: IdentifierType.THIS,
 };
 
-export type Identifier =
-  | typeof This
-  | NameIdentifier
-  | NumericIndex
-  | GenericIndex;
-
+export interface This extends BaseIdentifier {
+  name: "this";
+  discriminator: IdentifierType.THIS;
+}
 export interface NumericIndex extends BaseIdentifier {
   discriminator: IdentifierType.NUMERIC_INDEX;
 }
@@ -47,8 +47,8 @@ export function isIndex(
 ): id is NumericIndex | GenericIndex {
   return isNumericIndex(id) || isGenericIndex(id);
 }
-//TODO check this works as expected
-export function isThis(id: Identifier | undefined): id is typeof This {
+
+export function isThis(id: Identifier | undefined): id is This {
   return id?.discriminator === IdentifierType.THIS;
 }
 export function isNameIdentifier(

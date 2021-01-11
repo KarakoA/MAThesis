@@ -2,10 +2,10 @@ import { Method, Property, EntityType, Entity } from "./models/shared";
 
 import _ from "lodash/fp";
 import {
-  This,
   Identifier,
   nextIndex,
   IdentifierType,
+  ThisInstance,
 } from "../models2/identifier";
 import { create, Identifiers } from "../models2/identifiers";
 import { AST } from "vue-eslint-parser";
@@ -205,7 +205,7 @@ export function getNameFromExpression(
       return create(...ids.reverse());
     }
     case AST_NODE_TYPES.ThisExpression: {
-      const ids = prev.concat(This);
+      const ids = prev.concat(ThisInstance);
       return create(...ids.reverse());
     }
 

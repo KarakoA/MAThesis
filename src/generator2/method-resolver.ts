@@ -71,7 +71,9 @@ export class MethodResolver {
       const found = this.findMethod(called);
       if (!found || isProperty(found))
         throw new Error(
-          `Called Methods must always be found! Failed for :${called.id}`
+          `Called Methods must always be found! Failed for: ${identifiers.render(
+            called.id
+          )}`
         );
       method = found;
       resolvedArgs = called.args;
@@ -127,7 +129,7 @@ export class MethodResolver {
     m: Method | CalledMethod
   ): MethodDefintion | undefined | Property {
     //if not a 'this' identifier, can be skipped completely (all known methods in `methods` start with `this`)
-    if (identifiers.startsWithThis(m.id)) return undefined;
+    if (!identifiers.startsWithThis(m.id)) return undefined;
     //otherwise check methods
     const method = this.methods.find((x) => _.isEqual(x.id, m.id));
     //found!

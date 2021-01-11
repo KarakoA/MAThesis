@@ -1,13 +1,15 @@
 import assert from "assert";
 
 import _ from "lodash/fp";
+import { zipWithIndex } from "../utils2";
 
 import {
   Identifier,
-  This,
   nextIndex,
   render as renderIdentifier,
   isIndex,
+  isThis,
+  ThisInstance,
 } from "./identifier";
 
 export type Identifiers = ReadonlyArray<Identifier>;
@@ -27,7 +29,7 @@ export function render(that: Identifiers, includeThis = true): string {
 }
 
 export function startsWithThis(that: Identifiers): boolean {
-  return _.head(that) === This;
+  return isThis(_.head(that));
 }
 
 export function startsWith(that: Identifiers, start: Identifiers): boolean {
@@ -39,7 +41,7 @@ export function startsWith(that: Identifiers, start: Identifiers): boolean {
 }
 
 export function prefixThis(that: Identifiers): Identifiers {
-  return startsWithThis(that) ? that : prefix(that, This);
+  return startsWithThis(that) ? that : prefix(that, ThisInstance);
 }
 
 export function prefix(
@@ -82,14 +84,13 @@ export function isEqualIgnoringThis(x: Identifiers, y: Identifiers): boolean {
 function longestMatchWithIndex(
   id: Identifiers,
   topLevel: Identifiers[]
-): [Identifiers, number] | undefined {
-  //TODO verify if non-matching is undefined
-  const longestMatch = _.flow([
-    //zip with index
-    _.zip(_.range(0, topLevel.length)),
-    _.map(([x, y]) => (startsWith(x, id) ? [x, y] : undefined)),
-    _.maxBy(([x, y]) => x?.length),
-  ])(topLevel);
+): { item: Identifiers; i: number } | undefined {
+  //TODO verify if non-matching is indeed undefined
+  const startingWithId = zipWithIndex(topLevel).filter((x) =>
+    //TODO might need reverse
+    startsWith(x.item, id)
+  );
+  const longestMatch = _.maxBy((x) => x.item.length, startingWithId);
   return longestMatch;
 }
 export function findLongestMatch(
@@ -97,7 +98,7 @@ export function findLongestMatch(
   topLevel: Identifiers[]
 ): Identifiers | undefined {
   const result = longestMatchWithIndex(id, topLevel);
-  return result?.[0];
+  return result?.item;
 }
 
 export function findLongestMatchIndex(
@@ -105,5 +106,5 @@ export function findLongestMatchIndex(
   topLevel: Identifiers[]
 ): number {
   const result = longestMatchWithIndex(id, topLevel);
-  return result?.[1] ?? -1;
+  return result?.i ?? -1;
 }

@@ -1,6 +1,9 @@
 import { Identifiers, prefixThis, startsWith } from "../../models2/identifiers";
-import { startsWithThis } from "../../models2/identifiers";
-import { Property } from "./shared";
+import {
+  startsWithThis,
+  findLongestMatch as identifiersLongestMatch,
+} from "../../models2/identifiers";
+import { EntityType, Property } from "./shared";
 import _ from "lodash/fp";
 
 export enum DataType {
@@ -20,14 +23,12 @@ export function findClosestMatch(
   shouldPrefixThis = false
 ): Property | undefined {
   if (!startsWithThis(id) && !shouldPrefixThis) return undefined;
-
+  //if already had this, would not be doubled
   const thisId = prefixThis(id);
 
-  //TODO verify if non-matching is undefined
-  const longestMatch = _.flow(
-    _.filter((x: Property) => startsWith(x.id, thisId)),
-    _.sortBy((x) => x.id.length),
-    _.head
-  )(topLevel);
-  return longestMatch;
+  const found = identifiersLongestMatch(
+    thisId,
+    topLevel.map((x) => x.id)
+  );
+  return found ? { id: found, discriminator: EntityType.PROPERTY } : undefined;
 }
