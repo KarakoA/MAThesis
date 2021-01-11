@@ -21,7 +21,7 @@ class Entry {
   }
 }
 
-export function computeScenarios(jsonGraph: JSObject, depth = 3): void {
+export function computeAndPrintScenarios(jsonGraph: JSObject, depth = 3): void {
   const graph = deserialize(jsonGraph);
 
   const initNode = graph.init();

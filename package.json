@@ -7,7 +7,7 @@
     "lint": "eslint --ext .js,.ts src",
     "test": "jest",
     "test:regression": "./scripts/regression_test.sh",
-    "generate": "babel-node --extensions .ts,.js src/generate-data.js",
+    "generate": "babel-node --extensions .ts,.js src/generate-data.ts",
     "serve": "light-server -s src -p 8000",
     "create-results": "./scripts/generate-results.sh",
     "results": "light-server -s results -p 8001",
