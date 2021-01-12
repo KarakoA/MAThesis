@@ -13,7 +13,7 @@ export class ESLinter {
     this.eslint = new ESLint({
       rulePaths: ["./src/parsing/visitors"],
       useEslintrc: false,
-      overrideConfigFile: "./src/eslintrc-generation.cjs",
+      overrideConfigFile: "./resources/eslintrc-generation.cjs",
     });
   }
 
