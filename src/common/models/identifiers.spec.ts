@@ -1,40 +1,16 @@
-import { IdentifierType, Identifier } from "./identifier";
+import { ThisInstance as This, named, generic, numeric } from "./identifier";
 import * as identifiers from "./identifiers";
 
 const id = {
-  this: {
-    name: "this",
-    discriminator: IdentifierType.THIS,
-  } as Identifier,
-  A: {
-    name: "A",
-    discriminator: IdentifierType.NAME_IDENTIFIER,
-  } as Identifier,
+  this: This,
+  A: named("A"),
+  B: named("B"),
+  C: named("C"),
 
-  B: {
-    name: "B",
-    discriminator: IdentifierType.NAME_IDENTIFIER,
-  } as Identifier,
+  i: generic("i"),
+  j: generic("j"),
 
-  C: {
-    name: "C",
-    discriminator: IdentifierType.NAME_IDENTIFIER,
-  } as Identifier,
-
-  i: {
-    name: "i",
-    discriminator: IdentifierType.GENERIC_INDEX,
-  } as Identifier,
-
-  j: {
-    name: "j",
-    discriminator: IdentifierType.GENERIC_INDEX,
-  } as Identifier,
-
-  index1: {
-    name: "1",
-    discriminator: IdentifierType.NUMERIC_INDEX,
-  } as Identifier,
+  index1: numeric("1"),
 };
 
 describe("Identifiers", () => {

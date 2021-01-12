@@ -51,13 +51,14 @@ export class ESLinter {
     const bindingsJSON = messages.find((x) => x.ruleId === BINDINGS_NAME)
       ?.message;
 
-    if (methodsJSON && topLevelJSON && bindingsJSON) {
-      const methods: MethodsResult = JSON.parse(methodsJSON);
-      const topLevel: TopLevelVariablesResult = JSON.parse(topLevelJSON);
-      const bindings: BindingsResult = deserializeResult(bindingsJSON);
-      return new Result(topLevel, methods, bindings, filePath);
-    }
-    throw new Error("Methods, bindings or top level undefined!");
+    const methods: MethodsResult = methodsJSON ? JSON.parse(methodsJSON) : [];
+    const topLevel: TopLevelVariablesResult = topLevelJSON
+      ? JSON.parse(topLevelJSON)
+      : [];
+    const bindings: BindingsResult = bindingsJSON
+      ? deserializeResult(bindingsJSON)
+      : { bindings: new Map() };
+    return new Result(topLevel, methods, bindings, filePath);
   }
 
   private fileNameOrPath(

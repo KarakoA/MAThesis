@@ -12,11 +12,6 @@ export enum IdentifierType {
  */
 export type Identifier = This | NameIdentifier | NumericIndex | GenericIndex;
 
-export const ThisInstance: This = {
-  name: "this",
-  discriminator: IdentifierType.THIS,
-};
-
 interface BaseIdentifier {
   readonly name: string;
 }
@@ -75,6 +70,26 @@ export function isIndex(
 }
 
 //#endregion
+
+//#region Factory Methods
+
+export const ThisInstance: This = {
+  name: "this",
+  discriminator: IdentifierType.THIS,
+};
+
+export function generic(name: string): GenericIndex {
+  return { name: name, discriminator: IdentifierType.GENERIC_INDEX };
+}
+
+export function numeric(name: string): NumericIndex {
+  return { name: name, discriminator: IdentifierType.NUMERIC_INDEX };
+}
+
+export function named(name: string): NameIdentifier {
+  return { name: name, discriminator: IdentifierType.NAME_IDENTIFIER };
+}
+//#region
 
 /**
  * Renders the given identifier to a string

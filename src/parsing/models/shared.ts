@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Identifiers } from "../../common/models/identifiers";
 
 export enum EntityType {
@@ -22,3 +24,15 @@ export interface Method {
   args: ReadonlyArray<Entity>;
   discriminator: EntityType.METHOD;
 }
+
+//#region  Factory Methods
+export function property(id: Identifiers): Property {
+  return { id, discriminator: EntityType.PROPERTY };
+}
+export function method(
+  id: Identifiers,
+  args: ReadonlyArray<Entity> = []
+): Method {
+  return { id, discriminator: EntityType.METHOD, args };
+}
+//#endregion
