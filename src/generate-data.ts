@@ -9,8 +9,8 @@ util.inspect.defaultOptions.depth = 13;
 
 async function main() {
   const args = process.argv.slice(2);
-  const file = args[0] ?? "./src/test-files/test-add-sub.vue";
-  const outPath = args[1] ?? "./src/data.json";
+  const file = args[0] ?? "./resources/test-files/test-add-sub.vue";
+  const outPath = args[1] ?? "./resources/data.json";
   const results = await new ESLinter().lintFiles([file]);
 
   const transformer = new Transformer(results[0]);
