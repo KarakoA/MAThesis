@@ -1,9 +1,8 @@
 import { Identifiers } from "../../models/identifiers";
-import { Property, Method } from "../../parsing/models/shared";
+import { Property } from "../../parsing/models/shared";
 
 export enum GeneralisedArgument {
   METHOD = "method",
-  //"not this"
   OTHER = "other",
 }
 export type ResolvedArgument =
@@ -27,7 +26,3 @@ export interface CalledMethod {
 export function isCalledMethod(e: CalledMethod | Property): e is CalledMethod {
   return "args" in e;
 }
-
-//interface Method
-
-//custom exception - unsupported exception TODO

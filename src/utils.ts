@@ -1,6 +1,5 @@
 import _ from "lodash/fp";
 
-//TODO rename to utils and other to eslint utils
 export function nextChar(i: string): string {
   //TODO remove me, backwards compat
 
