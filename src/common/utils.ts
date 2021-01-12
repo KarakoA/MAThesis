@@ -12,6 +12,7 @@ export function lift<T>(x: T | undefined): [] | T {
   return x ? x : [];
 }
 
+//TODO obsolete soon
 export function zipWithIndex<T>(data: Array<T>): { item: T; i: number }[] {
   const zipped = _.zip(data, _.range(0, data.length));
   const transformed = zipped.map(([x, i]) => {
@@ -20,6 +21,10 @@ export function zipWithIndex<T>(data: Array<T>): { item: T; i: number }[] {
   return transformed;
 }
 
+/**
+ * Asserts the passed value is not null
+ * @param x value
+ */
 export function nonNull<T>(x: T | undefined): T {
   if (_.isNil(x)) throw new Error("Assertion error: nonNull() got undefined!");
   return x;
