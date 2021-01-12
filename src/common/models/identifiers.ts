@@ -19,6 +19,11 @@ export function create(...data: Identifier[]): Identifiers {
   return data;
 }
 
+/**
+ * Renders identifiers as string
+ * @param that identifiers
+ * @param includeThis if `this` should be included
+ */
 export function render(that: Identifiers, includeThis = true): string {
   const arr = startsWithThis(that) && !includeThis ? _.tail(that) : that;
   return _.reduce((acc: string, c: Identifier) => {
@@ -28,6 +33,10 @@ export function render(that: Identifiers, includeThis = true): string {
   })("")(arr);
 }
 
+/**
+ * Returns true if that starts with `this`
+ * @param that identifiers
+ */
 export function startsWithThis(that: Identifiers): boolean {
   return isThis(_.head(that));
 }
@@ -36,7 +45,7 @@ export function startsWith(that: Identifiers, start: Identifiers): boolean {
   assert(start.length > 0);
   if (start.length > that.length) return false;
 
-  const startActual = _.take(that.length)(that);
+  const startActual = _.take(start.length)(that);
   return _.isEqual(startActual, start);
 }
 
@@ -48,8 +57,7 @@ export function prefix(
   that: Identifiers,
   prefix: Identifier | Identifiers
 ): Identifiers {
-  //TODO do I need compact?
-  return _.flow(_.concat(prefix), _.compact)(that);
+  return _.concat(prefix, that);
 }
 export function replaceFront(
   that: Identifiers,
@@ -62,13 +70,6 @@ export function replaceFront(
     : that;
 }
 
-export function replaceLast(
-  that: Identifiers,
-  replacement: Identifier | Identifiers
-): Identifiers {
-  return _.flow(_.dropRight(1), _.concat(replacement))(that);
-}
-
 export function addIndex(that: Identifiers): Identifiers {
   const last = _.last(that);
   if (last) {
@@ -77,10 +78,7 @@ export function addIndex(that: Identifiers): Identifiers {
   } else return that;
 }
 
-export function isEqualIgnoringThis(x: Identifiers, y: Identifiers): boolean {
-  return _.isEqual(x, y) || _.isEqual(prefixThis(x), prefixThis(y));
-}
-
+//TODO will be obsolete soon
 function longestMatchWithIndex(
   id: Identifiers,
   topLevel: Identifiers[]
