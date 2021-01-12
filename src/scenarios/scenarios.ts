@@ -1,12 +1,12 @@
 import _ from "lodash/fp";
-import { deserialize, ExtendedGraph } from "../generator2/graph";
+import { deserialize, ExtendedGraph } from "../generator/graph";
 import {
   EdgeType,
   isTagNode,
   TagNode,
   Node,
   isMethodNode,
-} from "../generator2/models/graph";
+} from "../generator/models/graph";
 import { JSObject, lift, nonNull } from "../utils";
 
 type ScenarioSet = Scenario[];

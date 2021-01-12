@@ -2,7 +2,7 @@ import { ESLinter } from "./parsing/eslinter";
 import fs from "fs";
 import { computeAndPrintScenarios } from "./scenarios/scenarios";
 import process from "process";
-import { Transformer } from "./generator2/transformer";
+import { Transformer } from "./generator/transformer";
 
 import * as util from "util";
 util.inspect.defaultOptions.depth = 13;
