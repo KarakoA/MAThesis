@@ -98,13 +98,13 @@ export class BindingsBuilder {
     //TODO problems with (item1, item2) in items....
     //TODO can it be items in problems[0]? how would I resolve that one? Should be possible
     //also how to add i accesses, see problem above
-    const left = utils.getNameFromExpression(
+    const left = utils.identifiers(
       //TODO @unsafe
       vforAttributeNode.left[0] as utils.SupportedNamedExpression
     );
     //items
     const right = addIndex(
-      utils.getNameFromExpression(
+      utils.identifiers(
         //TODO @unsafe
         vforAttributeNode.right as utils.SupportedNamedExpression
       )

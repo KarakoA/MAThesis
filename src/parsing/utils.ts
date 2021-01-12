@@ -9,85 +9,29 @@ import {
 } from "../common/models/identifier";
 import { create, Identifiers } from "../common/models/identifiers";
 import { AST } from "vue-eslint-parser";
-
 import { AST_NODE_TYPES } from "@typescript-eslint/types";
 
 import { assert } from "console";
 
+//reexport eslint ast and node types
 export { AST_NODE_TYPES, AST };
-export function vForExpression(
-  node: AST.VElement
-): AST.VForExpression | undefined {
-  const maybeVFor = node.startTag.attributes?.find(
-    (x) => (x.key.name as AST.VIdentifier)?.name === "for"
-  );
-  return (maybeVFor?.value as AST.VExpressionContainer)
-    ?.expression as AST.VForExpression;
-}
 
-//inside call expressions, triggered once for the call expression itself and a second time for each identifier/member chain
-//TODO this triggers twice for the method name
-// also for nested call expressions each time
-export function isRootNameNode(node: AST.ESLintExpression): boolean {
-  return isRootCallExpression(node) || isRootName(node);
-}
+//#region type alias definitions
+export type SupportedNamedExpression =
+  | AST.ESLintIdentifier
+  | AST.ESLintThisExpression
+  | AST.ESLintMemberExpression;
 
-//TODO naming
-//TODO  use SupportedNamedExpression here
-export function isRootName(node: AST.ESLintExpression): boolean {
-  return (
-    (node.type === AST_NODE_TYPES.MemberExpression ||
-      node.type === AST_NODE_TYPES.Identifier) &&
-    node.parent?.type !== AST_NODE_TYPES.MemberExpression
-  );
-}
-export function isRootCallExpression(node: AST.ESLintExpression): boolean {
-  return (
-    node.type === AST_NODE_TYPES.CallExpression &&
-    node.parent?.type !== AST_NODE_TYPES.CallExpression
-  );
-}
-
-export function property(node: SupportedNamedExpression): Property {
-  return {
-    id: getNameFromExpression(node),
-    discriminator: EntityType.PROPERTY,
-  };
-}
-
-export function method(node: AST.ESLintCallExpression): Method {
-  const methodName = determineName(node.callee as AST.ESLintExpression);
-  const args = resolveArgs(node.arguments);
-  return {
-    id: methodName,
-    args,
-    discriminator: EntityType.METHOD,
-  };
-}
-function determineName(node: AST.ESLintExpression): Identifiers {
-  if (!isSupportedNameExpression(node))
-    throw new Error(`Unsupported node type ${node.type} for name!`);
-  return getNameFromExpression(node);
-}
-
-function resolveArgs(nodes: any[]): Array<Entity> {
-  //@unsafe
-  const nodesTyped = nodes.map((x) => x as AST.ESLintExpression);
-  return _.flatMap(resolveArg, nodesTyped);
-}
-//TODO if dropping binary alltogether (or trying to resolve to one branch) could become Entity
-function resolveArg(node: AST.ESLintExpression): Array<Entity> {
-  if (node.type === AST_NODE_TYPES.CallExpression) {
-    return [method(node)];
-  } else if (node.type === AST_NODE_TYPES.BinaryExpression) {
-    const left = resolveArg(node.left);
-    const right = resolveArg(node.right);
-    return [...left, ...right];
-  } else if (node.type === AST_NODE_TYPES.Literal) {
-    return [];
-  } else if (isSupportedNameExpression(node)) {
-    return [property(node)];
-  } else throw new Error(`Unsupported node type: ${node.type}`);
+//user defined type guard
+function isSupportedNameExpression(
+  arg: AST.ESLintNode
+): arg is SupportedNamedExpression {
+  const types = [
+    AST_NODE_TYPES.Identifier,
+    AST_NODE_TYPES.ThisExpression,
+    AST_NODE_TYPES.MemberExpression,
+  ];
+  return types.includes(arg.type as AST_NODE_TYPES);
 }
 
 export type SupportedTopLevelExpression =
@@ -106,13 +50,105 @@ function isSupportedTopLevelExpression(
   ];
   return types.includes(arg.type as AST_NODE_TYPES);
 }
+//#endregion
 
-//ObjectExpression
-//[Property]
-//.key (identifier always)
-//.value (back to top or )
-//.value actually expression
-export function getNamesFromTopLevelObject(
+//#region Node infos
+
+//inside call expressions, triggered once for the call expression itself and a second time for each identifier/member chain
+//TODO this triggers twice for the method name
+// also for nested call expressions each time
+export function isRootNameNode(node: AST.ESLintExpression): boolean {
+  return isRootCallExpression(node) || isRootName(node);
+}
+
+//TODO naming
+//TODO  use SupportedNamedExpression here
+export function isRootName(node: AST.ESLintExpression): boolean {
+  return (
+    isSupportedNameExpression(node) &&
+    node.parent?.type !== AST_NODE_TYPES.MemberExpression
+  );
+}
+export function isRootCallExpression(node: AST.ESLintExpression): boolean {
+  return (
+    node.type === AST_NODE_TYPES.CallExpression &&
+    node.parent?.type !== AST_NODE_TYPES.CallExpression
+  );
+}
+
+//#endregion
+
+//#region Id
+/**
+ * Computes an id for a VElement node (html tag)
+ * @param element VElement
+ */
+export function id(element: AST.VElement): string {
+  const locId =
+    element.loc.start.line +
+    "_" +
+    element.loc.start.column +
+    "_" +
+    element.loc.end.line +
+    "_" +
+    element.loc.end.column;
+  return `${element.name}_${locId}`;
+}
+//#endregion
+
+//#region Extraction
+/**
+ * Extracts identifiers the given named expression
+ * @param node
+ */
+export function identifiers(node: SupportedNamedExpression): Identifiers {
+  return getNameFromExpression(node);
+}
+
+/**
+ * Extracts a property from the given named expression
+ * @param node
+ */
+export function property(node: SupportedNamedExpression): Property {
+  return {
+    id: getNameFromExpression(node),
+    discriminator: EntityType.PROPERTY,
+  };
+}
+/**
+ * Extracts a method from the given call expression
+ * @param node
+ */
+export function method(node: AST.ESLintCallExpression): Method {
+  const methodName = getNameFromESLintExpression(
+    node.callee as AST.ESLintExpression
+  );
+  const args = resolveArgs(node.arguments);
+  return {
+    id: methodName,
+    args,
+    discriminator: EntityType.METHOD,
+  };
+}
+
+/**
+ * Extracts the first VFor expression of the given node or returns undefined if there is none.
+ * @param node html tag
+ */
+export function vForExpression(
+  node: AST.VElement
+): AST.VForExpression | undefined {
+  const maybeVFor = node.startTag.attributes?.find(
+    (x) => (x.key.name as AST.VIdentifier)?.name === "for"
+  );
+  return (maybeVFor?.value as AST.VExpressionContainer)
+    ?.expression as AST.VForExpression;
+}
+
+//#endregion
+
+//#region Top Level Object Extraction
+export function IdentifiersFromTopLevelObject(
   node: AST.ESLintObjectExpression
 ): Identifiers[] {
   function func(
@@ -121,7 +157,6 @@ export function getNamesFromTopLevelObject(
   ): Identifiers[] {
     switch (node.type) {
       case AST_NODE_TYPES.Property: {
-        //assert node.key.type is identifier
         assert(node.key.type === AST_NODE_TYPES.Identifier);
         const name = (node.key as AST.ESLintIdentifier).name;
         const value = node.value;
@@ -176,23 +211,43 @@ export function getNamesFromTopLevelObject(
   return func(node, []);
 }
 
-export type SupportedNamedExpression =
-  //| AST.ESLintLiteral
-  AST.ESLintIdentifier | AST.ESLintThisExpression | AST.ESLintMemberExpression;
+//#endregion
 
-//user defined type guard
-function isSupportedNameExpression(
-  arg: AST.ESLintNode
-): arg is SupportedNamedExpression {
-  const types = [
-    AST_NODE_TYPES.Identifier,
-    AST_NODE_TYPES.ThisExpression,
-    AST_NODE_TYPES.MemberExpression,
-  ];
-  return types.includes(arg.type as AST_NODE_TYPES);
+//#region  Helper Methods
+function resolveArgs(
+  nodes: (AST.ESLintExpression | AST.ESLintSpreadElement)[]
+): Array<Entity> {
+  if (_.some((x) => x.type === AST_NODE_TYPES.SpreadElement, nodes))
+    throw new Error("SpreadElements are not supported!");
+  const nodesTyped = nodes.map((x) => x as AST.ESLintExpression);
+  return _.flatMap(resolveArg, nodesTyped);
+}
+//TODO if dropping binary alltogether (or trying to resolve to one branch) could become Entity
+function resolveArg(node: AST.ESLintExpression): Array<Entity> {
+  if (node.type === AST_NODE_TYPES.CallExpression) {
+    return [method(node)];
+  } else if (node.type === AST_NODE_TYPES.BinaryExpression) {
+    const left = resolveArg(node.left);
+    const right = resolveArg(node.right);
+    return [...left, ...right];
+  } else if (node.type === AST_NODE_TYPES.Literal) {
+    return [];
+  } else if (isSupportedNameExpression(node)) {
+    return [property(node)];
+  } else throw new Error(`Unsupported node type: ${node.type}`);
 }
 
-export function getNameFromExpression(
+function getNameFromESLintExpression(node: AST.ESLintExpression): Identifiers {
+  if (!isSupportedNameExpression(node))
+    throw new Error(`Unsupported node type ${node.type} for name!`);
+  return getNameFromExpression(node);
+}
+
+/**
+ * Extracts identifirs from a name expression node
+ * @param node
+ */
+function getNameFromExpression(
   node: SupportedNamedExpression,
   prev: Identifier[] = []
 ): Identifiers {
@@ -244,14 +299,4 @@ export function getNameFromExpression(
   }
 }
 
-export function id(element: AST.VElement): string {
-  const locId =
-    element.loc.start.line +
-    "_" +
-    element.loc.start.column +
-    "_" +
-    element.loc.end.line +
-    "_" +
-    element.loc.end.column;
-  return `${element.name}_${locId}`;
-}
+//#endregion

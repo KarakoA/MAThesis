@@ -4,11 +4,11 @@ import {
   TopLevelVariables,
   TopLevelVariablesResult,
 } from "../models/top-level-variables";
-import { AST, getNamesFromTopLevelObject } from "../utils";
+import { AST, IdentifiersFromTopLevelObject } from "../utils";
 
 export class TopLevelVariablesBuilder {
   build(node: AST.ESLintObjectExpression): TopLevelVariablesResult {
-    const id = getNamesFromTopLevelObject(node);
+    const id = IdentifiersFromTopLevelObject(node);
 
     const topLevel: TopLevelVariables = id.map((id) => {
       return { id: prefixThis(id), discriminator: EntityType.PROPERTY };

@@ -148,9 +148,7 @@ export class MethodsBuilder {
     const args = (node.value as AST.ESLintFunctionExpression).params.map(
       (param) => utils.property(param as utils.SupportedNamedExpression)
     );
-    const id = utils.getNameFromExpression(
-      node.key as utils.SupportedNamedExpression
-    );
+    const id = utils.identifiers(node.key as utils.SupportedNamedExpression);
     this.latestMethodBuilder = new MethodDefintitionBuilder(
       id,
       args,
