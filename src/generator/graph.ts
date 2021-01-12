@@ -55,17 +55,9 @@ export class ExtendedGraph {
 
   /**
    * Adds an edge from source to sink. If source or sink are not in the graph, they are added.
-   * @param source from
-   * @param sink to
-   * @param label edge type
+   * @param edge edge
    */
-  addEdge(source: Node, sink: Node, label: EdgeType = EdgeType.SIMPLE): void {
-    this.addNode(source);
-    this.addNode(sink);
-    this.graph.setEdge(source.id, sink.id, label);
-  }
-  //TODO merge
-  addEdge2(edge: Edge): void {
+  addEdge(edge: Edge): void {
     this.addNode(edge.source);
     this.addNode(edge.sink);
     this.graph.setEdge(edge.source.id, edge.sink.id, edge.label);
@@ -79,7 +71,7 @@ export class ExtendedGraph {
    */
   connect(nodes: Node[], label: EdgeType = EdgeType.SIMPLE): void {
     _.zip(nodes, _.tail(nodes)).forEach(([source, sink]) => {
-      if (source && sink) this.addEdge(source, sink, label);
+      if (source && sink) this.addEdge({ source, sink, label });
     });
   }
 
@@ -161,7 +153,7 @@ export class ExtendedGraph {
       nodes
     );
     const edges = newInEdges.concat(newOutEdges);
-    edges.forEach((edge) => this.addEdge2(edge));
+    edges.forEach((edge) => this.addEdge(edge));
   }
 
   outEdges(node: string | Node): Edge[] {

@@ -243,13 +243,19 @@ export class Transformer {
     resolved: ResolvedMethodDefintition
   ): void {
     const readNodes = resolved.reads.map((x) => this.addIdentifierChain(x));
-    readNodes.forEach((x) => this.graph.addEdge(x, node));
+    readNodes.forEach((source) =>
+      this.graph.addEdge({ source, sink: node, label: EdgeType.SIMPLE })
+    );
 
     const writeNodes = resolved.writes.map((x) => this.addIdentifierChain(x));
-    writeNodes.forEach((x) => this.graph.addEdge(node, x));
+    writeNodes.forEach((sink) =>
+      this.graph.addEdge({ source: node, sink, label: EdgeType.SIMPLE })
+    );
 
     const callNodes = resolved.calls.map((x) => this.nodeFromMethod(x));
-    callNodes.forEach((x) => this.graph.addEdge(node, x, EdgeType.CALLS));
+    callNodes.forEach((sink) =>
+      this.graph.addEdge({ source: node, sink, label: EdgeType.CALLS })
+    );
   }
 
   private addEdgeBasedOnBindingType(
@@ -259,14 +265,22 @@ export class Transformer {
   ) {
     switch (type) {
       case BindingType.EVENT:
-        this.graph.addEdge(tag, item, EdgeType.EVENT);
+        this.graph.addEdge({ source: tag, sink: item, label: EdgeType.EVENT });
         break;
       case BindingType.ONE_WAY:
-        this.graph.addEdge(item, tag);
+        this.graph.addEdge({
+          source: item,
+          sink: tag,
+          label: EdgeType.SIMPLE,
+        });
         break;
       case BindingType.TWO_WAY:
-        this.graph.addEdge(tag, item, EdgeType.EVENT);
-        this.graph.addEdge(item, tag);
+        this.graph.addEdge({ source: tag, sink: item, label: EdgeType.EVENT });
+        this.graph.addEdge({
+          source: item,
+          sink: tag,
+          label: EdgeType.SIMPLE,
+        });
         break;
       default:
         throw new Error(`Unknown binding type: ${type}!`);

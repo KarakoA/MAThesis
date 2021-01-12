@@ -3,7 +3,6 @@ import * as utils from "../utils";
 import assert from "assert";
 import _ from "lodash/fp";
 import {
-  EntityType,
   isMethod,
   Method,
   Property,
@@ -14,7 +13,7 @@ import { AST } from "vue-eslint-parser";
 import { AST_NODE_TYPES } from "@typescript-eslint/types";
 import { MethodDefintion, MethodsResult } from "../models/methods";
 
-import { prefixThis } from "../../common/models/identifiers";
+import { Identifiers, prefixThis } from "../../common/models/identifiers";
 
 export enum AccessType {
   WRITES,
@@ -30,14 +29,17 @@ export enum MethodType {
 }
 
 class MethodDefintitionBuilder {
-  all: Entity[];
+  //also includes methods, but since only identifiers are stored,
+  //they are resolved to properties
+  all: Property[];
 
   writes: Property[];
   calls: Method[];
   declares: Entity[];
   objectProps: Entity[];
 
-  method: Method;
+  id: Identifiers;
+  args: Property[];
   methodType: MethodType;
 
   allExceptReads(): Entity[] {
@@ -46,13 +48,13 @@ class MethodDefintitionBuilder {
       ...this.calls,
       ...this.declares,
       ...this.objectProps,
-      ...this.method.args,
+      ...this.args,
     ];
   }
 
-  //TODO resolve this
   reads(): Property[] {
     const other = this.allExceptReads();
+
     const reads = [...this.all];
     other.forEach((el) => {
       const i = reads.findIndex((x) => _.isEqual(x.id, el.id));
@@ -66,7 +68,8 @@ class MethodDefintitionBuilder {
   add(item: Entity, accessType: AccessType) {
     switch (accessType) {
       case AccessType.ALL:
-        this.all.push(item);
+        if (isProperty(item)) this.all.push(item);
+        else throw new Error(`All can only contain properties! Got method.`);
         break;
       case AccessType.CALLS:
         if (isMethod(item)) this.calls.push(item);
@@ -87,8 +90,9 @@ class MethodDefintitionBuilder {
     }
   }
 
-  constructor(method: Method, methodType: MethodType) {
-    this.method = method;
+  constructor(id: Identifiers, args: Property[], methodType: MethodType) {
+    this.id = id;
+    this.args = args;
     this.methodType = methodType;
 
     this.all = [];
@@ -99,8 +103,8 @@ class MethodDefintitionBuilder {
   }
   build(): MethodDefintion {
     return {
-      id: prefixThis(this.method.id),
-      args: this.method.args,
+      id: prefixThis(this.id),
+      args: this.args,
       reads: _.uniqWith(_.isEqual, this.reads()),
       writes: _.uniqWith(_.isEqual, this.writes),
       calls: _.uniqWith(_.isEqual, this.calls),
@@ -147,8 +151,11 @@ export class MethodsBuilder {
     const id = utils.getNameFromExpression(
       node.key as utils.SupportedNamedExpression
     );
-    const method: Method = { id, args, discriminator: EntityType.METHOD };
-    this.latestMethodBuilder = new MethodDefintitionBuilder(method, methodType);
+    this.latestMethodBuilder = new MethodDefintitionBuilder(
+      id,
+      args,
+      methodType
+    );
   }
 
   identifierOrExpressionNew(

@@ -17,15 +17,13 @@ export class ESLinter {
     });
   }
 
-  async lintCode(code: string, ruleName: string): Promise<Result> {
-    //TODO implement
-    //runs all rules and selects only the ones we are interested in
+  async lintCode(code: string): Promise<Result> {
     const lintResults = await this.eslint.lintText(code);
     //single 'file'
-    const data = lintResults[0].messages
-      .filter((x) => x.ruleId === ruleName)
-      .map((x) => JSON.parse(x.message))[0];
-    //TODO any type
+    const data = this.deserialize(
+      lintResults[0].messages,
+      lintResults[0].filePath
+    );
     return data;
   }
 
@@ -34,10 +32,7 @@ export class ESLinter {
     outputOnlyFileName = true
   ): Promise<Result[]> {
     const lintResults = await this.eslint.lintFiles(paths);
-    //employing a bit of a hack,
-    //output of each rule is stored as stringified json in it's message
     return lintResults.map((result) => {
-      result.filePath;
       const path = this.fileNameOrPath(result.filePath, outputOnlyFileName);
       return this.deserialize(result.messages, path);
     });
@@ -47,6 +42,8 @@ export class ESLinter {
     messages: Linter.LintMessage[],
     filePath: string
   ): Result {
+    //employing a bit of a hack,
+    //output of each rule is stored as stringified json in it's message
     const methodsJSON = messages.find((x) => x.ruleId === METHODS_NAME)
       ?.message;
     const topLevelJSON = messages.find((x) => x.ruleId === TOP_LEVEL_NAME)

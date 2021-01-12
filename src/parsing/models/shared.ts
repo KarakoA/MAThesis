@@ -19,6 +19,6 @@ export function isMethod(e: any): e is Method {
 }
 export interface Method {
   id: Identifiers;
-  args: Array<Entity>;
+  args: ReadonlyArray<Entity>;
   discriminator: EntityType.METHOD;
 }

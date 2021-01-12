@@ -62,7 +62,6 @@ export function create(context) {
         if (utils.isRootNameNode(node))
           builder.identifierOrExpressionNew(node, AccessType.ALL);
       },
-      //:not(:matches(Property[method = true],Property[computed = true]))
       ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) FunctionExpression Property[method = false]"(
         node
       ) {

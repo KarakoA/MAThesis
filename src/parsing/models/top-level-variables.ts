@@ -1,14 +1,9 @@
-import {
-  Identifiers,
-  prefixThis,
-  startsWith,
-} from "../../common/models/identifiers";
+import { Identifiers, prefixThis } from "../../common/models/identifiers";
 import {
   startsWithThis,
   findLongestMatch as identifiersLongestMatch,
 } from "../../common/models/identifiers";
 import { EntityType, Property } from "./shared";
-import _ from "lodash/fp";
 
 export enum DataType {
   ARRAY,

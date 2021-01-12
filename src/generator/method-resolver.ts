@@ -30,8 +30,7 @@ import { lift } from "../common/utils";
 export class MethodResolver {
   methods: MethodDefintitions;
   topLevel: TopLevelVariables;
-  //or CalledMethod
-  //TODO ?
+
   handled: [identifiers.Identifiers, ResolvedMethodDefintition][];
 
   constructor(methods: MethodsResult, topLevel: TopLevelVariablesResult) {
