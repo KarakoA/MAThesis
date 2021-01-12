@@ -14,7 +14,7 @@ import { AST } from "vue-eslint-parser";
 import { AST_NODE_TYPES } from "@typescript-eslint/types";
 import { MethodDefintion, MethodsResult } from "../models/methods";
 
-import { prefixThis } from "../../models2/identifiers";
+import { prefixThis } from "../../models/identifiers";
 
 export enum AccessType {
   WRITES,

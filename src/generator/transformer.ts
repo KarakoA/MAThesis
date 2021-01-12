@@ -4,8 +4,8 @@ import _ from "lodash/fp";
 import { MethodResolver } from "./method-resolver";
 import { Result } from "../parsing/models/result";
 import { MethodDefintitions, MethodDefintion } from "../parsing/models/methods";
-import * as identifiers from "../models2/identifiers";
-import { Identifiers } from "../models2/identifiers";
+import * as identifiers from "../models/identifiers";
+import { Identifiers } from "../models/identifiers";
 import {
   BindingType,
   BindingValue,
@@ -33,8 +33,8 @@ import {
   CalledMethod,
   ResolvedMethodDefintition,
 } from "./models/method-resolver";
-import * as identifier from "../models2/identifier";
-import { Identifier } from "../models2/identifier";
+import * as identifier from "../models/identifier";
+import { Identifier } from "../models/identifier";
 import { JSObject } from "../utils";
 
 export class Transformer {

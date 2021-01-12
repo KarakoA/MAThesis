@@ -15,7 +15,7 @@ import {
   Identifier,
   isGenericIndex,
   isNumericIndex,
-} from "../models2/identifier";
+} from "../models/identifier";
 import { lift, JSObject } from "../utils";
 
 export class ExtendedGraph {

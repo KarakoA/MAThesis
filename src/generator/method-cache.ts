@@ -5,7 +5,7 @@ import {
   ResolvedMethodDefintition,
 } from "./models/method-resolver";
 import _ from "lodash/fp";
-import { render } from "../models2/identifiers";
+import { render } from "../models/identifiers";
 export class MethodCache {
   resolver: MethodResolver;
   result: ResolvedMethodDefintition[];

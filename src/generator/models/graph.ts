@@ -1,4 +1,4 @@
-import { Identifier } from "../../models2/identifier";
+import { Identifier } from "../../models/identifier";
 import { Location } from "../../parsing/models/template-bindings";
 
 export enum EdgeType {
