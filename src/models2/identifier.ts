@@ -1,4 +1,4 @@
-import { nextChar } from "../utils2";
+import { nextChar } from "../utils";
 
 /**
  * Represents an identifier.

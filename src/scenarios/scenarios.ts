@@ -7,7 +7,7 @@ import {
   Node,
   isMethodNode,
 } from "../generator2/models/graph";
-import { JSObject, lift, nonNull } from "../utils2";
+import { JSObject, lift, nonNull } from "../utils";
 
 type ScenarioSet = Scenario[];
 

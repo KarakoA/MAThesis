@@ -35,7 +35,7 @@ import {
 } from "./models/method-resolver";
 import * as identifier from "../models2/identifier";
 import { Identifier } from "../models2/identifier";
-import { JSObject } from "../utils2";
+import { JSObject } from "../utils";
 
 export class Transformer {
   graph: ExtendedGraph;

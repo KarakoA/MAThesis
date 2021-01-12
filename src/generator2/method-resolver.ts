@@ -25,7 +25,7 @@ import {
   isCalledMethod,
   GeneralisedArgument,
 } from "./models/method-resolver";
-import { lift } from "../utils2";
+import { lift } from "../utils";
 
 export class MethodResolver {
   methods: MethodDefintitions;

@@ -1,7 +1,7 @@
 import assert from "assert";
 
 import _ from "lodash/fp";
-import { zipWithIndex } from "../utils2";
+import { zipWithIndex } from "../utils";
 
 import {
   Identifier,
