@@ -1,5 +1,5 @@
 import _ from "lodash/fp";
-import { Identifiers } from "../../models/identifiers";
+import { Identifiers } from "../../common/models/identifiers";
 import { Method, Property } from "./shared";
 
 export interface MethodDefintion {

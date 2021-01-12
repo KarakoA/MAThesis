@@ -1,4 +1,4 @@
-import { prefixThis } from "../../models/identifiers";
+import { prefixThis } from "../../common/models/identifiers";
 import { EntityType } from "../models/shared";
 import {
   TopLevelVariables,

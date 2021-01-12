@@ -6,8 +6,8 @@ import {
   nextIndex,
   IdentifierType,
   ThisInstance,
-} from "../models/identifier";
-import { create, Identifiers } from "../models/identifiers";
+} from "../common/models/identifier";
+import { create, Identifiers } from "../common/models/identifiers";
 import { AST } from "vue-eslint-parser";
 
 import { AST_NODE_TYPES } from "@typescript-eslint/types";

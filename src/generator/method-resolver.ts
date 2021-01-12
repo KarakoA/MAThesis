@@ -1,5 +1,5 @@
 import _ from "lodash/fp";
-import * as identifiers from "../models/identifiers";
+import * as identifiers from "../common/models/identifiers";
 import assert from "assert";
 import {
   MethodDefintion,
@@ -25,7 +25,7 @@ import {
   isCalledMethod,
   GeneralisedArgument,
 } from "./models/method-resolver";
-import { lift } from "../utils";
+import { lift } from "../common/utils";
 
 export class MethodResolver {
   methods: MethodDefintitions;

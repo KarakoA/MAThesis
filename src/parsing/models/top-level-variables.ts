@@ -1,8 +1,12 @@
-import { Identifiers, prefixThis, startsWith } from "../../models/identifiers";
+import {
+  Identifiers,
+  prefixThis,
+  startsWith,
+} from "../../common/models/identifiers";
 import {
   startsWithThis,
   findLongestMatch as identifiersLongestMatch,
-} from "../../models/identifiers";
+} from "../../common/models/identifiers";
 import { EntityType, Property } from "./shared";
 import _ from "lodash/fp";
 

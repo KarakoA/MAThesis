@@ -1,4 +1,4 @@
-import { Identifiers } from "../../models/identifiers";
+import { Identifiers } from "../../common/models/identifiers";
 import { Property } from "../../parsing/models/shared";
 
 export enum GeneralisedArgument {

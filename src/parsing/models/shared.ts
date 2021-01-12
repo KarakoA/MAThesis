@@ -1,4 +1,4 @@
-import { Identifiers } from "../../models/identifiers";
+import { Identifiers } from "../../common/models/identifiers";
 
 export enum EntityType {
   PROPERTY = "property",

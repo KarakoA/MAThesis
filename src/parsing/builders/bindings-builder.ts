@@ -11,7 +11,7 @@ import {
   addIndex,
   render,
   replaceFront,
-} from "../../models/identifiers";
+} from "../../common/models/identifiers";
 import _ from "lodash/fp";
 import {
   EntityType,
