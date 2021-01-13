@@ -5,7 +5,7 @@ import { NAME as BINDINGS_NAME } from "./visitors/template-bindings";
 import { NAME as TOP_LEVEL_NAME } from "./visitors/top-level-variables";
 import { NAME as METHODS_NAME } from "./visitors/methods";
 import { TopLevelVariablesResult } from "./models/top-level-variables";
-import { BindingsResult, deserializeResult } from "./models/template-bindings";
+import { BindingsResult } from "./models/template-bindings";
 import { MethodsResult } from "./models/methods";
 export class ESLinter {
   eslint: ESLint;
@@ -56,8 +56,8 @@ export class ESLinter {
       ? JSON.parse(topLevelJSON)
       : [];
     const bindings: BindingsResult = bindingsJSON
-      ? deserializeResult(bindingsJSON)
-      : { bindings: new Map() };
+      ? JSON.parse(bindingsJSON)
+      : { bindings: [] };
     return new Result(topLevel, methods, bindings, filePath);
   }
 

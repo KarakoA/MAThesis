@@ -9,6 +9,7 @@ import { Identifiers } from "../common/models/identifiers";
 import {
   BindingType,
   BindingValue,
+  Binding,
   Tag,
 } from "../parsing/models/template-bindings";
 import {
@@ -43,7 +44,7 @@ export class Transformer {
 
   computedIds: Identifiers[];
 
-  bindings: [Tag, BindingValue[]][];
+  bindings: Binding[];
   methods: MethodDefintitions;
   topLevel: TopLevelVariables;
   init?: MethodDefintion;
@@ -60,7 +61,7 @@ export class Transformer {
     this.topLevel = visitorsResult.topLevel.topLevel;
     this.init = visitorsResult.methods.init;
     this.methods = visitorsResult.methods.methods;
-    this.bindings = Array.from(visitorsResult.bindings.bindings);
+    this.bindings = visitorsResult.bindings.bindings;
     this.computedIds = visitorsResult.methods.computed.map((x) => x.id);
   }
 
@@ -144,7 +145,9 @@ export class Transformer {
     this.graph.addNode(node);
   }
   private addBindings(): void {
-    this.bindings.forEach(([tag, boundItems]) => {
+    this.bindings.forEach((x) => {
+      const tag = x.tag;
+      const boundItems = x.values;
       const tagNode: TagNode = {
         id: tag.id,
         name: tag.name,

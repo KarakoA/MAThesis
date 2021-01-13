@@ -5,6 +5,7 @@ import {
   BindingType,
   BindingValue,
   Tag,
+  Binding,
 } from "../models/template-bindings";
 import {
   Identifiers,
@@ -69,14 +70,14 @@ function substituteVFor(
 }
 
 export class BindingsBuilder {
-  bindings!: Map<Tag, Array<BindingValue>>;
+  bindings!: Binding[];
   latest!: BindingValue[];
   VForReplacement!: { left: Identifiers; right: Identifiers }[];
   constructor() {
     this.reset();
   }
   reset(): void {
-    this.bindings = new Map();
+    this.bindings = [];
     this.latest = [];
     this.VForReplacement = [];
   }
@@ -131,7 +132,10 @@ export class BindingsBuilder {
       const position = this.VForReplacement.length == 0 ? undefined : "i";
       //const tag = new TagI(id, node.loc, name, position);
       const tag: Tag = { id, loc: node.loc, name, position };
-      this.bindings.set(tag, filterOutMethodNamesAsIdentifiers(this.latest));
+      this.bindings.push({
+        tag: tag,
+        values: filterOutMethodNamesAsIdentifiers(this.latest),
+      });
       this.latest = [];
     }
   }

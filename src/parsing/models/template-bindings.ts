@@ -21,13 +21,7 @@ export interface BindingValue {
   bindingType: BindingType;
 }
 
+export type Binding = { tag: Tag; values: BindingValue[] };
 export interface BindingsResult {
-  bindings: Map<Tag, Array<BindingValue>>;
-}
-
-export function serializeResult(res: BindingsResult): string {
-  return JSON.stringify(Array.from(res.bindings));
-}
-export function deserializeResult(json: string): BindingsResult {
-  return { bindings: new Map(JSON.parse(json)) };
+  bindings: Binding[];
 }

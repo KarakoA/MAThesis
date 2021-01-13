@@ -1,6 +1,6 @@
 import { BindingsBuilder } from "../builders/bindings-builder";
 
-import { BindingType, serializeResult } from "../models/template-bindings";
+import { BindingType } from "../models/template-bindings";
 import * as utils from "../utils";
 
 let builder = new BindingsBuilder();
@@ -49,7 +49,7 @@ export function create(context) {
     //last node on the way to top
     "VElement[name=template]:exit"(node) {
       const result = builder.build();
-      const json = serializeResult(result);
+      const json = JSON.stringify(result);
       context.report({ node: node, message: json });
       builder.reset();
     },
