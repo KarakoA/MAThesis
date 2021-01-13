@@ -37,24 +37,24 @@ beforeAll(async () => {
 describe("Parsing top level variables", () => {
   test("includes simple variables", () => {
     const expected = [
-      property([This, named("a")]),
-      property([This, named("b")]),
-      property([This, named("c")]),
+      property(This, named("a")),
+      property(This, named("b")),
+      property(This, named("c")),
     ];
     expect(parsed).toEqual(expect.arrayContaining(expected));
   });
   test("includes simple objects", () => {
     const expected = [
-      property([This, named("simple_object"), named("prop1")]),
-      property([This, named("simple_object"), named("prop2")]),
+      property(This, named("simple_object"), named("prop1")),
+      property(This, named("simple_object"), named("prop2")),
     ];
     expect(parsed).toEqual(expect.arrayContaining(expected));
   });
   test("includes nested objects", () => {
     const expected = [
-      property([This, named("object"), named("property1")]),
-      property([This, named("object"), named("property2"), named("a")]),
-      property([This, named("object"), named("property2"), named("b")]),
+      property(This, named("object"), named("property1")),
+      property(This, named("object"), named("property2"), named("a")),
+      property(This, named("object"), named("property2"), named("b")),
     ];
     expect(parsed).toEqual(expect.arrayContaining(expected));
   });

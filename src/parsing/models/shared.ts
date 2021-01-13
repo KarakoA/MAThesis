@@ -25,8 +25,8 @@ export interface Method {
   discriminator: EntityType.METHOD;
 }
 
-//#region  Factory Methods
-export function property(id: Identifiers): Property {
+//#region Factory Methods
+export function property(...id: Identifiers): Property {
   return { id, discriminator: EntityType.PROPERTY };
 }
 export function method(

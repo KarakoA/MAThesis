@@ -270,10 +270,9 @@ function getNameFromExpression(
       if (node.computed) {
         //X[Z] => 'i',X[1] => 1, X[Z+1+y] => 'i' or 'j' if prev is 'i' etc.
         next =
-          node.property.type === AST_NODE_TYPES.Literal
+          node.property.type === AST_NODE_TYPES.Literal && node.property.value
             ? {
-                //@unsafe
-                name: node.property.value as string,
+                name: node.property.value.toString(),
                 discriminator: IdentifierType.NUMERIC_INDEX,
               }
             : nextIndex(_.head(prev));
