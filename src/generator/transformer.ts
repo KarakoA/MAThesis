@@ -8,7 +8,6 @@ import * as identifiers from "../common/models/identifiers";
 import { Identifiers } from "../common/models/identifiers";
 import { BindingType, Binding } from "../parsing/models/template-bindings";
 import {
-  Entity,
   EntityType,
   isMethod,
   isProperty,
@@ -60,24 +59,20 @@ export class Transformer {
     this.computedIds = visitorsResult.methods.computed.map((x) => x.id);
   }
 
+  //#region Compute
   compute(): ExtendedGraph {
-    this.addTopLevel();
+    this.addTopLevelVariables();
     this.addInit();
     this.addBindings();
     this.addIndirectlyCalledMethods();
+    //must be called after all edges have been added
     this.addEdgesForNumerics();
 
     return this.graph;
   }
-  private isComputedProperty(item: identifiers.Identifiers): boolean {
-    return _.find(_.isEqual(item), this.computedIds) !== undefined;
-  }
-  private isInit(item: identifiers.Identifiers): boolean {
-    return _.equals(this.init?.id, item);
-  }
 
-  private addTopLevel(): void {
-    this.topLevel.forEach((topLevel) => this.addIdentifierChain(topLevel));
+  private addTopLevelVariables(): void {
+    this.topLevel.forEach((topLevel) => this.addIdentifiers(topLevel.id));
   }
 
   private addInit(): void {
@@ -123,7 +118,7 @@ export class Transformer {
               ...binding.item,
               id: identifiers.prefixThis(binding.item.id),
             };
-            const last = this.addIdentifierChain(item);
+            const last = this.addIdentifiers(item.id);
             this.addEdgeBasedOnBindingType(tagNode, last, binding.bindingType);
           }
         }
@@ -152,7 +147,35 @@ export class Transformer {
     const numerics = this.graph.numericIndexDataNodes();
     numerics.forEach((node) => this.connectEdgesOfGenericToNumeric(node));
   }
+  //#endregion
 
+  //#region Helper Methods
+  private isComputedProperty(item: identifiers.Identifiers): boolean {
+    return _.find(_.isEqual(item), this.computedIds) !== undefined;
+  }
+  private isInit(item: identifiers.Identifiers): boolean {
+    return _.equals(this.init?.id, item);
+  }
+
+  /**
+   * Adds nodes for each identifier in identifiers, connects them, and returns the last one added
+   * @param ids identifiers
+   */
+  private addIdentifiers(ids: Identifiers): Node {
+    const nodes = this.identifiersToDataNodes(ids);
+
+    this.graph.addNodes(nodes);
+    this.graph.connect(nodes);
+
+    const last = _.last(nodes);
+    if (!last)
+      throw new Error("Got empty identifier. this should not be possible");
+    return last;
+  }
+
+  //#endregion
+
+  //#region Edges
   private connectEdgesOfGenericToNumeric(numeric: DataNode): void {
     const generic = this.graph.getMatchingGenericNode(numeric);
     if (!generic) return;
@@ -194,67 +217,12 @@ export class Transformer {
     this.graph.addEdges(newEdges);
   }
 
-  //TODO rename add Entity or smth
-  private addIdentifierChain(x: Entity): Node {
-    const nodes = this.identifierToDataNodes(x.id);
-
-    this.graph.addNodes(nodes);
-    this.graph.connect(nodes);
-
-    const last = _.last(nodes);
-    if (!last)
-      throw new Error("Got empty identifier. this should not be possible");
-    return last;
-  }
-
-  private identifierToDataNodes(ids: Identifiers): DataNode[] {
-    let prev: identifier.Identifier[] = [];
-    const nodes = ids.map((current) => {
-      let nameId: Identifier;
-      if (identifier.isIndex(current)) {
-        const last = _.last(prev);
-        if (!last) throw new Error("Index as first element!");
-        nameId = { ...current, name: last.name + identifier.render(current) };
-      } else {
-        nameId = current;
-      }
-      //TODO @check guaranteed to be only one?
-      const parent = identifiers.render(prev);
-      prev = prev.concat(nameId);
-
-      const node: DataNode = {
-        id: identifiers.render(prev),
-        type: current.discriminator,
-        name: identifier.render(nameId),
-        parent,
-
-        discriminator: NodeType.DATA,
-      };
-      return node;
-    });
-    return nodes;
-  }
-
-  private addEdgesMethod(
-    node: Node,
-    resolved: ResolvedMethodDefintition
-  ): void {
-    const readNodes = resolved.reads.map((x) => this.addIdentifierChain(x));
-    readNodes.forEach((source) =>
-      this.graph.addEdge({ source, sink: node, label: EdgeType.SIMPLE })
-    );
-
-    const writeNodes = resolved.writes.map((x) => this.addIdentifierChain(x));
-    writeNodes.forEach((sink) =>
-      this.graph.addEdge({ source: node, sink, label: EdgeType.SIMPLE })
-    );
-
-    const callNodes = resolved.calls.map((x) => this.nodeFromMethod(x));
-    callNodes.forEach((sink) =>
-      this.graph.addEdge({ source: node, sink, label: EdgeType.CALLS })
-    );
-  }
-
+  /**
+   * Adds a new edge with the correct type for the given binding.
+   * @param tag tag node
+   * @param item  binding node
+   * @param type binding type
+   */
   private addEdgeBasedOnBindingType(
     tag: TagNode,
     item: Node,
@@ -283,9 +251,66 @@ export class Transformer {
         throw new Error(`Unknown binding type: ${type}!`);
     }
   }
+
+  private addEdgesMethod(
+    node: Node,
+    resolved: ResolvedMethodDefintition
+  ): void {
+    const readNodes = resolved.reads.map((x) => this.addIdentifiers(x.id));
+    readNodes.forEach((source) =>
+      this.graph.addEdge({ source, sink: node, label: EdgeType.SIMPLE })
+    );
+
+    const writeNodes = resolved.writes.map((x) => this.addIdentifiers(x.id));
+    writeNodes.forEach((sink) =>
+      this.graph.addEdge({ source: node, sink, label: EdgeType.SIMPLE })
+    );
+
+    const callNodes = resolved.calls.map((x) => this.nodeFromMethod(x));
+    callNodes.forEach((sink) =>
+      this.graph.addEdge({ source: node, sink, label: EdgeType.CALLS })
+    );
+  }
+
+  //#endregion
+
+  //#region Nodes from identifiers (including args for methods)
+
+  /**
+   * Create data nodes from identifiers
+   * @param ids identifiers
+   */
+  private identifiersToDataNodes(ids: Identifiers): DataNode[] {
+    let prev: identifier.Identifier[] = [];
+    const nodes = ids.map((current) => {
+      let nameId: Identifier;
+      if (identifier.isIndex(current)) {
+        const last = _.last(prev);
+        if (!last) throw new Error("Index as first element!");
+        nameId = { ...current, name: last.name + identifier.render(current) };
+      } else {
+        nameId = current;
+      }
+      const parent = identifiers.render(prev);
+      prev = prev.concat(nameId);
+
+      const node: DataNode = {
+        id: identifiers.render(prev),
+        type: current.discriminator,
+        name: identifier.render(nameId),
+        parent,
+
+        discriminator: NodeType.DATA,
+      };
+      return node;
+    });
+    return nodes;
+  }
+
   /**
    * Creates a node from the given method definition, based on it's id and args.
    * If it's a computed property, brackets are ommited.
+   * Note that this creates no edges, only the node for the method itself
    * @param method method to create node from
    * @param isComputed if the method is a computed property
    */
@@ -308,7 +333,7 @@ export class Transformer {
     const argsIdsString = method.args
       .map((arg) => {
         if (isProperty(arg))
-          return _.last(this.identifierToDataNodes(arg.id))?.toString() ?? "";
+          return _.last(this.identifiersToDataNodes(arg.id))?.toString() ?? "";
         return arg.toString();
       })
       .join(",");
@@ -325,4 +350,5 @@ export class Transformer {
 
     return { id: id, name: name, discriminator: NodeType.METHOD };
   }
+  //#endregion
 }
