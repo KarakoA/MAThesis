@@ -5,6 +5,7 @@ import process from "process";
 import { Transformer } from "./generator/transformer";
 
 import * as util from "util";
+import { serialize } from "./generator/graph";
 util.inspect.defaultOptions.depth = 13;
 
 async function main() {
@@ -15,11 +16,12 @@ async function main() {
 
   const transformer = new Transformer(results[0]);
 
-  const graphJson = transformer.compute();
+  const graph = transformer.compute();
 
-  computeAndPrintScenarios(graphJson);
+  computeAndPrintScenarios(graph);
 
-  fs.writeFileSync(outPath, JSON.stringify(graphJson, null, 2));
+  const graphJSON = serialize(graph);
+  fs.writeFileSync(outPath, JSON.stringify(graphJSON, null, 2));
 }
 
 main().catch((error) => {

@@ -3,39 +3,53 @@ import {
   DataNode,
   EdgeType,
   isDataNode,
-  isTagNode,
   Node,
   Edge,
-  NodeType,
-  TagNode,
   IsInitNode,
 } from "./models/graph";
 import _ from "lodash/fp";
-import {
-  Identifier,
-  isGenericIndex,
-  isNumericIndex,
-} from "../common/models/identifier";
+import { isGenericIndex, isNumericIndex } from "../common/models/identifier";
 import { lift, JSObject } from "../common/utils";
 
+//#region Serialization
+/**
+ * Converts the given graph to a a stringifyable json object (serialize)
+ * @param graph the graph
+ */
+export function serialize(graph: ExtendedGraph): JSObject {
+  return json.write(graph.graph) as JSObject;
+}
+/**
+ * Reads the graph from a serialized json object
+ * @param jsonData serialized graph
+ */
+export function deserialize(jsonData: JSObject): ExtendedGraph {
+  const graphlibGraph = json.read(jsonData);
+  const graph = new ExtendedGraph();
+  graph.graph = graphlibGraph;
+  return graph;
+}
+//#endregion
+
+/**
+ * Encapsulates a compound and directed graph with some additional methods.
+ */
 export class ExtendedGraph {
   graph: Graph;
-  lastAddedNode?: Node;
   constructor() {
     this.graph = new Graph({
       directed: true,
       compound: true,
       multigraph: false,
     });
-    this.lastAddedNode = undefined;
   }
 
+  //#region Add Nodes/Edges
   /**
    * Adds a node to the graph. If it already exists, the passed one is ignored (not overwritten)
    * @param node node to add
    */
   addNode(node: Node): void {
-    this.lastAddedNode = node;
     if (!this.graph.hasNode(node.id)) {
       const label = node;
       this.graph.setNode(node.id, label);
@@ -75,6 +89,8 @@ export class ExtendedGraph {
     });
   }
 
+  //#endregion
+
   //TODO refactor this
   numericPositions(): void {
     const numerics = _.filter(
@@ -112,7 +128,7 @@ export class ExtendedGraph {
 
     //problems[i].data.a
     // => node with id "problems[i].data.a"
-    const oldNodes = this.getLastChildren(generic.id);
+    const oldNodes = this.leafNodes(generic.id);
 
     //problems[i].data.a
     //  id: "problems[i].data.a", newId: "problems[0].data.a"
@@ -156,20 +172,13 @@ export class ExtendedGraph {
     edges.forEach((edge) => this.addEdge(edge));
   }
 
-  outEdges(node: string | Node): Edge[] {
-    const nodeId = _.isString(node) ? node : node.id;
-    const outEdges = this.graph.outEdges(nodeId);
-    if (!outEdges) return [];
-    return _.flatMap((x) => lift(this.edge(x.v, x.w)), outEdges);
-  }
+  //#region Query Nodes/Edges
 
-  inEdges(node: string | Node): Edge[] {
-    const nodeId = _.isString(node) ? node : node.id;
-    const inEdgesEdges = this.graph.inEdges(nodeId);
-    if (!inEdgesEdges) return [];
-    return _.flatMap((x) => lift(this.edge(x.v, x.w)), inEdgesEdges);
-  }
-
+  /**
+   * Returns the given edge between source and sink or undefined if there is none
+   * @param source from
+   * @param sink to
+   */
   edge(source: string, sink: string): Edge | undefined {
     const label = this.graph.edge(source, sink);
     if (!label) return undefined;
@@ -179,59 +188,86 @@ export class ExtendedGraph {
       label: label as EdgeType,
     };
   }
+  /**
+   * Returns the node with the given id
+   * @param id id of the node
+   */
+  node(id: string): Node {
+    return this.graph.node(id) as Node;
+  }
 
-  children(parent: string | Node): DataNode[] {
-    const parentId = _.isString(parent) ? parent : parent.id;
+  /**
+   * Returns the outgoing edges from the given node
+   * @param node node id string or node
+   */
+  outEdges(node: string | Node): Edge[] {
+    const nodeId = this.nodeID(node);
+    const outEdges = this.graph.outEdges(nodeId);
+    if (!outEdges) return [];
+    return _.flatMap((x) => lift(this.edge(x.v, x.w)), outEdges);
+  }
+
+  /**
+   * Returns the incoming edges to the given node
+   * @param node node id string or node
+   */
+  inEdges(node: string | Node): Edge[] {
+    const nodeId = this.nodeID(node);
+    const inEdgesEdges = this.graph.inEdges(nodeId);
+    if (!inEdgesEdges) return [];
+    return _.flatMap((x) => lift(this.edge(x.v, x.w)), inEdgesEdges);
+  }
+
+  /**
+   * Returns the children of the given node.
+   * Note that only DataNodes can be children/have children.
+   * @param parent node whose children to return
+   */
+  children(parent: string | DataNode): DataNode[] {
+    const parentId = this.nodeID(parent);
     const children = this.graph.children(parentId).map((x) => this.node(x));
     //all of them are data node, only data nodes can have a parent
     return _.filter(isDataNode, children);
   }
 
   /**
-   * Returns all indirect children of the given vertex.
-   * Indirect children are defined as the children,
-   * that can be reached via recursively calling .children on children of vertex.
-   * @param vertex  the vertex
+   * Returns the leaf nodes starting from the given node.
+   * They can be obtained via recursively calling .children on the children of the node until nodes
+   * with no children are reached. Those are the leaf nodes
+   * @param node node
    */
-  // indirectChildren(vertex: string): string[] {
-  //   const directChildren = this.graph.children(vertex);
-  //   if (lodash.isEmpty(directChildren)) {
-  //     return [vertex];
-  //   }
-
-  //   //TODO can I inline?
-  //   return _.flatMap((x) => this.indirectChildren(x), directChildren);
-  // }
-  //TODO fix doc, that's not what it does
-  getLastChildren(vertex: string | DataNode): DataNode[] {
-    const directChildren = this.children(vertex);
+  leafNodes(node: string | DataNode): DataNode[] {
+    const directChildren = this.children(node);
     if (_.isEmpty(directChildren)) {
-      if (_.isString(vertex)) {
-        const node = this.node(vertex);
-        if (isDataNode(node)) return [node];
-        else throw new Error(`${node} has to be a data node!`);
-      }
-      return [vertex];
+      return [this.getDataNode(node)];
     }
 
     //TODO can I inline?
-    return _.flatMap((x) => this.getLastChildren(x), directChildren);
+    return _.flatMap((x) => this.leafNodes(x), directChildren);
   }
 
-  node(id: string): Node {
-    return this.graph.node(id) as Node;
-  }
+  //#endregion
 
+  //#region Fetch
+  /**
+   * Returns all nodes
+   */
   nodes(): Node[] {
     const nodes = this.graph.nodes().map((id) => this.node(id));
     return nodes;
   }
 
+  /**
+   * Returns all edges
+   */
   edges(): Edge[] {
     const edges = this.graph.edges();
     const res = _.flatMap((x) => lift(this.edge(x.v, x.w)), edges);
     return res;
   }
+  /**
+   * Returns the init node or throws an exception if there is none or there is more than one.
+   */
   init(): Node {
     const initNodes = _.filter(IsInitNode, this.nodes());
     if (initNodes.length != 1)
@@ -240,14 +276,21 @@ export class ExtendedGraph {
       );
     return initNodes[0];
   }
-}
+  //#endregion
 
-export function serialize(graph: ExtendedGraph): JSObject {
-  return json.write(graph.graph) as JSObject;
-}
-export function deserialize(jsonData: JSObject): ExtendedGraph {
-  const graphlibGraph = json.read(jsonData);
-  const graph = new ExtendedGraph();
-  graph.graph = graphlibGraph;
-  return graph;
+  //#region Helper Methods
+
+  private getDataNode(node: string | DataNode): DataNode {
+    if (_.isString(node)) {
+      const dataNode = this.node(node);
+      if (isDataNode(dataNode)) return dataNode;
+      else throw new Error(`${dataNode} has to be a data node!`);
+    }
+    return node;
+  }
+  private nodeID(nodeOrId: string | Node): string {
+    return _.isString(nodeOrId) ? nodeOrId : nodeOrId.id;
+  }
+
+  //#endregion
 }

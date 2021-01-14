@@ -1,5 +1,5 @@
 import _ from "lodash/fp";
-import { deserialize, ExtendedGraph } from "../generator/graph";
+import { ExtendedGraph } from "../generator/graph";
 import {
   EdgeType,
   isTagNode,
@@ -7,7 +7,7 @@ import {
   Node,
   isMethodNode,
 } from "../generator/models/graph";
-import { JSObject, lift, nonNull } from "../common/utils";
+import { lift, nonNull } from "../common/utils";
 
 type ScenarioSet = Scenario[];
 
@@ -21,9 +21,10 @@ class Entry {
   }
 }
 
-export function computeAndPrintScenarios(jsonGraph: JSObject, depth = 3): void {
-  const graph = deserialize(jsonGraph);
-
+export function computeAndPrintScenarios(
+  graph: ExtendedGraph,
+  depth = 3
+): void {
   const initNode = graph.init();
   const init = new Entry(graph, initNode);
 

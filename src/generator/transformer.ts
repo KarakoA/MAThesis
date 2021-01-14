@@ -1,4 +1,4 @@
-import { ExtendedGraph, serialize } from "./graph";
+import { ExtendedGraph } from "./graph";
 
 import _ from "lodash/fp";
 import { MethodResolver } from "./method-resolver";
@@ -6,12 +6,7 @@ import { Result } from "../parsing/models/result";
 import { MethodDefintitions, MethodDefintion } from "../parsing/models/methods";
 import * as identifiers from "../common/models/identifiers";
 import { Identifiers } from "../common/models/identifiers";
-import {
-  BindingType,
-  BindingValue,
-  Binding,
-  Tag,
-} from "../parsing/models/template-bindings";
+import { BindingType, Binding } from "../parsing/models/template-bindings";
 import {
   Entity,
   EntityType,
@@ -36,7 +31,6 @@ import {
 } from "./models/method-resolver";
 import * as identifier from "../common/models/identifier";
 import { Identifier } from "../common/models/identifier";
-import { JSObject } from "../common/utils";
 
 export class Transformer {
   graph: ExtendedGraph;
@@ -65,61 +59,14 @@ export class Transformer {
     this.computedIds = visitorsResult.methods.computed.map((x) => x.id);
   }
 
-  private resolveDifferentDisplays() {
-    this.graph.numericPositions();
-  }
-
-  /**
-   * Creates a node from the given method definition, based on it's id and args.
-   * If it's a computed property, brackets are ommited.
-   * @param method method to create node from
-   * @param isComputed if the method is a computed property
-   */
-  private nodeFromMethod(
-    method: ResolvedMethodDefintition | CalledMethod
-  ): MethodNode | InitNode {
-    if (this.isInit(method.id)) {
-      return {
-        id: identifiers.render(method.id),
-        name: identifiers.render(method.id, false),
-        discriminator: NodeType.INIT,
-      };
-    }
-    if (this.isComputedProperty(method.id))
-      return {
-        id: identifiers.render(method.id),
-        name: identifiers.render(method.id, false),
-        discriminator: NodeType.METHOD,
-      };
-    const argsIdsString = method.args
-      .map((arg) => {
-        if (isProperty(arg))
-          return _.last(this.identifierToDataNodes(arg.id))?.toString() ?? "";
-        return arg.toString();
-      })
-      .join(",");
-
-    const id = `${identifiers.render(method.id)}(${argsIdsString})`;
-
-    const argsString = method.args
-      .map((arg) =>
-        isProperty(arg) ? identifiers.render(arg.id, false) : arg.toString()
-      )
-      .join(",");
-
-    const name = `${identifiers.render(method.id, false)}(${argsString})`;
-
-    return { id: id, name: name, discriminator: NodeType.METHOD };
-  }
-
-  compute(): JSObject {
+  compute(): ExtendedGraph {
     this.addTopLevel();
     this.addInit();
     this.addBindings();
     this.addIndirectlyCalledMethods();
     this.resolveDifferentDisplays();
 
-    return serialize(this.graph);
+    return this.graph;
   }
   private isComputedProperty(item: identifiers.Identifiers): boolean {
     return _.find(_.isEqual(item), this.computedIds) !== undefined;
@@ -200,6 +147,11 @@ export class Transformer {
     // wrong , need to also handle Property in allCalledMethods
   }
 
+  //TODO naming
+  private resolveDifferentDisplays() {
+    this.graph.numericPositions();
+  }
+
   //TODO rename add Entity or smth
   private addIdentifierChain(x: Entity): Node {
     const nodes = this.identifierToDataNodes(x.id);
@@ -213,7 +165,7 @@ export class Transformer {
     return last;
   }
 
-  identifierToDataNodes(ids: Identifiers): DataNode[] {
+  private identifierToDataNodes(ids: Identifiers): DataNode[] {
     let prev: identifier.Identifier[] = [];
     const nodes = ids.map((current) => {
       let nameId: Identifier;
@@ -288,5 +240,47 @@ export class Transformer {
       default:
         throw new Error(`Unknown binding type: ${type}!`);
     }
+  }
+  /**
+   * Creates a node from the given method definition, based on it's id and args.
+   * If it's a computed property, brackets are ommited.
+   * @param method method to create node from
+   * @param isComputed if the method is a computed property
+   */
+  private nodeFromMethod(
+    method: ResolvedMethodDefintition | CalledMethod
+  ): MethodNode | InitNode {
+    if (this.isInit(method.id)) {
+      return {
+        id: identifiers.render(method.id),
+        name: identifiers.render(method.id, false),
+        discriminator: NodeType.INIT,
+      };
+    }
+    if (this.isComputedProperty(method.id))
+      return {
+        id: identifiers.render(method.id),
+        name: identifiers.render(method.id, false),
+        discriminator: NodeType.METHOD,
+      };
+    const argsIdsString = method.args
+      .map((arg) => {
+        if (isProperty(arg))
+          return _.last(this.identifierToDataNodes(arg.id))?.toString() ?? "";
+        return arg.toString();
+      })
+      .join(",");
+
+    const id = `${identifiers.render(method.id)}(${argsIdsString})`;
+
+    const argsString = method.args
+      .map((arg) =>
+        isProperty(arg) ? identifiers.render(arg.id, false) : arg.toString()
+      )
+      .join(",");
+
+    const name = `${identifiers.render(method.id, false)}(${argsString})`;
+
+    return { id: id, name: name, discriminator: NodeType.METHOD };
   }
 }
