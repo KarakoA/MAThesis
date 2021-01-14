@@ -1,4 +1,4 @@
-import { Identifier } from "../../common/models/identifier";
+import { IdentifierType } from "../../common/models/identifier";
 import { Location } from "../../parsing/models/template-bindings";
 
 export enum EdgeType {
@@ -7,17 +7,17 @@ export enum EdgeType {
   CALLS = "calls",
 }
 
+export interface Edge {
+  source: Node;
+  sink: Node;
+  label: EdgeType;
+}
+
 export enum NodeType {
   TAG = "tag",
   DATA = "data",
   METHOD = "method",
   INIT = "init",
-}
-
-export interface Edge {
-  source: Node;
-  sink: Node;
-  label: EdgeType;
 }
 
 export type Node = TagNode | DataNode | MethodNode | InitNode;
@@ -46,15 +46,24 @@ export interface TagNode extends BaseNode {
   discriminator: NodeType.TAG;
 }
 
-export interface DataNode extends BaseNode {
-  parent?: string;
-  identifier: Identifier;
-  discriminator: NodeType.DATA;
-}
 export interface MethodNode extends BaseNode {
   discriminator: NodeType.METHOD;
 }
 
 export interface InitNode extends BaseNode {
   discriminator: NodeType.INIT;
+}
+
+export interface DataNode extends BaseNode {
+  parent?: string;
+  type: IdentifierType;
+  discriminator: NodeType.DATA;
+}
+
+export function isGenericIndex(n: DataNode): boolean {
+  return n.type === IdentifierType.GENERIC_INDEX;
+}
+
+export function isNumericIndex(n: DataNode): boolean {
+  return n.type === IdentifierType.NUMERIC_INDEX;
 }

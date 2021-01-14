@@ -23,6 +23,7 @@ import {
   MethodNode,
   DataNode,
   InitNode,
+  Edge,
 } from "./models/graph";
 import { TopLevelVariables } from "../parsing/models/top-level-variables";
 import {
@@ -64,7 +65,7 @@ export class Transformer {
     this.addInit();
     this.addBindings();
     this.addIndirectlyCalledMethods();
-    this.resolveDifferentDisplays();
+    this.addEdgesForNumerics();
 
     return this.graph;
   }
@@ -147,9 +148,50 @@ export class Transformer {
     // wrong , need to also handle Property in allCalledMethods
   }
 
-  //TODO naming
-  private resolveDifferentDisplays() {
-    this.graph.numericPositions();
+  private addEdgesForNumerics() {
+    const numerics = this.graph.numericIndexDataNodes();
+    numerics.forEach((node) => this.connectEdgesOfGenericToNumeric(node));
+  }
+
+  private connectEdgesOfGenericToNumeric(numeric: DataNode): void {
+    const generic = this.graph.getMatchingGenericNode(numeric);
+    if (!generic) return;
+
+    const leafNodes = this.graph.leafNodes(generic.id);
+
+    const nodes = leafNodes.map((node) => {
+      const newNode: DataNode = {
+        ...node,
+        id: node.id.replace(generic.id, numeric.id),
+        parent: numeric.id,
+      };
+      return { leafNode: node, newNode: newNode };
+    });
+
+    const newOutEdges = _.flatMap(
+      (x) =>
+        this.graph.outEdges(x.leafNode).map((edge) => {
+          return {
+            source: x.newNode,
+            sink: edge.sink,
+            label: edge.label,
+          } as Edge;
+        }),
+      nodes
+    );
+    const newInEdges = _.flatMap(
+      (x) =>
+        this.graph.outEdges(x.leafNode).map((edge) => {
+          return {
+            source: edge.source == generic ? numeric : edge.source,
+            sink: x.newNode,
+            label: edge.label,
+          } as Edge;
+        }),
+      nodes
+    );
+    const newEdges = newInEdges.concat(newOutEdges);
+    this.graph.addEdges(newEdges);
   }
 
   //TODO rename add Entity or smth
@@ -182,7 +224,7 @@ export class Transformer {
 
       const node: DataNode = {
         id: identifiers.render(prev),
-        identifier: current,
+        type: current.discriminator,
         name: identifier.render(nameId),
         parent,
 

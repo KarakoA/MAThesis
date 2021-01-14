@@ -6,9 +6,10 @@ import {
   Node,
   Edge,
   IsInitNode,
+  isGenericIndex,
+  isNumericIndex,
 } from "./models/graph";
 import _ from "lodash/fp";
-import { isGenericIndex, isNumericIndex } from "../common/models/identifier";
 import { lift, JSObject } from "../common/utils";
 
 //#region Serialization
@@ -78,6 +79,14 @@ export class ExtendedGraph {
   }
 
   /**
+   * Same as {@link #addEdge()} but for multiple edges
+   * @param edges
+   */
+  addEdges(edges: Edge[]): void {
+    edges.forEach((edge) => this.addEdge(edge));
+  }
+
+  /**
    * Connects the given nodes by adding edges between them with the given label.
    * @param nodes nodes to connect
    * @param label edge type
@@ -90,87 +99,6 @@ export class ExtendedGraph {
   }
 
   //#endregion
-
-  //TODO refactor this
-  numericPositions(): void {
-    const numerics = _.filter(
-      (x) => isDataNode(x) && isNumericIndex(x.identifier),
-      this.nodes()
-    ).map((x) => x as DataNode);
-
-    numerics.forEach((x) => this.process(x));
-  }
-
-  //TODO refactor this
-  //connects ids of generic to the one of numeric
-  process(numeric: DataNode): void {
-    //get the parent of the numeric node
-    const parent = numeric.parent;
-    // should always be defined since a numeric index is always proceeded by named identifier
-    if (!parent) throw new Error(`Parent of ${numeric} is not defined!`);
-    //TODO @check could there be more (shouldn't be the case)
-
-    //get all children of the parent
-    const childDataNode = _.filter(isDataNode)(
-      this.graph.children(parent).map((x) => this.node(x))
-    );
-    //only interested in those that are generic, should be only one
-    //it matches the numeric one.
-    //e.g if numeric is 0 and parent is problems (problems[0])
-    //this would result in problems, i  (problems[i])
-    const generic = childDataNode.find((x) => isGenericIndex(x.identifier));
-    //TODO assert is only one, else something failed
-
-    //TODO this might be alright, what if accessing without there being a list?
-    //e.g. data[0] and no "for data[i]" <span>
-    if (!generic)
-      throw new Error(`Generic index does not exist in children of ${parent}!`);
-
-    //problems[i].data.a
-    // => node with id "problems[i].data.a"
-    const oldNodes = this.leafNodes(generic.id);
-
-    //problems[i].data.a
-    //  id: "problems[i].data.a", newId: "problems[0].data.a"
-    const nodes = oldNodes.map((node) => {
-      const newNode: DataNode = {
-        id: node.id.replace(generic.id, numeric.id),
-        name: node.name,
-        discriminator: node.discriminator,
-        parent: numeric.id,
-        //TODO doublecheck
-        identifier: node.identifier,
-      };
-      return { oldNode: node, newNode: newNode };
-    });
-
-    this.addNodes(nodes.map((x) => x.newNode));
-
-    const newOutEdges = _.flatMap(
-      (x) =>
-        this.outEdges(x.oldNode).map((edge) => {
-          return {
-            source: x.newNode,
-            sink: edge.sink,
-            label: edge.label,
-          } as Edge;
-        }),
-      nodes
-    );
-    const newInEdges = _.flatMap(
-      (x) =>
-        this.outEdges(x.oldNode).map((edge) => {
-          return {
-            source: edge.source == generic ? numeric : edge.source,
-            sink: x.newNode,
-            label: edge.label,
-          } as Edge;
-        }),
-      nodes
-    );
-    const edges = newInEdges.concat(newOutEdges);
-    edges.forEach((edge) => this.addEdge(edge));
-  }
 
   //#region Query Nodes/Edges
 
@@ -242,10 +170,36 @@ export class ExtendedGraph {
       return [this.getDataNode(node)];
     }
 
-    //TODO can I inline?
     return _.flatMap((x) => this.leafNodes(x), directChildren);
   }
 
+  /**
+   * Returns the generic node matching the given numeric one.
+   * A generic node can have multiple numeric nodes, but a numeric node can
+   * have only one generic one.
+   *
+   * It is possible for a numeric node to not have any matching generic one. This is the case if
+   * there is no generic binding to it(not used inside a v-for expression).
+   *
+   * @param numeric numeric node
+   * @example the generic node to this.problems[0] is this.problems[i].
+   */
+  getMatchingGenericNode(numeric: DataNode): DataNode | undefined {
+    //get the parent of the numeric node
+    const parent = numeric.parent;
+    // should always be defined since a numeric index is always proceeded by a named identifier
+    if (!parent) throw new Error(`Parent of ${numeric.id} is not defined!`);
+
+    //get all children of the parent
+    const childDataNode = this.children(parent);
+
+    const generic = childDataNode.filter(isGenericIndex);
+    if (generic.length > 0)
+      throw new Error(
+        `There can be only one matching generic node! Found multiple for ${numeric.id}`
+      );
+    return _.head(generic);
+  }
   //#endregion
 
   //#region Fetch
@@ -275,6 +229,17 @@ export class ExtendedGraph {
         `Graph must contain exactly one init node! It contains ${initNodes.length} nodes!`
       );
     return initNodes[0];
+  }
+
+  /**
+   * Returns all data nodes, which are numeric indices.
+   */
+  numericIndexDataNodes(): DataNode[] {
+    const numerics = _.filter(
+      (x) => isDataNode(x) && isNumericIndex(x),
+      this.nodes()
+    ).map((x) => x as DataNode);
+    return numerics;
   }
   //#endregion
 
