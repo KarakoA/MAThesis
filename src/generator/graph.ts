@@ -194,7 +194,7 @@ export class ExtendedGraph {
     const childDataNode = this.children(parent);
 
     const generic = childDataNode.filter(isGenericIndex);
-    if (generic.length > 0)
+    if (generic.length > 1)
       throw new Error(
         `There can be only one matching generic node! Found multiple for ${numeric.id}`
       );

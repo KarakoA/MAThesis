@@ -67,3 +67,51 @@ export function isGenericIndex(n: DataNode): boolean {
 export function isNumericIndex(n: DataNode): boolean {
   return n.type === IdentifierType.NUMERIC_INDEX;
 }
+
+//#region  Factory Methods
+
+export function edge(
+  source: Node,
+  sink: Node,
+  label: EdgeType | undefined = undefined
+): Edge {
+  return { source, sink, label: label ?? EdgeType.SIMPLE };
+}
+
+export function tag(
+  id: string,
+  loc: Location | undefined = undefined,
+  name: string | undefined = undefined
+): TagNode {
+  return {
+    id,
+    name: name ?? id,
+    loc: loc ?? {
+      start: { line: -1, column: -1 },
+      end: { line: -1, column: -1 },
+    },
+    discriminator: NodeType.TAG,
+  };
+}
+export function method(
+  id: string,
+  name: string | undefined = undefined
+): MethodNode {
+  return { id, name: name ?? id, discriminator: NodeType.METHOD };
+}
+export function init(
+  id: string,
+  name: string | undefined = undefined
+): InitNode {
+  return { id, name: name ?? id, discriminator: NodeType.INIT };
+}
+
+export function data(
+  id: string,
+  parent: string | undefined = undefined,
+  type: IdentifierType = IdentifierType.NAME_IDENTIFIER,
+  name: string | undefined = undefined
+): DataNode {
+  return { id, name: name ?? id, type, discriminator: NodeType.DATA, parent };
+}
+//#endregion
