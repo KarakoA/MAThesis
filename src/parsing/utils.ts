@@ -208,7 +208,6 @@ export function IdentifiersFromTopLevelObject(
             node.properties
           )
         );
-        //TODO might need _.flattenDeep here
         return _.flatten(
           node.properties.map((x) =>
             func(x as SupportedTopLevelExpression, prev)

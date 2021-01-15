@@ -57,7 +57,7 @@ function substituteVFor(
       x.item.id = fixGenericIndices(
         replaceFront(x.item.id, replacement.left, replacement.right)
       );
-      //TODO needs to be recursive probably for nested methods (if supported)
+      //Nested methods as args not supported. If supported, here recursive
       if (isMethod(x.item))
         x.item.args = x.item.args?.map((arg) => {
           return isProperty(arg)
