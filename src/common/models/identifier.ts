@@ -1,4 +1,4 @@
-import { nextChar } from "../utils";
+import { nextChar, prevChar } from "../utils";
 
 export enum IdentifierType {
   THIS = "this",
@@ -108,4 +108,26 @@ export function nextIndex(previous: Identifier | undefined): GenericIndex {
   const index =
     previous && isGenericIndex(previous) ? nextChar(previous.name) : "i";
   return { name: index, discriminator: IdentifierType.GENERIC_INDEX };
+}
+/**
+ * Returns the previous index.
+ * If current is a {@link GenericPosition}, previous character in the sequence i,j,k,l,m....
+ * Raises an error if previous is not a {@link GenericPosition } or called on 'i'
+ * @param current previous
+ */
+export function prevIndex(current: Identifier | undefined): GenericIndex {
+  if (
+    !current ||
+    !isGenericIndex(current) ||
+    (isGenericIndex(current) && current.name === "i")
+  )
+    throw new Error(
+      `${
+        current ? render(current) : ""
+      } is either not a generic index or is 'i'!`
+    );
+  return {
+    name: prevChar(current.name),
+    discriminator: IdentifierType.GENERIC_INDEX,
+  };
 }

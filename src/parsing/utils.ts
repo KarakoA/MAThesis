@@ -6,6 +6,7 @@ import {
   nextIndex,
   IdentifierType,
   ThisInstance,
+  prevIndex,
 } from "../common/models/identifier";
 import { create, Identifiers } from "../common/models/identifiers";
 import { AST } from "vue-eslint-parser";
@@ -263,51 +264,69 @@ function getNameFromExpression(
   node: SupportedNamedExpression,
   prev: Identifier[] = []
 ): Identifiers {
-  switch (node.type) {
-    case AST_NODE_TYPES.Identifier: {
-      const ids = prev.concat({
-        name: node.name,
-        discriminator: IdentifierType.NAME_IDENTIFIER,
-      });
-      return create(...ids.reverse());
-    }
-    case AST_NODE_TYPES.ThisExpression: {
-      const ids = prev.concat(ThisInstance);
-      return create(...ids.reverse());
-    }
-
-    case AST_NODE_TYPES.MemberExpression: {
-      let next: Identifier;
-      //index accessor (i.e. X[Z] or X[1] or X[Z+1+y])
-      if (node.computed) {
-        //X[Z] => 'i',X[1] => 1, X[Z+1+y] => 'i' or 'j' if prev is 'i' etc.
-        next =
-          node.property.type === AST_NODE_TYPES.Literal && node.property.value
-            ? {
-                name: node.property.value.toString(),
-                discriminator: IdentifierType.NUMERIC_INDEX,
-              }
-            : nextIndex(_.head(prev));
-      } else {
-        if ("name" in node.property)
-          next = {
-            name: node.property.name,
+  function inner(
+    node: SupportedNamedExpression,
+    prev: Identifier[] = []
+  ): Identifiers {
+    switch (node?.type) {
+      case AST_NODE_TYPES.Identifier: {
+        return inner(
+          node.parent as SupportedNamedExpression,
+          prev.concat({
+            name: node.name,
             discriminator: IdentifierType.NAME_IDENTIFIER,
-          };
-        else
-          throw new Error(
-            `node.property of type ${node.property.type} does not have a name.`
-          );
+          })
+        );
       }
-      assert(isSupportedNameExpression(node.object));
-      return getNameFromExpression(
-        node.object as SupportedNamedExpression,
-        prev.concat(next)
-      );
+      case AST_NODE_TYPES.ThisExpression: {
+        return inner(
+          node.parent as SupportedNamedExpression,
+          prev.concat(ThisInstance)
+        );
+      }
+
+      case AST_NODE_TYPES.MemberExpression: {
+        let next: Identifier;
+        //index accessor (i.e. X[Z] or X[1] or X[Z+1+y])
+        if (node.computed) {
+          //X[Z] => 'i',X[1] => 1, X[Z+1+y] => 'i' or 'j' if prev is 'i' etc.
+          next =
+            node.property.type === AST_NODE_TYPES.Literal &&
+            node.property.value !== null
+              ? {
+                  name: node.property.value.toString(),
+                  discriminator: IdentifierType.NUMERIC_INDEX,
+                }
+              : nextIndex(_.last(prev));
+        } else {
+          if ("name" in node.property)
+            next = {
+              name: node.property.name,
+              discriminator: IdentifierType.NAME_IDENTIFIER,
+            };
+          else
+            throw new Error(
+              `node.property of type ${node.property.type} does not have a name.`
+            );
+        }
+        return inner(
+          node.parent as SupportedNamedExpression,
+          prev.concat(next)
+        );
+      }
+      default:
+        //not a supported one, finished
+        return create(...prev);
     }
-    default:
-      throw new Error(`Unknown node type: ${node.type}. prev: ${prev}`);
   }
+
+  function toBottom(node: AST.Node): SupportedNamedExpression {
+    if (node.type !== "MemberExpression")
+      return node as SupportedNamedExpression;
+    else return toBottom((node as AST.ESLintMemberExpression).object);
+  }
+  const memberExpr = toBottom(node);
+  return inner(memberExpr, prev);
 }
 
 //#endregion

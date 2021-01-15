@@ -238,7 +238,7 @@ describe("Bindings", () => {
                   named("VAR2"),
                   named("VAR3"),
                   named("VAR4"),
-                  named("5")
+                  numeric("5")
                 ),
                 bindingType: BindingType.ONE_WAY,
               },
@@ -274,20 +274,6 @@ describe("Bindings", () => {
           },
         ];
         expect(actual).toStrictEqual(expected);
-      });
-
-      describe("for event binding should yield correct", () => {
-        const tag = `<div @click="OnVAR.VAR1.VAR2"></div>`;
-        test("bindings", async () => {
-          const actual = await parse(tag);
-          expect(actual).toStrictEqual([
-            {
-              source: expect.any(String),
-              target: "OnVAR.VAR1.VAR2",
-              isEventBinding: true,
-            },
-          ]);
-        });
       });
     });
   });
