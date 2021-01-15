@@ -79,7 +79,12 @@ export class MethodResolver {
     }
 
     // double check called with correct number of arguments
-    assert(method.args.length == called.args.length);
+    if (method.args.length !== called.args.length)
+      throw new Error(
+        `${identifiers.render(method.id)} called with ${
+          called.args.length
+        } args but it has ${method.args.length} args!`
+      );
     const substituteAndFilterOutThis = this.substituteAndFilterOutThisFunction(
       method.args,
       resolvedArgs

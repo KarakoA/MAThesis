@@ -281,23 +281,21 @@ export class Transformer {
    * @param ids identifiers
    */
   private identifiersToDataNodes(ids: Identifiers): DataNode[] {
-    let prev: identifier.Identifier[] = [];
+    let prev: Identifier[] = [];
+    let lastName = "";
     const nodes = ids.map((current) => {
-      let nameId: Identifier;
-      if (identifier.isIndex(current)) {
-        const last = _.last(prev);
-        if (!last) throw new Error("Index as first element!");
-        nameId = { ...current, name: last.name + identifier.render(current) };
-      } else {
-        nameId = current;
-      }
-      const parent = identifiers.render(prev);
-      prev = prev.concat(nameId);
+      const name = identifier.isIndex(current)
+        ? lastName + identifier.render(current)
+        : identifier.render(current);
 
+      const parent = prev.length == 0 ? undefined : identifiers.render(prev);
+      prev = prev.concat(current);
+
+      lastName = name;
       const node: DataNode = {
         id: identifiers.render(prev),
         type: current.discriminator,
-        name: identifier.render(nameId),
+        name,
         parent,
 
         discriminator: NodeType.DATA,
@@ -332,8 +330,10 @@ export class Transformer {
       };
     const argsIdsString = method.args
       .map((arg) => {
-        if (isProperty(arg))
-          return _.last(this.identifiersToDataNodes(arg.id))?.toString() ?? "";
+        if (isProperty(arg)) {
+          const last = _.last(this.identifiersToDataNodes(arg.id));
+          return last ? last.id : "";
+        }
         return arg.toString();
       })
       .join(",");
