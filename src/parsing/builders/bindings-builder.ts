@@ -102,9 +102,6 @@ export class BindingsBuilder {
 
   elementWithVForStarted(vforAttributeNode: AST.VForExpression): void {
     // (item1, item2) in items Syntax NOT supported
-
-    //TODO can it be items in problems[0]? how would I resolve that one? Should be possible
-    //also how to add i accesses, see problem above
     const left = utils.identifiers(
       //@unsafe
       vforAttributeNode.left[0] as utils.SupportedNamedExpression
