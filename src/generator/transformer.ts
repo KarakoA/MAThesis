@@ -12,6 +12,7 @@ import {
   isMethod,
   isProperty,
   Method,
+  Property,
 } from "../parsing/models/shared";
 import { MethodCache } from "./method-cache";
 import {
@@ -31,7 +32,6 @@ import {
 } from "./models/method-resolver";
 import * as identifier from "../common/models/identifier";
 import { Identifier } from "../common/models/identifier";
-import { bind } from "lodash";
 
 export class Transformer {
   graph: ExtendedGraph;
@@ -73,7 +73,7 @@ export class Transformer {
   }
 
   private addTopLevelVariables(): void {
-    this.topLevel.forEach((topLevel) => this.addIdentifiers(topLevel.id));
+    this.topLevel.forEach((topLevel) => this.addProperty(topLevel));
   }
 
   private addInit(): void {
@@ -119,7 +119,7 @@ export class Transformer {
             const resolved = this.methodCache.called(itemAsMethod);
 
             const node = isProperty(resolved)
-              ? this.addIdentifiers(resolved.id)
+              ? this.addProperty(resolved)
               : this.nodeFromMethod(resolved);
 
             this.addEdgeBasedOnBindingType(tagNode, node, binding.bindingType);
@@ -129,7 +129,7 @@ export class Transformer {
               ...binding.item,
               id: identifiers.prefixThis(binding.item.id),
             };
-            const last = this.addIdentifiers(item.id);
+            const last = this.addProperty(item);
             this.addEdgeBasedOnBindingType(tagNode, last, binding.bindingType);
           }
         }
@@ -142,7 +142,7 @@ export class Transformer {
             }),
           });
           const node = isProperty(resolved)
-            ? this.addIdentifiers(resolved.id)
+            ? this.addProperty(resolved)
             : this.nodeFromMethod(resolved);
           this.addEdgeBasedOnBindingType(tagNode, node, binding.bindingType);
         }
@@ -175,9 +175,8 @@ export class Transformer {
    * Adds nodes for each identifier in identifiers, connects them, and returns the last one added
    * @param ids identifiers
    */
-  //TODO add Proeprty
-  private addIdentifiers(ids: Identifiers): Node {
-    const nodes = this.identifiersToDataNodes(ids);
+  private addProperty(id: Property): Node {
+    const nodes = this.identifiersToDataNodes(id.id);
 
     this.graph.addNodes(nodes);
     this.graph.connect(nodes);
@@ -271,12 +270,12 @@ export class Transformer {
     node: Node,
     resolved: ResolvedMethodDefintition
   ): void {
-    const readNodes = resolved.reads.map((x) => this.addIdentifiers(x.id));
+    const readNodes = resolved.reads.map((x) => this.addProperty(x));
     readNodes.forEach((source) =>
       this.graph.addEdge({ source, sink: node, label: EdgeType.SIMPLE })
     );
 
-    const writeNodes = resolved.writes.map((x) => this.addIdentifiers(x.id));
+    const writeNodes = resolved.writes.map((x) => this.addProperty(x));
     writeNodes.forEach((sink) =>
       this.graph.addEdge({ source: node, sink, label: EdgeType.SIMPLE })
     );
