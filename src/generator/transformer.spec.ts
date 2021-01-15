@@ -97,7 +97,6 @@ describe("Transformer when computing", () => {
   describe("init", () => {
     test("correctly parses the node", () => {
       const data = template([], methodDef([This, named("created")]));
-      console.log(data);
       const actual = new Transformer(data).compute();
       expect(actual.nodes()).toHaveLength(1);
       expect(actual.node("this.created")).toStrictEqual(
@@ -113,9 +112,7 @@ describe("Transformer when computing", () => {
         p.property(named("computed_prop"))
       );
 
-      console.log(data);
       const actual = new Transformer(data).compute();
-      console.log(actual);
       expect(actual.node("this.computed_prop")).toStrictEqual(
         method("this.computed_prop", "computed_prop")
       );

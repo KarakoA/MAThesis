@@ -103,7 +103,9 @@ export class Transformer {
       boundItems.forEach((binding) => {
         if (isProperty(binding.item)) {
           //compute property, treat as method
-          if (this.isComputedProperty(binding.item.id)) {
+          if (
+            this.isComputedProperty(identifiers.prefixThis(binding.item.id))
+          ) {
             const itemAsMethod: Method = {
               id: identifiers.prefixThis(binding.item.id),
               args: [],
