@@ -113,7 +113,6 @@ describe("Bindings", () => {
         expect(actual).toHaveLength(0);
       });
 
-      //TODO check if this is easily supportable
       test("event binding with method syntax", async () => {
         const tag = `<div @click="OnVAR"></div>`;
         const actual = await parse(tag);

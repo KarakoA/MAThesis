@@ -14,13 +14,7 @@ import {
   replaceFront,
 } from "../../common/models/identifiers";
 import _ from "lodash/fp";
-import {
-  EntityType,
-  isMethod,
-  isProperty,
-  Method,
-  Property,
-} from "../models/shared";
+import { EntityType, isMethod, isProperty, method } from "../models/shared";
 
 export function determineNodeName(
   node: AST.VElement,
@@ -35,16 +29,21 @@ export function determineNodeName(
   return name;
 }
 
+/**
+ * Methods get parsed twice - once as properties and a second time as methods.
+ * Exclude all properties matching those ids
+ * @param latest latest bindings
+ */
 function filterOutMethodNamesAsIdentifiers(
   latest: BindingValue[]
 ): BindingValue[] {
-  //TODO toSet has better perfornamce, but can't compare with isEqual
+  //all id's of methods
   const methodNames = latest
     .filter((x) => isMethod(x.item))
     .map((x) => x.item.id);
 
-  //TODO @maybe (isEqual replaced based on rule)
   const inNames = (x: Identifiers) => _.some(_.isEqual(x), methodNames);
+  //remove all properties, which are also in names
   return latest.filter((x) => !(isProperty(x.item) && inNames(x.item.id)));
 }
 
@@ -84,13 +83,16 @@ export class BindingsBuilder {
 
   identifierOrExpressionNew(
     node: utils.SupportedNamedExpression | AST.ESLintCallExpression,
-    bindingType: BindingType
+    bindingType: BindingType,
+    usingMethodAsPropertyShorthand = false
   ): void {
     const item =
       node.type === AST_NODE_TYPES.CallExpression
         ? utils.method(node)
         : utils.property(node);
-    this.latest.push({ item, bindingType });
+    if (usingMethodAsPropertyShorthand)
+      this.latest.push({ item: method(item.id), bindingType });
+    else this.latest.push({ item, bindingType });
   }
 
   elementWithVForStarted(vforAttributeNode: AST.VForExpression): void {
@@ -128,9 +130,10 @@ export class BindingsBuilder {
       const name = determineNodeName(node, firstBindingName);
       //TODO could apply the substitution on it for more info, but maybe don't even need this at all, will see
       //let position = this.VForReplacement[0];
+      //TODO for nested that's wrong. need 'i','j', k etc
+      // is position still used? I found a better way
 
       const position = this.VForReplacement.length == 0 ? undefined : "i";
-      //const tag = new TagI(id, node.loc, name, position);
       const tag: Tag = { id, loc: node.loc, name, position };
       this.bindings.push({
         tag: tag,

@@ -77,6 +77,18 @@ export function isRootCallExpression(node: AST.ESLintExpression): boolean {
 }
 
 //#endregion
+//#region First parent
+export function firstParentOfType(
+  elem: AST.Node,
+  type: string
+): undefined | AST.Node {
+  return elem.parent
+    ? elem.parent.type === type
+      ? elem.parent
+      : firstParentOfType(elem.parent, type)
+    : undefined;
+}
+//#endregion
 
 //#region Id
 /**

@@ -9,12 +9,20 @@ export const NAME = "template-bindings";
 export function create(context) {
   return context.parserServices.defineTemplateBodyVisitor({
     // click handlers
-    "VAttribute[key.name.name=on] >  VExpressionContainer :matches(MemberExpression, Identifier, CallExpression)"(
+    "VAttribute[key.name.name=on] > VExpressionContainer :matches(MemberExpression, Identifier, CallExpression)"(
       node
     ) {
-      //TODO assumes click handlers are always methods(call expressions, might not be the case, should only filter out args)
-      if (utils.isRootCallExpression(node))
-        builder.identifierOrExpressionNew(node, BindingType.EVENT);
+      if (utils.isRootNameNode(node)) {
+        //if VOnExpression: means inlined syntax onClick="Method() Method2()"
+        //else using method invocation syntax onClick="Method"
+        const insideVOnExpression =
+          utils.firstParentOfType(node, "VOnExpression") !== undefined;
+        builder.identifierOrExpressionNew(
+          node,
+          BindingType.EVENT,
+          !insideVOnExpression
+        );
+      }
     },
 
     //two way binding
@@ -26,8 +34,6 @@ export function create(context) {
     },
 
     //other identifiers
-    //TODO handle vfor, has VAttribute[key.argument.name=key]
-    //for itself VAttribute[key.name.name=for]
     ":not(:matches(VAttribute[key.name.name=on], VAttribute[key.name.name=model]),VAttribute[key.argument.name=key], VAttribute[key.name.name=for]) >  VExpressionContainer :matches(MemberExpression, Identifier, CallExpression)"(
       node
     ) {
