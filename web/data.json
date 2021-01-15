@@ -241,18 +241,18 @@
       }
     },
     {
-      "v": "this.may_check(other)",
+      "v": "this.may_check(this.problems[i])",
       "value": {
-        "id": "this.may_check(other)",
-        "name": "may_check(other)",
+        "id": "this.may_check(this.problems[i])",
+        "name": "may_check(problems[i])",
         "discriminator": "method"
       }
     },
     {
-      "v": "this.check_answer(other)",
+      "v": "this.check_answer(this.problems[i])",
       "value": {
-        "id": "this.check_answer(other)",
-        "name": "check_answer(other)",
+        "id": "this.check_answer(this.problems[i])",
+        "name": "check_answer(problems[i])",
         "discriminator": "method"
       }
     },
@@ -471,6 +471,17 @@
         "discriminator": "data"
       },
       "parent": "this.problems"
+    },
+    {
+      "v": "this.problems[i].c",
+      "value": {
+        "id": "this.problems[i].c",
+        "type": "name-identifier",
+        "name": "c",
+        "parent": "this.problems[i]",
+        "discriminator": "data"
+      },
+      "parent": "this.problems[i]"
     }
   ],
   "edges": [
@@ -555,7 +566,7 @@
       "value": "simple"
     },
     {
-      "v": "this.may_check(other)",
+      "v": "this.may_check(this.problems[i])",
       "w": "button_12_12_20_21",
       "value": "simple"
     },
@@ -566,7 +577,7 @@
     },
     {
       "v": "button_12_12_20_21",
-      "w": "this.check_answer(other)",
+      "w": "this.check_answer(this.problems[i])",
       "value": "event"
     },
     {
@@ -645,22 +656,62 @@
       "value": "simple"
     },
     {
-      "v": "this.check_answer(other)",
+      "v": "this.problems[i].answer",
+      "w": "this.may_check(this.problems[i])",
+      "value": "simple"
+    },
+    {
+      "v": "this.problems[i].right",
+      "w": "this.may_check(this.problems[i])",
+      "value": "simple"
+    },
+    {
+      "v": "this.problems[i]",
+      "w": "this.problems[i].c",
+      "value": "simple"
+    },
+    {
+      "v": "this.problems[i].c",
+      "w": "this.check_answer(this.problems[i])",
+      "value": "simple"
+    },
+    {
+      "v": "this.problems[i].answer",
+      "w": "this.check_answer(this.problems[i])",
+      "value": "simple"
+    },
+    {
+      "v": "this.problems[i].isAddProblem",
+      "w": "this.check_answer(this.problems[i])",
+      "value": "simple"
+    },
+    {
+      "v": "this.problems[i].right",
+      "w": "this.check_answer(this.problems[i])",
+      "value": "simple"
+    },
+    {
+      "v": "this.check_answer(this.problems[i])",
+      "w": "this.problems[i].right",
+      "value": "simple"
+    },
+    {
+      "v": "this.check_answer(this.problems[i])",
       "w": "this.count_right_add",
       "value": "simple"
     },
     {
-      "v": "this.check_answer(other)",
+      "v": "this.check_answer(this.problems[i])",
       "w": "this.count_wrong_add",
       "value": "simple"
     },
     {
-      "v": "this.check_answer(other)",
+      "v": "this.check_answer(this.problems[i])",
       "w": "this.count_right_sub",
       "value": "simple"
     },
     {
-      "v": "this.check_answer(other)",
+      "v": "this.check_answer(this.problems[i])",
       "w": "this.count_wrong_sub",
       "value": "simple"
     },

@@ -48,6 +48,7 @@ describe("Transformer when computing", () => {
     C: named("C"),
     D: named("D"),
     E: named("E"),
+    F: named("F"),
 
     i: generic("i"),
     j: generic("j"),
@@ -256,6 +257,8 @@ describe("Transformer when computing", () => {
                   p.method([This, id.m1]),
                   //other method
                   p.method([id.B, id.m1]),
+                  //starts with method 'm' arg
+                  p.property(id.A, id.F),
                 ]),
               ]
             ),
@@ -265,10 +268,11 @@ describe("Transformer when computing", () => {
               p.property(id.C),
               p.property(id.D),
               p.property(id.E),
+              p.property(id.F),
             ]),
           ],
           [],
-          p.method(methodId, [p.property(This, id.E)])
+          p.method(methodId, [p.property(id.E)])
           //called with params
         );
         describe("of type", () => {
@@ -279,8 +283,8 @@ describe("Transformer when computing", () => {
               expect.arrayContaining([
                 expect.objectContaining({
                   sink: {
-                    name: "m1(other,C,E,method,method)",
-                    id: "this.m1(other,this.C,this.E,method,method)",
+                    name: "m1(other,C,E,method,method,E.F)",
+                    id: "this.m1(other,this.C,this.E,method,method,this.E.F)",
                     discriminator: NodeType.METHOD,
                   },
                   label: EdgeType.CALLS,

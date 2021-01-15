@@ -31,6 +31,7 @@ import {
 } from "./models/method-resolver";
 import * as identifier from "../common/models/identifier";
 import { Identifier } from "../common/models/identifier";
+import { bind } from "lodash";
 
 export class Transformer {
   graph: ExtendedGraph;
@@ -136,6 +137,9 @@ export class Transformer {
           const resolved = this.methodCache.called({
             ...binding.item,
             id: identifiers.prefixThis(binding.item.id),
+            args: binding.item.args.map((x) => {
+              return { ...x, id: identifiers.prefixThis(x.id) };
+            }),
           });
           const node = isProperty(resolved)
             ? this.addIdentifiers(resolved.id)
