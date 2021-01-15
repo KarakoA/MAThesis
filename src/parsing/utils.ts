@@ -7,6 +7,7 @@ import {
   IdentifierType,
   ThisInstance,
   prevIndex,
+  named,
 } from "../common/models/identifier";
 import { create, Identifiers } from "../common/models/identifiers";
 import { AST } from "vue-eslint-parser";
@@ -242,7 +243,13 @@ function resolveArg(node: AST.ESLintExpression): Array<Entity> {
   } else if (node.type === AST_NODE_TYPES.BinaryExpression) {
     const left = resolveArg(node.left);
     const right = resolveArg(node.right);
-    return [...left, ...right];
+    return [
+      {
+        id: create(named("BINARY")),
+        args: [...left, ...right],
+        discriminator: EntityType.METHOD,
+      },
+    ];
   } else if (node.type === AST_NODE_TYPES.Literal) {
     return [];
   } else if (isSupportedNameExpression(node)) {

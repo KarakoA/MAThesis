@@ -540,17 +540,20 @@ describe("Methods", () => {
           ]);
         });
 
-        //TODO not handled, yet, currently would have more args than actual called with
         test("binary expressions as arguments", async () => {
-          const methods = `a(){this.some_method(a + b}`;
+          const methods = `a(){this.some_method(a + b)}`;
           const actual = await parse(methods);
           expect(actual).toMatchObject([
             {
               calls: [
                 method(
                   [This, named("some_method")],
-                  [[property(named("a")), property(named("b"))]]
-                  //        [property(named("a")), property(named("b"))]
+                  [
+                    method(
+                      [named("BINARY")],
+                      [property(named("a")), property(named("b"))]
+                    ),
+                  ]
                 ),
               ],
             },
