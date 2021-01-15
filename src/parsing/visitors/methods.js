@@ -59,7 +59,7 @@ export function create(context) {
       ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) FunctionExpression :matches(MemberExpression, Identifier)"(
         node
       ) {
-        if (utils.isRootNameNode(node))
+        if (utils.isRootNameOrCallExpression(node))
           builder.identifierOrExpressionNew(node, AccessType.ALL);
       },
       ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) FunctionExpression Property[method = false]"(

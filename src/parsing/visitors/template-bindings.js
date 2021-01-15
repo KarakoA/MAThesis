@@ -12,7 +12,7 @@ export function create(context) {
     "VAttribute[key.name.name=on] > VExpressionContainer :matches(MemberExpression, Identifier, CallExpression)"(
       node
     ) {
-      if (utils.isRootNameNode(node)) {
+      if (utils.isRootNameOrCallExpression(node)) {
         //if VOnExpression: means inlined syntax onClick="Method() Method2()"
         //else using method invocation syntax onClick="Method"
         const insideVOnExpression =
@@ -29,7 +29,7 @@ export function create(context) {
     "VAttribute[key.name.name=model] > VExpressionContainer :matches(MemberExpression, Identifier, CallExpression)"(
       node
     ) {
-      if (utils.isRootNameNode(node))
+      if (utils.isRootNameOrCallExpression(node))
         builder.identifierOrExpressionNew(node, BindingType.TWO_WAY);
     },
 
@@ -37,7 +37,7 @@ export function create(context) {
     ":not(:matches(VAttribute[key.name.name=on], VAttribute[key.name.name=model]),VAttribute[key.argument.name=key], VAttribute[key.name.name=for]) >  VExpressionContainer :matches(MemberExpression, Identifier, CallExpression)"(
       node
     ) {
-      if (utils.isRootNameNode(node))
+      if (utils.isRootNameOrCallExpression(node))
         builder.identifierOrExpressionNew(node, BindingType.ONE_WAY);
     },
 

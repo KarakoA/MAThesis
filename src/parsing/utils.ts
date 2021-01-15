@@ -57,14 +57,13 @@ function isSupportedTopLevelExpression(
 //#region Node infos
 
 //inside call expressions, triggered once for the call expression itself and a second time for each identifier/member chain
-//TODO this triggers twice for the method name
 // also for nested call expressions each time
-export function isRootNameNode(node: AST.ESLintExpression): boolean {
+export function isRootNameOrCallExpression(
+  node: AST.ESLintExpression
+): boolean {
   return isRootCallExpression(node) || isRootName(node);
 }
 
-//TODO naming
-//TODO  use SupportedNamedExpression here
 export function isRootName(node: AST.ESLintExpression): boolean {
   return (
     isSupportedNameExpression(node) &&
