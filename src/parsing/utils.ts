@@ -14,6 +14,7 @@ import { AST } from "vue-eslint-parser";
 import { AST_NODE_TYPES } from "@typescript-eslint/types";
 
 import { assert } from "console";
+import { lift } from "../common/utils";
 
 //reexport eslint ast and node types
 export { AST_NODE_TYPES, AST };
@@ -231,27 +232,27 @@ function resolveArgs(
 ): Array<Entity> {
   if (_.some((x) => x.type === AST_NODE_TYPES.SpreadElement, nodes))
     throw new Error("SpreadElements are not supported!");
-  const nodesTyped = nodes.map((x) => x as AST.ESLintExpression);
-  return _.flatMap(resolveArg, nodesTyped);
+  const nodesTyped = nodes
+    .map((x) => x as AST.ESLintExpression)
+    .map((x) => lift(resolveArg(x)));
+  return _.flatten(nodesTyped);
 }
-//TODO if dropping binary alltogether (or trying to resolve to one branch) could become Entity
-function resolveArg(node: AST.ESLintExpression): Array<Entity> {
+function resolveArg(node: AST.ESLintExpression): Entity | undefined {
   if (node.type === AST_NODE_TYPES.CallExpression) {
-    return [method(node)];
+    return method(node);
   } else if (node.type === AST_NODE_TYPES.BinaryExpression) {
     const left = resolveArg(node.left);
     const right = resolveArg(node.right);
-    return [
-      {
-        id: create(named("BINARY")),
-        args: [...left, ...right],
-        discriminator: EntityType.METHOD,
-      },
-    ];
+    const args = _.flatMap(lift, [left, right]);
+    return {
+      id: create(named("BINARY")),
+      args: args,
+      discriminator: EntityType.METHOD,
+    };
   } else if (node.type === AST_NODE_TYPES.Literal) {
-    return [];
+    return undefined;
   } else if (isSupportedNameExpression(node)) {
-    return [property(node)];
+    return property(node);
   } else throw new Error(`Unsupported node type: ${node.type}`);
 }
 
