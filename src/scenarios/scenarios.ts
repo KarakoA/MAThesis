@@ -44,7 +44,7 @@ export function computeAndPrintScenarios(
     .map((x) => console.log(x));
   console.log();
   console.log(`Unique scenarios (A) of up to ${depth} elements:`);
-  console.log(uniqueScenarios);
+  console.log(uniqScenarios.map((x) => x.map((x) => x.name)));
 
   uniqScenarios.map(print);
 }
@@ -101,7 +101,7 @@ function createScenarioSet(
 }
 
 function print(scenario: Scenario): void {
-  console.log(`Scenario: '${scenario.join("', '")}'`);
+  console.log(`Scenario: '${scenario.map((x) => x.name).join("', '")}'`);
 
   const given = computeGiven(scenario);
   if (_.head(given)) console.log(`\tGiven '${_.head(given)}'`);
@@ -137,41 +137,52 @@ function traverse(
   node: Node,
   visited: Node[] = []
 ): Node[] {
-  function alreadyVisited(node: Node): boolean {
-    return !_.find(_.isEqual(node), visited);
+  function alreadyVisited(id: Node): boolean {
+    return _.find(_.isEqual(id), visited) !== undefined;
   }
 
   function inner(id: Node) {
-    if (alreadyVisited(node)) return;
+    if (alreadyVisited(id)) return;
     visited.push(id);
 
     const reachable = graph
       .outEdges(id)
       .filter((x) => x.label !== EdgeType.EVENT)
+      //TODO
+      // .filter(
+      //   //from Paper
+      //   //"Note that updating the answer does not trigger $scope.check answer(), since this function needs explicit triggering via Check,"
+      //   //is problematic, what if function is called from somewhere? that's why we need call relation
+      //   (x) =>
+      //     (isMethodNode(x.sink) && x.label === EdgeType.CALLS) ||
+      //     !nodeTriggerableByEvent(graph, x.sink)
+      // )
       .filter(
         //from Paper
         //"Note that updating the answer does not trigger $scope.check answer(), since this function needs explicit triggering via Check,"
         //is problematic, what if function is called from somewhere? that's why we need call relation
-        (x) =>
-          (isMethodNode(x.sink) && x.label === EdgeType.CALLS) ||
-          !nodeTriggerableByEvent(graph, x.sink)
+        (x) => !(isMethodNode(x.sink) && x.label !== EdgeType.CALLS)
+        //   (
+        //   isMethodNode(x.sink) && x.label === EdgeType.CALLS
+        // ) || !nodeTriggerableByEvent(graph, x.sink)
       )
       .map((x) => x.sink);
 
-    // console.log(`traverse(${id}) -> ${reachable}`);
+    //  console.log(`traverse(${id.id}) -> ${reachable.map((x) => x.id)}`);
     reachable?.forEach(inner);
   }
 
   //inner is not allowed to travel event edges (and shouldn't be)
-  const reachableByEvent = graph
-    .outEdges(node)
-    .filter((x) => x.label == EdgeType.EVENT);
+  //that's why events are traversed here
+  const reachableFromNodeByAnyMeans = graph.outEdges(node);
 
-  reachableByEvent.map((x) => inner(x.sink));
+  if (node.name !== "created") return [];
+  reachableFromNodeByAnyMeans.forEach((x) => inner(x.sink));
   return Array.from(visited);
 }
 
 function l(graph: ExtendedGraph, node: Node): TagNode[] {
   const preorder = traverse(graph, node);
+
   return _.filter(isTagNode, preorder);
 }
