@@ -12,6 +12,7 @@ import {
   addIndex,
   render,
   replaceFront,
+  fixGenericIndices,
 } from "../../common/models/identifiers";
 import _ from "lodash/fp";
 import { EntityType, isMethod, isProperty, method } from "../models/shared";
@@ -53,13 +54,17 @@ function substituteVFor(
 ) {
   replacements.forEach((replacement) => {
     data.forEach((x) => {
-      x.item.id = replaceFront(x.item.id, replacement.left, replacement.right);
+      x.item.id = fixGenericIndices(
+        replaceFront(x.item.id, replacement.left, replacement.right)
+      );
       //TODO needs to be recursive probably for nested methods (if supported)
       if (isMethod(x.item))
         x.item.args = x.item.args?.map((arg) => {
           return isProperty(arg)
             ? {
-                id: replaceFront(arg.id, replacement.left, replacement.right),
+                id: fixGenericIndices(
+                  replaceFront(arg.id, replacement.left, replacement.right)
+                ),
                 discriminator: EntityType.PROPERTY,
               }
             : arg;
@@ -96,19 +101,18 @@ export class BindingsBuilder {
   }
 
   elementWithVForStarted(vforAttributeNode: AST.VForExpression): void {
-    //item in items
-    //item
-    //TODO problems with (item1, item2) in items....
+    // (item1, item2) in items Syntax NOT supported
+
     //TODO can it be items in problems[0]? how would I resolve that one? Should be possible
     //also how to add i accesses, see problem above
     const left = utils.identifiers(
-      //TODO @unsafe
+      //@unsafe
       vforAttributeNode.left[0] as utils.SupportedNamedExpression
     );
     //items
     const right = addIndex(
       utils.identifiers(
-        //TODO @unsafe
+        //@unsafe
         vforAttributeNode.right as utils.SupportedNamedExpression
       )
     );

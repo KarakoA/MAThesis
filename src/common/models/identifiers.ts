@@ -10,6 +10,8 @@ import {
   isIndex,
   isThis,
   ThisInstance,
+  isGenericIndex,
+  generic,
 } from "./identifier";
 
 export type Identifiers = ReadonlyArray<Identifier>;
@@ -68,6 +70,18 @@ export function replaceFront(
   return startsWith(that, subList)
     ? prefix(_.drop(subList.length, that), replacement)
     : that;
+}
+
+export function fixGenericIndices(that: Identifiers): Identifiers {
+  const result = _.reduce((acc: Identifiers, c: Identifier) => {
+    const last = _.last(acc);
+    if (!last) return acc.concat(c);
+    if (isGenericIndex(c) && isGenericIndex(last)) {
+      return acc.concat(nextIndex(last));
+    }
+    return acc.concat(c);
+  })([])(that);
+  return result;
 }
 
 export function addIndex(that: Identifiers): Identifiers {
