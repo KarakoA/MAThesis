@@ -9,13 +9,13 @@ import {
 import {
   TopLevelVariablesResult,
   TopLevelVariables,
-  findClosestMatch as findLongestMatch,
 } from "../parsing/models/top-level-variables";
 import {
   Entity,
   isMethod,
   isProperty,
   Method,
+  property,
   Property,
 } from "../parsing/models/shared";
 import {
@@ -68,12 +68,14 @@ export class MethodResolver {
     //called methods must always be found, otherwise there is a programming error
     else {
       const found = this.findMethod(called);
-      if (!found || isProperty(found))
+      if (!found)
         throw new Error(
           `Called Methods must always be found! Failed for: ${identifiers.render(
             called.id
           )}`
         );
+      // it's actually a property access call (e.g. this.problems.push)
+      if (isProperty(found)) return found;
       method = found;
       resolvedArgs = called.args;
     }
@@ -120,11 +122,10 @@ export class MethodResolver {
   }
 
   /**
-   * Looks for the given method in method definitions and top level properties.
-   * If found in method definitions, return it.
-   *
-   * If it's a method call on a top level property, returns that property instead.
-   * and this method is now threated as 'writes' (this assumes the call mutates the property it is called on).
+   * Looks for the given method in method definitions.
+   * If found in method definitions, return it. If it's not found and starts with 'this'
+   * assume it's a method call on a top level property, returns that property instead.
+   * This method is now threated as 'writes' (this assumes the call mutates the property it is called on).
    *
    * If both fail (.i.e. external method e.g. Math.random()) returns undefined.
    * @param m method
@@ -138,14 +139,15 @@ export class MethodResolver {
     const method = this.methods.find((x) => _.isEqual(x.id, m.id));
     //found!
     if (method) return method;
-    //otherwise check top level properties
-    return findLongestMatch(m.id, this.topLevel);
+    //otherwise it must be a method called on a property, since it starts with this
+    const id = identifiers.dropLast(m.id);
+    return property(...id);
   }
   /**
    * Returns a function, which can be used to substitude identifiers inside a method
    * with the actual value of those arguments, that method was called with.
    * If substitution is not possible, identity is taken instead.
-   * It then returns unindentified for those, that don't start with this after substitution.
+   * It then returns undentified for those, that don't start with this after substitution.
    * This must be applied to all accessed methods and properties: reads, writes, calls (and arguments of calls)
    * @param args of the method definition
    * @param calledArgs what the method was invoked with
@@ -158,7 +160,10 @@ export class MethodResolver {
     const argsIds = args.map((x) => x.id);
 
     function f<T extends Entity>(x: T): T | undefined {
-      const i = identifiers.findLongestMatchIndex(x.id, argsIds);
+      const i = _.findIndex(
+        (arg) => identifiers.startsWith(x.id, arg),
+        argsIds
+      );
       //no match, shouldn't be substituted, just check if it starts with `this`
       if (i == -1) return identifiers.startsWithThis(x.id) ? x : undefined;
 

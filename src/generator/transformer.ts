@@ -84,6 +84,10 @@ export class Transformer {
       discriminator: EntityType.METHOD,
     };
     const resolved = this.methodCache.called(initAsMethod);
+    //should always be a method
+    if (isProperty(resolved)) {
+      throw new Error("Init resolved to property (should not be possible)!");
+    }
     const node = this.nodeFromMethod(resolved);
     this.graph.addNode(node);
   }
@@ -112,7 +116,11 @@ export class Transformer {
               discriminator: EntityType.METHOD,
             };
             const resolved = this.methodCache.called(itemAsMethod);
-            const node = this.nodeFromMethod(resolved);
+
+            const node = isProperty(resolved)
+              ? this.addIdentifiers(resolved.id)
+              : this.nodeFromMethod(resolved);
+
             this.addEdgeBasedOnBindingType(tagNode, node, binding.bindingType);
             //regular property
           } else {
@@ -129,7 +137,9 @@ export class Transformer {
             ...binding.item,
             id: identifiers.prefixThis(binding.item.id),
           });
-          const node = this.nodeFromMethod(resolved);
+          const node = isProperty(resolved)
+            ? this.addIdentifiers(resolved.id)
+            : this.nodeFromMethod(resolved);
           this.addEdgeBasedOnBindingType(tagNode, node, binding.bindingType);
         }
       });
@@ -141,8 +151,6 @@ export class Transformer {
       const node = this.nodeFromMethod(resolved);
       this.addEdgesMethod(node, resolved);
     });
-    //TODO test with onClick="problem.item.push()" and see what happens if
-    // wrong , need to also handle Property in allCalledMethods
   }
 
   private addEdgesForNumerics() {
@@ -163,6 +171,7 @@ export class Transformer {
    * Adds nodes for each identifier in identifiers, connects them, and returns the last one added
    * @param ids identifiers
    */
+  //TODO add Proeprty
   private addIdentifiers(ids: Identifiers): Node {
     const nodes = this.identifiersToDataNodes(ids);
 

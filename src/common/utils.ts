@@ -12,15 +12,6 @@ export function lift<T>(x: T | undefined): [] | T {
   return x ? x : [];
 }
 
-//TODO obsolete soon
-export function zipWithIndex<T>(data: Array<T>): { item: T; i: number }[] {
-  const zipped = _.zip(data, _.range(0, data.length));
-  const transformed = zipped.map(([x, i]) => {
-    return { item: nonNull(x), i: nonNull(i) };
-  });
-  return transformed;
-}
-
 /**
  * Asserts the passed value is not null
  * @param x value

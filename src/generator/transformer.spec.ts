@@ -332,16 +332,16 @@ describe("Transformer when computing", () => {
 
         test("on defined top level variables work correctly", () => {
           const data = templateWithMethods(
-            p.property(This, named("problems"), named("push"))
+            p.method([This, named("problems"), named("push")])
           );
           const actual = new Transformer(data).compute();
           expect(actual.edge(defaultTag.id, "this.problems")).toMatchObject({
             label: BindingType.EVENT,
           });
         });
-        test("son lazy top level variables work correctly", () => {
+        test("on lazy top level variables work correctly", () => {
           const data = templateWithMethods(
-            p.property(This, named("problems"), named("latest"), named("push"))
+            p.method([This, named("problems"), named("latest"), named("push")])
           );
           const actual = new Transformer(data).compute();
           expect(

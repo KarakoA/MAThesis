@@ -1,7 +1,6 @@
 import assert from "assert";
 
 import _ from "lodash/fp";
-import { zipWithIndex } from "../utils";
 
 import {
   Identifier,
@@ -11,7 +10,6 @@ import {
   isThis,
   ThisInstance,
   isGenericIndex,
-  generic,
 } from "./identifier";
 
 export type Identifiers = ReadonlyArray<Identifier>;
@@ -92,31 +90,7 @@ export function addIndex(that: Identifiers): Identifiers {
   } else return that;
 }
 
-//TODO will be obsolete soon
-function longestMatchWithIndex(
-  id: Identifiers,
-  topLevel: Identifiers[]
-): { item: Identifiers; i: number } | undefined {
-  //TODO verify if non-matching is indeed undefined
-  const startingWithId = zipWithIndex(topLevel).filter((x) =>
-    //TODO might need reverse
-    startsWith(x.item, id)
-  );
-  const longestMatch = _.maxBy((x) => x.item.length, startingWithId);
-  return longestMatch;
-}
-export function findLongestMatch(
-  id: Identifiers,
-  topLevel: Identifiers[]
-): Identifiers | undefined {
-  const result = longestMatchWithIndex(id, topLevel);
-  return result?.item;
-}
-
-export function findLongestMatchIndex(
-  id: Identifiers,
-  topLevel: Identifiers[]
-): number {
-  const result = longestMatchWithIndex(id, topLevel);
-  return result?.i ?? -1;
+export function dropLast(that: Identifiers): Identifiers {
+  const result = _.dropRight(1, that);
+  return result;
 }

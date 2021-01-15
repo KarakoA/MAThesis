@@ -1,4 +1,4 @@
-import { isProperty, Method } from "../parsing/models/shared";
+import { isProperty, Method, Property } from "../parsing/models/shared";
 import { MethodResolver } from "./method-resolver";
 import {
   CalledMethod,
@@ -20,8 +20,7 @@ export class MethodCache {
     return this.result;
   }
 
-  //TODO test with onClick="problems.push()" or similar, that should return "property"
-  called(e: Method): ResolvedMethodDefintition {
+  called(e: Method): ResolvedMethodDefintition | Property {
     const resolved = this.calledRec(e);
     if (!resolved) throw new Error(`Failed to resolve "${render(e.id)}" !`);
     return resolved;
@@ -31,10 +30,11 @@ export class MethodCache {
   }
   private calledRec(
     e: Method | CalledMethod
-  ): ResolvedMethodDefintition | undefined {
+  ): ResolvedMethodDefintition | Property | undefined {
     const resolved = this.resolver.called(e);
     this.done.push(e);
-    if (!resolved || isProperty(resolved)) return undefined;
+    if (!resolved) return undefined;
+    if (isProperty(resolved)) return resolved;
     this.result.push(resolved);
     //call recursively for called, that are not processed yet
     resolved.calls
