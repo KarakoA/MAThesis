@@ -11,7 +11,7 @@ import {
 } from "../models/shared";
 import { AST } from "vue-eslint-parser";
 import { AST_NODE_TYPES } from "@typescript-eslint/types";
-import { MethodDefintion, MethodsResult } from "../models/methods";
+import { MethodDefinition, MethodsResult } from "../models/methods";
 
 import { Identifiers, prefixThis } from "../../common/models/identifiers";
 
@@ -101,7 +101,7 @@ class MethodDefintitionBuilder {
     this.declares = [];
     this.objectProps = [];
   }
-  build(): MethodDefintion {
+  build(): MethodDefinition {
     return {
       id: prefixThis(this.id),
       args: this.args,
@@ -113,9 +113,9 @@ class MethodDefintitionBuilder {
 }
 
 export class MethodsBuilder {
-  methods!: MethodDefintion[];
-  computed!: MethodDefintion[];
-  init?: MethodDefintion;
+  methods!: MethodDefinition[];
+  computed!: MethodDefinition[];
+  init?: MethodDefinition;
 
   latestMethodBuilder?: MethodDefintitionBuilder;
 
@@ -130,7 +130,7 @@ export class MethodsBuilder {
     this.latestMethodBuilder = undefined;
   }
 
-  add(method: MethodDefintion, type: MethodType): void {
+  add(method: MethodDefinition, type: MethodType): void {
     switch (type) {
       case MethodType.METHOD:
         this.methods.push(method);

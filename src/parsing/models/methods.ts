@@ -1,7 +1,6 @@
 import { Identifiers } from "../../common/models/identifiers";
 import { Method, Property } from "./shared";
-//TODO typo
-export interface MethodDefintion {
+export interface MethodDefinition {
   id: Identifiers;
   args: ReadonlyArray<Property>;
   reads: ReadonlyArray<Property>;
@@ -10,13 +9,12 @@ export interface MethodDefintion {
 }
 
 export interface MethodsResult {
-  init?: MethodDefintion;
-  computed: MethodDefintitions;
-  methods: MethodDefintitions;
+  init?: MethodDefinition;
+  computed: MethodDefinitions;
+  methods: MethodDefinitions;
 }
 
-//TODO typo
-export type MethodDefintitions = Array<MethodDefintion>;
+export type MethodDefinitions = Array<MethodDefinition>;
 
 //#region Factory methods
 export function methodDef(
@@ -25,7 +23,7 @@ export function methodDef(
   reads: ReadonlyArray<Property> | undefined = undefined,
   writes: ReadonlyArray<Property> | undefined = undefined,
   calls: ReadonlyArray<Method> | undefined = undefined
-): MethodDefintion {
+): MethodDefinition {
   return {
     id,
     args: args ?? [],

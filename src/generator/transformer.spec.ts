@@ -9,8 +9,8 @@ import { Transformer } from "./transformer";
 import * as p from "../parsing/models/shared";
 import { Entity } from "../parsing/models/shared";
 import {
-  MethodDefintitions,
-  MethodDefintion,
+  MethodDefinitions,
+  MethodDefinition,
   methodDef,
 } from "../parsing/models/methods";
 import { Result } from "../parsing/models/result";
@@ -56,10 +56,10 @@ describe("Transformer when computing", () => {
     index1: numeric("1"),
   };
   function template(
-    methods: MethodDefintitions,
-    init: MethodDefintion | undefined = undefined,
+    methods: MethodDefinitions,
+    init: MethodDefinition | undefined = undefined,
     bindings: Binding[] = [],
-    computed: MethodDefintitions = [],
+    computed: MethodDefinitions = [],
     topLevel: TopLevelVariables = []
   ): Result {
     return {
@@ -75,8 +75,8 @@ describe("Transformer when computing", () => {
   }
 
   function templateWithBindingAccess(
-    methods: MethodDefintitions,
-    computed: MethodDefintitions = [],
+    methods: MethodDefinitions,
+    computed: MethodDefinitions = [],
     accesses: Entity,
     bindingType: BindingType = BindingType.ONE_WAY,
     topLevel: TopLevelVariables = []
@@ -176,7 +176,7 @@ describe("Transformer when computing", () => {
       const methodId = [This, id.m];
       function template(
         ids: Identifiers,
-        ...methodDefs: MethodDefintitions
+        ...methodDefs: MethodDefinitions
       ): Result {
         return templateWithBindingAccess(
           [

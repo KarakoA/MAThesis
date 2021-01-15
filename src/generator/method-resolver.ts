@@ -2,8 +2,8 @@ import _ from "lodash/fp";
 import * as identifiers from "../common/models/identifiers";
 import assert from "assert";
 import {
-  MethodDefintion,
-  MethodDefintitions,
+  MethodDefinition,
+  MethodDefinitions,
   MethodsResult,
 } from "../parsing/models/methods";
 import {
@@ -28,7 +28,7 @@ import {
 import { lift } from "../common/utils";
 
 export class MethodResolver {
-  methods: MethodDefintitions;
+  methods: MethodDefinitions;
   topLevel: TopLevelVariables;
 
   handled: [identifiers.Identifiers, ResolvedMethodDefintition][];
@@ -51,7 +51,7 @@ export class MethodResolver {
   called(
     called: Method | CalledMethod
   ): ResolvedMethodDefintition | Property | undefined {
-    let method: MethodDefintion;
+    let method: MethodDefinition;
     let resolvedArgs: ReadonlyArray<ResolvedArgument>;
     if (isMethod(called)) {
       //find method
@@ -132,7 +132,7 @@ export class MethodResolver {
    */
   private findMethod(
     m: Method | CalledMethod
-  ): MethodDefintion | undefined | Property {
+  ): MethodDefinition | undefined | Property {
     //if not a 'this' identifier, can be skipped completely (all known methods in `methods` start with `this`)
     if (!identifiers.startsWithThis(m.id)) return undefined;
     //otherwise check methods

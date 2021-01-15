@@ -3,7 +3,7 @@ import { ExtendedGraph } from "./graph";
 import _ from "lodash/fp";
 import { MethodResolver } from "./method-resolver";
 import { Result } from "../parsing/models/result";
-import { MethodDefintitions, MethodDefintion } from "../parsing/models/methods";
+import { MethodDefinitions, MethodDefinition } from "../parsing/models/methods";
 import * as identifiers from "../common/models/identifiers";
 import { Identifiers } from "../common/models/identifiers";
 import { BindingType, Binding } from "../parsing/models/template-bindings";
@@ -40,9 +40,9 @@ export class Transformer {
   computedIds: Identifiers[];
 
   bindings: Binding[];
-  methods: MethodDefintitions;
+  methods: MethodDefinitions;
   topLevel: TopLevelVariables;
-  init?: MethodDefintion;
+  init?: MethodDefinition;
 
   constructor(visitorsResult: Result) {
     this.graph = new ExtendedGraph();
