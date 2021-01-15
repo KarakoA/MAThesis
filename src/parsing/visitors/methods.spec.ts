@@ -267,7 +267,7 @@ describe("Methods", () => {
             ]);
           });
           test("arguments", async () => {
-            const methods = `a(q){const q = this.some_method(this.b)}`;
+            const methods = `a(q){this.some_method(this.b)}`;
             const actual = await parse(methods);
             expect(actual).toStrictEqual([
               {
@@ -384,7 +384,7 @@ describe("Methods", () => {
           });
           test("called methods", async () => {
             const methods = `a(){
-                const q;
+                const q = 2;
                 q = this.some_method(this.b)
             }`;
             const actual = await parse(methods);
@@ -399,7 +399,7 @@ describe("Methods", () => {
             ]);
           });
           test("arguments", async () => {
-            const methods = `a(q){const q = this.some_method(this.b)}`;
+            const methods = `a(q){this.some_method(this.b);}`;
             const actual = await parse(methods);
             expect(actual).toStrictEqual([
               {
@@ -623,7 +623,7 @@ describe("Methods", () => {
             ]);
           });
           test("arguments", async () => {
-            const methods = `a(q){const q = this.some_method(this.b)}`;
+            const methods = `a(q){this.some_method(this.b)}`;
             const actual = await parse(methods);
             expect(actual).toMatchObject([
               {
