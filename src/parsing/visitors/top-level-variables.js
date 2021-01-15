@@ -2,6 +2,7 @@ import { TopLevelVariablesBuilder } from "../builders/top-level-builder";
 
 export const NAME = "top-level-variables";
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function create(context) {
   return context.parserServices.defineTemplateBodyVisitor(
     {},

@@ -8,6 +8,7 @@ import * as utils from "../utils";
 let builder = new MethodsBuilder();
 
 export const NAME = "methods";
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function create(context) {
   return context.parserServices.defineTemplateBodyVisitor(
     {},

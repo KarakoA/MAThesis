@@ -6,7 +6,6 @@ import {
   nextIndex,
   IdentifierType,
   ThisInstance,
-  prevIndex,
   named,
 } from "../common/models/identifier";
 import { create, Identifiers } from "../common/models/identifiers";

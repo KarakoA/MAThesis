@@ -14,19 +14,10 @@ import {
   methodDef,
 } from "../parsing/models/methods";
 import { Result } from "../parsing/models/result";
-import { ExtendedGraph, serialize, deserialize } from "./graph";
-import {
-  tag,
-  data,
-  edge,
-  method,
-  init,
-  EdgeType,
-  NodeType,
-} from "./models/graph";
+import { method, init, EdgeType, NodeType } from "./models/graph";
 import { Binding, BindingType, Tag } from "../parsing/models/template-bindings";
 import { TopLevelVariables } from "../parsing/models/top-level-variables";
-import { Identifiers, render } from "../common/models/identifiers";
+import { Identifiers } from "../common/models/identifiers";
 
 describe("Transformer when computing", () => {
   const defaultInit = methodDef([This, named("created")]);

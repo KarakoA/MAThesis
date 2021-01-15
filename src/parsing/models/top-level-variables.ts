@@ -1,6 +1,4 @@
-import { Identifiers, prefixThis } from "../../common/models/identifiers";
-import { startsWithThis } from "../../common/models/identifiers";
-import { EntityType, Property } from "./shared";
+import { Property } from "./shared";
 
 export enum DataType {
   ARRAY,

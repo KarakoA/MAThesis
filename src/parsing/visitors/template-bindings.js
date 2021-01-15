@@ -6,6 +6,7 @@ import * as utils from "../utils";
 let builder = new BindingsBuilder();
 export const NAME = "template-bindings";
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function create(context) {
   return context.parserServices.defineTemplateBodyVisitor({
     // click handlers
