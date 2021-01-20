@@ -13,7 +13,7 @@ async function main() {
   const file = args[0] ?? "./resources/test-files/test-lists.vue";
   const outPath = args[1] ?? "./web/data.json";
   const results = await new ESLinter().lintFiles([file]);
-
+  console.log(results);
   const transformer = new Transformer(results[0]);
 
   const graph = transformer.compute();
