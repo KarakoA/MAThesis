@@ -94,7 +94,7 @@ export class BindingsBuilder {
     const item =
       node.type === AST_NODE_TYPES.CallExpression
         ? utils.method(node)
-        : utils.property(node);
+        : utils.property(node as utils.SupportedNamedExpression);
     if (usingMethodAsPropertyShorthand)
       this.latest.push({ item: method(item.id), bindingType });
     else this.latest.push({ item, bindingType });
@@ -138,7 +138,10 @@ export class BindingsBuilder {
       const tag: Tag = { id, loc: node.loc, name, position };
       this.bindings.push({
         tag: tag,
-        values: filterOutMethodNamesAsIdentifiers(this.latest),
+        values: _.uniqWith(
+          _.isEqual,
+          filterOutMethodNamesAsIdentifiers(this.latest)
+        ),
       });
       this.latest = [];
     }

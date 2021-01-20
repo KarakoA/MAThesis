@@ -571,18 +571,8 @@
       "value": "simple"
     },
     {
-      "v": "this.problems[i]",
-      "w": "button_12_12_20_21",
-      "value": "simple"
-    },
-    {
       "v": "button_12_12_20_21",
       "w": "this.check_answer(this.problems[i])",
-      "value": "event"
-    },
-    {
-      "v": "button_12_12_20_21",
-      "w": "this.problems[i]",
       "value": "event"
     },
     {

@@ -168,6 +168,24 @@ describe("Bindings", () => {
         ];
         expect(actual).toStrictEqual(expected);
       });
+
+      test("containing the same variables multiple times results in only one binding", async () => {
+        const tag = `<div v-if="VAR1 || VAR1"> {{VAR1}}</div>`;
+        const actual = await parse(tag);
+        const expected = [
+          {
+            tag: expect.anything(),
+            values: [
+              {
+                item: property(named("VAR1")),
+                bindingType: BindingType.ONE_WAY,
+              },
+            ],
+          },
+        ];
+        expect(actual).toStrictEqual(expected);
+      });
+
       test("containing simple expression", async () => {
         const tag = `<div v-if="!VAR1"></div>`;
         const actual = await parse(tag);
@@ -200,6 +218,52 @@ describe("Bindings", () => {
           },
         ];
         expect(actual).toStrictEqual(expected);
+      });
+
+      describe("containing method with arguments", () => {
+        test("should not include the arugments as separte binding", async () => {
+          const tag = `<div v-if="some_method(problems)"></div>`;
+          const actual = await parse(tag);
+          const expected = [
+            {
+              tag: expect.anything(),
+              values: [
+                {
+                  item: method(
+                    [named("some_method")],
+                    [property(named("problems"))]
+                  ),
+                  bindingType: BindingType.ONE_WAY,
+                },
+              ],
+            },
+          ];
+          expect(actual).toStrictEqual(expected);
+        });
+        test("include the arugments if also accesed outside of method", async () => {
+          const tag = `<div v-if="some_method(problems) == problems == problems"></div>`;
+          const actual = await parse(tag);
+          console.log(actual);
+          const expected = [
+            {
+              tag: expect.anything(),
+              values: [
+                {
+                  item: method(
+                    [named("some_method")],
+                    [property(named("problems"))]
+                  ),
+                  bindingType: BindingType.ONE_WAY,
+                },
+                {
+                  item: property(named("problems")),
+                  bindingType: BindingType.ONE_WAY,
+                },
+              ],
+            },
+          ];
+          expect(actual).toStrictEqual(expected);
+        });
       });
     });
 

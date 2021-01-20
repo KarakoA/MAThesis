@@ -70,6 +70,9 @@ export function isRootName(node: AST.ESLintExpression): boolean {
     node.parent?.type !== AST_NODE_TYPES.MemberExpression
   );
 }
+export function notArgument(node: AST.ESLintExpression): boolean {
+  return firstParentOfType(node, "CallExpression") === undefined;
+}
 export function isRootCallExpression(node: AST.ESLintExpression): boolean {
   return (
     node.type === AST_NODE_TYPES.CallExpression &&
