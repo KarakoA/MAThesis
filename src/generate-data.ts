@@ -10,7 +10,7 @@ util.inspect.defaultOptions.depth = 13;
 
 async function main() {
   const args = process.argv.slice(2);
-  const file = args[0] ?? "./resources/test-files/test-add-sub.vue";
+  const file = args[0] ?? "./resources/test-files/test-lists.vue";
   const outPath = args[1] ?? "./web/data.json";
   const results = await new ESLinter().lintFiles([file]);
 

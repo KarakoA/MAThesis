@@ -8,6 +8,7 @@ import {
   isMethodNode,
 } from "../generator/models/graph";
 import { lift, nonNull } from "../common/utils";
+import { isMethod } from "../parsing/models/shared";
 
 type ScenarioSet = Scenario[];
 
@@ -39,7 +40,7 @@ export function computeAndPrintScenarios(
   const scenarios = createScenarios(init, clickable, depth);
   const uniqScenarios = uniqueScenarios(scenarios);
 
-  [init, ...clickable]
+  [...clickable, init]
     .map((x) => `l(${x.name}) -> ${x.updates.join(", ")}`)
     .map((x) => console.log(x));
   console.log();
@@ -49,17 +50,18 @@ export function computeAndPrintScenarios(
   uniqScenarios.map(print);
 }
 
-function uniqueScenarios(scenarios: ScenarioSet[]) {
+function uniqueScenarios(scenarios: ScenarioSet[]): Scenario[] {
   const deduplicatedScenarios = _.flatten(scenarios).map(deduplicate);
   const uniqScenarios = _.uniqWith(_.isEqual, deduplicatedScenarios);
   return uniqScenarios;
 }
-function deduplicate(scenario: Scenario) {
-  return _.reduce(
-    (x, y) => (_.isEqual(_.last(x), y) ? x : x.concat(y)),
-    scenario,
-    []
+function deduplicate(scenario: Scenario): Scenario {
+  const result = _.reduce(
+    (x: Scenario, y) => (_.isEqual(_.last(x), y) ? x : x.concat(y)),
+    [],
+    scenario
   );
+  return result;
 }
 
 function createScenarios(
@@ -101,7 +103,7 @@ function createScenarioSet(
 }
 
 function print(scenario: Scenario): void {
-  console.log(`Scenario: '${scenario.map((x) => x.name).join("', '")}'`);
+  console.log(`Scenario: ['${scenario.map((x) => x.name).join("', '")}']`);
 
   const given = computeGiven(scenario);
   if (_.head(given)) console.log(`\tGiven '${_.head(given)}'`);
@@ -147,25 +149,26 @@ function traverse(
 
     const reachable = graph
       .outEdges(id)
-      .filter((x) => x.label !== EdgeType.EVENT)
-      //TODO
-      // .filter(
-      //   //from Paper
-      //   //"Note that updating the answer does not trigger $scope.check answer(), since this function needs explicit triggering via Check,"
-      //   //is problematic, what if function is called from somewhere? that's why we need call relation
-      //   (x) =>
-      //     (isMethodNode(x.sink) && x.label === EdgeType.CALLS) ||
-      //     !nodeTriggerableByEvent(graph, x.sink)
-      // )
-      .filter(
+      .filter((x) => {
         //from Paper
         //"Note that updating the answer does not trigger $scope.check answer(), since this function needs explicit triggering via Check,"
         //is problematic, what if function is called from somewhere? that's why we need call relation
-        (x) => !(isMethodNode(x.sink) && x.label !== EdgeType.CALLS)
-        //   (
-        //   isMethodNode(x.sink) && x.label === EdgeType.CALLS
-        // ) || !nodeTriggerableByEvent(graph, x.sink)
-      )
+
+        //NOTE possible without calls (need to also check  if source and sink are both methods and let through)
+        switch (x.label) {
+          case EdgeType.EVENT:
+            return false;
+          case EdgeType.CALLS:
+            return true;
+          case EdgeType.SIMPLE:
+            //current is not a method, but sink is and it's triggerable by event
+            if (isMethodNode(x.sink) && nodeTriggerableByEvent(graph, x.sink)) {
+              return false;
+              //property chain or tag or reads relation
+            } else return true;
+        }
+      })
+
       .map((x) => x.sink);
 
     //  console.log(`traverse(${id.id}) -> ${reachable.map((x) => x.id)}`);
@@ -176,7 +179,7 @@ function traverse(
   //that's why events are traversed here
   const reachableFromNodeByAnyMeans = graph.outEdges(node);
 
-  if (node.name !== "created") return [];
+  //if (node.name !== "created") return [];
   reachableFromNodeByAnyMeans.forEach((x) => inner(x.sink));
   return Array.from(visited);
 }
