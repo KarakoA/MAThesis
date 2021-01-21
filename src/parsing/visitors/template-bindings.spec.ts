@@ -243,7 +243,6 @@ describe("Bindings", () => {
         test("include the arugments if also accesed outside of method", async () => {
           const tag = `<div v-if="some_method(problems) == problems == problems"></div>`;
           const actual = await parse(tag);
-          console.log(actual);
           const expected = [
             {
               tag: expect.anything(),

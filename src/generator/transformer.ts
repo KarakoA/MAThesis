@@ -24,6 +24,7 @@ import {
   DataNode,
   InitNode,
   Edge,
+  isDataNode,
 } from "./models/graph";
 import { TopLevelVariables } from "../parsing/models/top-level-variables";
 import {
@@ -218,13 +219,17 @@ export class Transformer {
     );
     const newInEdges = _.flatMap(
       (x) =>
-        this.graph.outEdges(x.leafNode).map((edge) => {
-          return {
-            source: edge.source == generic ? numeric : edge.source,
-            sink: x.newNode,
-            label: edge.label,
-          } as Edge;
-        }),
+        this.graph
+          .outEdges(x.leafNode)
+          //except those coming from data nodes
+          .filter((x) => !isDataNode(x.source))
+          .map((edge) => {
+            return {
+              source: edge.source,
+              sink: x.newNode,
+              label: edge.label,
+            } as Edge;
+          }),
       nodes
     );
     const newEdges = newInEdges.concat(newOutEdges);
