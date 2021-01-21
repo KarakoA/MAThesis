@@ -371,6 +371,74 @@ describe("Transformer when computing", () => {
       });
     });
   });
+
+  describe("edges for numeric", () => {
+    function templateNumeric() {
+      return template([], defaultInit, [
+        {
+          tag: { ...defaultTag, id: "<other>", name: "<other>" },
+          values: [
+            {
+              item: p.property(
+                This,
+                named("problems"),
+                numeric("0"),
+                named("a")
+              ),
+              bindingType: BindingType.ONE_WAY,
+            },
+          ],
+        },
+        {
+          tag: defaultTag,
+          values: [
+            {
+              item: p.property(
+                This,
+                named("problems"),
+                generic("i"),
+                named("b")
+              ),
+              bindingType: BindingType.ONE_WAY,
+            },
+            {
+              item: p.property(
+                This,
+                named("problems"),
+                generic("i"),
+                named("a")
+              ),
+              bindingType: BindingType.ONE_WAY,
+            },
+          ],
+        },
+      ]);
+    }
+    test("create an edge for each edge of generic in numeric", () => {
+      const data = templateNumeric();
+      const actual = new Transformer(data).compute();
+      const outEdges = actual.outEdges("this.problems[0].a").map((x) => x.sink);
+      const inEdges = actual.inEdges("this.problems[0].a").map((x) => x.source);
+      expect(outEdges).toHaveLength(2);
+      expect(outEdges).toMatchObject(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: defaultTag.id,
+          }),
+          expect.objectContaining({
+            id: "<other>",
+          }),
+        ])
+      );
+      expect(inEdges).toHaveLength(1);
+      expect(inEdges).toMatchObject([
+        expect.objectContaining({
+          id: "this.problems[0]",
+        }),
+      ]);
+    });
+  });
+
   describe("top level", () => {
     function templateTopLevel(topLevel: TopLevelVariables) {
       return template(
