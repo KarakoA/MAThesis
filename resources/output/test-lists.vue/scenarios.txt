@@ -1,7 +1,743 @@
+[
+  Result {
+    fileName: 'test-lists.vue',
+    topLevel: {
+      topLevel: [
+        {
+          id: [
+            { name: 'this', discriminator: 'this' },
+            { name: 'problems', discriminator: 'name-identifier' }
+          ],
+          discriminator: 'property'
+        },
+        {
+          id: [
+            { name: 'this', discriminator: 'this' },
+            { name: 'count_right', discriminator: 'name-identifier' }
+          ],
+          discriminator: 'property'
+        },
+        {
+          id: [
+            { name: 'this', discriminator: 'this' },
+            { name: 'count_wrong', discriminator: 'name-identifier' }
+          ],
+          discriminator: 'property'
+        },
+        {
+          id: [
+            { name: 'this', discriminator: 'this' },
+            { name: 'nested', discriminator: 'name-identifier' },
+            { name: 'property', discriminator: 'name-identifier' }
+          ],
+          discriminator: 'property'
+        }
+      ]
+    },
+    methods: {
+      computed: [
+        {
+          id: [
+            { name: 'this', discriminator: 'this' },
+            { name: 'accuracy', discriminator: 'name-identifier' }
+          ],
+          args: [],
+          reads: [
+            {
+              id: [
+                { name: 'this', discriminator: 'this' },
+                {
+                  name: 'count_wrong',
+                  discriminator: 'name-identifier'
+                }
+              ],
+              discriminator: 'property'
+            },
+            {
+              id: [
+                { name: 'this', discriminator: 'this' },
+                {
+                  name: 'count_right',
+                  discriminator: 'name-identifier'
+                }
+              ],
+              discriminator: 'property'
+            },
+            {
+              id: [ { name: 'n', discriminator: 'name-identifier' } ],
+              discriminator: 'property'
+            }
+          ],
+          writes: [],
+          calls: []
+        }
+      ],
+      methods: [
+        {
+          id: [
+            { name: 'this', discriminator: 'this' },
+            { name: 'add_problem', discriminator: 'name-identifier' }
+          ],
+          args: [],
+          reads: [
+            {
+              id: [ { name: 'max', discriminator: 'name-identifier' } ],
+              discriminator: 'property'
+            },
+            {
+              id: [ { name: 'c', discriminator: 'name-identifier' } ],
+              discriminator: 'property'
+            },
+            {
+              id: [
+                { name: 'this', discriminator: 'this' },
+                { name: 'problems', discriminator: 'name-identifier' },
+                { name: 'length', discriminator: 'name-identifier' }
+              ],
+              discriminator: 'property'
+            },
+            {
+              id: [ { name: 'a', discriminator: 'name-identifier' } ],
+              discriminator: 'property'
+            },
+            {
+              id: [ { name: 'b', discriminator: 'name-identifier' } ],
+              discriminator: 'property'
+            },
+            {
+              id: [ { name: 'id', discriminator: 'name-identifier' } ],
+              discriminator: 'property'
+            },
+            {
+              id: [
+                { name: 'undefined', discriminator: 'name-identifier' }
+              ],
+              discriminator: 'property'
+            },
+            {
+              id: [ { name: 'problem', discriminator: 'name-identifier' } ],
+              discriminator: 'property'
+            }
+          ],
+          writes: [],
+          calls: [
+            {
+              id: [
+                { name: 'Math', discriminator: 'name-identifier' },
+                { name: 'floor', discriminator: 'name-identifier' }
+              ],
+              args: [
+                {
+                  id: [
+                    {
+                      name: 'BINARY',
+                      discriminator: 'name-identifier'
+                    }
+                  ],
+                  args: [
+                    {
+                      id: [
+                        {
+                          name: 'Math',
+                          discriminator: 'name-identifier'
+                        },
+                        {
+                          name: 'random',
+                          discriminator: 'name-identifier'
+                        }
+                      ],
+                      args: [],
+                      discriminator: 'method'
+                    },
+                    {
+                      id: [
+                        {
+                          name: 'BINARY',
+                          discriminator: 'name-identifier'
+                        }
+                      ],
+                      args: [
+                        { id: [ [Object] ], discriminator: 'property' }
+                      ],
+                      discriminator: 'method'
+                    }
+                  ],
+                  discriminator: 'method'
+                }
+              ],
+              discriminator: 'method'
+            },
+            {
+              id: [
+                { name: 'Math', discriminator: 'name-identifier' },
+                { name: 'random', discriminator: 'name-identifier' }
+              ],
+              args: [],
+              discriminator: 'method'
+            },
+            {
+              id: [
+                { name: 'Math', discriminator: 'name-identifier' },
+                { name: 'floor', discriminator: 'name-identifier' }
+              ],
+              args: [
+                {
+                  id: [
+                    {
+                      name: 'BINARY',
+                      discriminator: 'name-identifier'
+                    }
+                  ],
+                  args: [
+                    {
+                      id: [
+                        {
+                          name: 'Math',
+                          discriminator: 'name-identifier'
+                        },
+                        {
+                          name: 'random',
+                          discriminator: 'name-identifier'
+                        }
+                      ],
+                      args: [],
+                      discriminator: 'method'
+                    },
+                    {
+                      id: [
+                        {
+                          name: 'BINARY',
+                          discriminator: 'name-identifier'
+                        }
+                      ],
+                      args: [
+                        { id: [ [Object] ], discriminator: 'property' }
+                      ],
+                      discriminator: 'method'
+                    }
+                  ],
+                  discriminator: 'method'
+                }
+              ],
+              discriminator: 'method'
+            },
+            {
+              id: [
+                { name: 'this', discriminator: 'this' },
+                { name: 'problems', discriminator: 'name-identifier' },
+                { name: 'push', discriminator: 'name-identifier' }
+              ],
+              args: [
+                {
+                  id: [
+                    {
+                      name: 'problem',
+                      discriminator: 'name-identifier'
+                    }
+                  ],
+                  discriminator: 'property'
+                }
+              ],
+              discriminator: 'method'
+            }
+          ]
+        },
+        {
+          id: [
+            { name: 'this', discriminator: 'this' },
+            { name: 'check_answer', discriminator: 'name-identifier' }
+          ],
+          args: [
+            {
+              id: [ { name: 'problem', discriminator: 'name-identifier' } ],
+              discriminator: 'property'
+            }
+          ],
+          reads: [
+            {
+              id: [
+                { name: 'problem', discriminator: 'name-identifier' },
+                { name: 'c', discriminator: 'name-identifier' }
+              ],
+              discriminator: 'property'
+            },
+            {
+              id: [
+                { name: 'problem', discriminator: 'name-identifier' },
+                { name: 'answer', discriminator: 'name-identifier' }
+              ],
+              discriminator: 'property'
+            },
+            {
+              id: [
+                { name: 'problem', discriminator: 'name-identifier' },
+                { name: 'right', discriminator: 'name-identifier' }
+              ],
+              discriminator: 'property'
+            }
+          ],
+          writes: [
+            {
+              id: [
+                { name: 'problem', discriminator: 'name-identifier' },
+                { name: 'right', discriminator: 'name-identifier' }
+              ],
+              discriminator: 'property'
+            },
+            {
+              id: [
+                { name: 'this', discriminator: 'this' },
+                {
+                  name: 'count_right',
+                  discriminator: 'name-identifier'
+                }
+              ],
+              discriminator: 'property'
+            },
+            {
+              id: [
+                { name: 'this', discriminator: 'this' },
+                {
+                  name: 'count_wrong',
+                  discriminator: 'name-identifier'
+                }
+              ],
+              discriminator: 'property'
+            }
+          ],
+          calls: [
+            {
+              id: [
+                { name: 'parseInt', discriminator: 'name-identifier' }
+              ],
+              args: [
+                {
+                  id: [
+                    {
+                      name: 'problem',
+                      discriminator: 'name-identifier'
+                    },
+                    {
+                      name: 'answer',
+                      discriminator: 'name-identifier'
+                    }
+                  ],
+                  discriminator: 'property'
+                }
+              ],
+              discriminator: 'method'
+            }
+          ]
+        },
+        {
+          id: [
+            { name: 'this', discriminator: 'this' },
+            { name: 'may_check', discriminator: 'name-identifier' }
+          ],
+          args: [
+            {
+              id: [ { name: 'problem', discriminator: 'name-identifier' } ],
+              discriminator: 'property'
+            }
+          ],
+          reads: [
+            {
+              id: [
+                { name: 'problem', discriminator: 'name-identifier' },
+                { name: 'answer', discriminator: 'name-identifier' }
+              ],
+              discriminator: 'property'
+            },
+            {
+              id: [
+                { name: 'undefined', discriminator: 'name-identifier' }
+              ],
+              discriminator: 'property'
+            },
+            {
+              id: [
+                { name: 'problem', discriminator: 'name-identifier' },
+                { name: 'right', discriminator: 'name-identifier' }
+              ],
+              discriminator: 'property'
+            }
+          ],
+          writes: [],
+          calls: []
+        },
+        {
+          id: [
+            { name: 'this', discriminator: 'this' },
+            { name: 'new_problem', discriminator: 'name-identifier' }
+          ],
+          args: [],
+          reads: [],
+          writes: [],
+          calls: [
+            {
+              id: [
+                { name: 'this', discriminator: 'this' },
+                {
+                  name: 'add_problem',
+                  discriminator: 'name-identifier'
+                }
+              ],
+              args: [],
+              discriminator: 'method'
+            }
+          ]
+        }
+      ],
+      init: {
+        id: [
+          { name: 'this', discriminator: 'this' },
+          { name: 'created', discriminator: 'name-identifier' }
+        ],
+        args: [],
+        reads: [],
+        writes: [],
+        calls: [
+          {
+            id: [
+              { name: 'this', discriminator: 'this' },
+              { name: 'add_problem', discriminator: 'name-identifier' }
+            ],
+            args: [],
+            discriminator: 'method'
+          }
+        ]
+      }
+    },
+    bindings: {
+      bindings: [
+        {
+          tag: {
+            id: 'span_7_12_7_40',
+            loc: {
+              start: { line: 7, column: 12 },
+              end: { line: 7, column: 40 }
+            },
+            name: 'problems[i].a',
+            position: 'i'
+          },
+          values: [
+            {
+              item: {
+                id: [
+                  {
+                    name: 'problems',
+                    discriminator: 'name-identifier'
+                  },
+                  { name: 'i', discriminator: 'generic-index' },
+                  { name: 'a', discriminator: 'name-identifier' }
+                ],
+                discriminator: 'property'
+              },
+              bindingType: 'one-way'
+            }
+          ]
+        },
+        {
+          tag: {
+            id: 'span_7_43_7_72',
+            loc: {
+              start: { line: 7, column: 43 },
+              end: { line: 7, column: 72 }
+            },
+            name: 'problems[i].b',
+            position: 'i'
+          },
+          values: [
+            {
+              item: {
+                id: [
+                  {
+                    name: 'problems',
+                    discriminator: 'name-identifier'
+                  },
+                  { name: 'i', discriminator: 'generic-index' },
+                  { name: 'b', discriminator: 'name-identifier' }
+                ],
+                discriminator: 'property'
+              },
+              bindingType: 'one-way'
+            }
+          ]
+        },
+        {
+          tag: {
+            id: 'input_8_18_8_69',
+            loc: {
+              start: { line: 8, column: 18 },
+              end: { line: 8, column: 69 }
+            },
+            name: 'problems[i].answer',
+            position: 'i'
+          },
+          values: [
+            {
+              item: {
+                id: [
+                  {
+                    name: 'problems',
+                    discriminator: 'name-identifier'
+                  },
+                  { name: 'i', discriminator: 'generic-index' },
+                  { name: 'answer', discriminator: 'name-identifier' }
+                ],
+                discriminator: 'property'
+              },
+              bindingType: 'two-way'
+            }
+          ]
+        },
+        {
+          tag: {
+            id: 'button_9_12_17_21',
+            loc: {
+              start: { line: 9, column: 12 },
+              end: { line: 17, column: 21 }
+            },
+            name: 'Check',
+            position: 'i'
+          },
+          values: [
+            {
+              item: {
+                id: [
+                  {
+                    name: 'may_check',
+                    discriminator: 'name-identifier'
+                  }
+                ],
+                args: [
+                  {
+                    id: [
+                      {
+                        name: 'problems',
+                        discriminator: 'name-identifier'
+                      },
+                      { name: 'i', discriminator: 'generic-index' }
+                    ],
+                    discriminator: 'property'
+                  }
+                ],
+                discriminator: 'method'
+              },
+              bindingType: 'one-way'
+            },
+            {
+              item: {
+                id: [
+                  {
+                    name: 'check_answer',
+                    discriminator: 'name-identifier'
+                  }
+                ],
+                args: [
+                  {
+                    id: [
+                      {
+                        name: 'problems',
+                        discriminator: 'name-identifier'
+                      },
+                      { name: 'i', discriminator: 'generic-index' }
+                    ],
+                    discriminator: 'property'
+                  }
+                ],
+                discriminator: 'method'
+              },
+              bindingType: 'event'
+            }
+          ]
+        },
+        {
+          tag: {
+            id: 'button_18_12_25_21',
+            loc: {
+              start: { line: 18, column: 12 },
+              end: { line: 25, column: 21 }
+            },
+            name: 'Right',
+            position: 'i'
+          },
+          values: [
+            {
+              item: {
+                id: [
+                  {
+                    name: 'problems',
+                    discriminator: 'name-identifier'
+                  },
+                  { name: 'i', discriminator: 'generic-index' },
+                  { name: 'right', discriminator: 'name-identifier' }
+                ],
+                discriminator: 'property'
+              },
+              bindingType: 'one-way'
+            }
+          ]
+        },
+        {
+          tag: {
+            id: 'button_26_12_33_21',
+            loc: {
+              start: { line: 26, column: 12 },
+              end: { line: 33, column: 21 }
+            },
+            name: 'Wrong',
+            position: 'i'
+          },
+          values: [
+            {
+              item: {
+                id: [
+                  {
+                    name: 'problems',
+                    discriminator: 'name-identifier'
+                  },
+                  { name: 'i', discriminator: 'generic-index' },
+                  { name: 'right', discriminator: 'name-identifier' }
+                ],
+                discriminator: 'property'
+              },
+              bindingType: 'one-way'
+            }
+          ]
+        },
+        {
+          tag: {
+            id: 'button_34_12_40_21',
+            loc: {
+              start: { line: 34, column: 12 },
+              end: { line: 40, column: 21 }
+            },
+            name: 'New Problem',
+            position: 'i'
+          },
+          values: [
+            {
+              item: {
+                id: [
+                  {
+                    name: 'new_problem',
+                    discriminator: 'name-identifier'
+                  }
+                ],
+                args: [],
+                discriminator: 'method'
+              },
+              bindingType: 'event'
+            }
+          ]
+        },
+        {
+          tag: {
+            id: 'span_57_12_57_43',
+            loc: {
+              start: { line: 57, column: 12 },
+              end: { line: 57, column: 43 }
+            },
+            name: 'count_right'
+          },
+          values: [
+            {
+              item: {
+                id: [
+                  {
+                    name: 'count_right',
+                    discriminator: 'name-identifier'
+                  }
+                ],
+                discriminator: 'property'
+              },
+              bindingType: 'one-way'
+            }
+          ]
+        },
+        {
+          tag: {
+            id: 'span_60_12_60_43',
+            loc: {
+              start: { line: 60, column: 12 },
+              end: { line: 60, column: 43 }
+            },
+            name: 'count_wrong'
+          },
+          values: [
+            {
+              item: {
+                id: [
+                  {
+                    name: 'count_wrong',
+                    discriminator: 'name-identifier'
+                  }
+                ],
+                discriminator: 'property'
+              },
+              bindingType: 'one-way'
+            }
+          ]
+        },
+        {
+          tag: {
+            id: 'span_63_12_63_40',
+            loc: {
+              start: { line: 63, column: 12 },
+              end: { line: 63, column: 40 }
+            },
+            name: 'accuracy'
+          },
+          values: [
+            {
+              item: {
+                id: [
+                  {
+                    name: 'accuracy',
+                    discriminator: 'name-identifier'
+                  }
+                ],
+                discriminator: 'property'
+              },
+              bindingType: 'one-way'
+            }
+          ]
+        },
+        {
+          tag: {
+            id: 'span_68_4_68_58',
+            loc: {
+              start: { line: 68, column: 4 },
+              end: { line: 68, column: 58 }
+            },
+            name: 'First Problem'
+          },
+          values: [
+            {
+              item: {
+                id: [
+                  {
+                    name: 'problems',
+                    discriminator: 'name-identifier'
+                  },
+                  { name: '0', discriminator: 'numeric-index' },
+                  { name: 'a', discriminator: 'name-identifier' }
+                ],
+                discriminator: 'property'
+              },
+              bindingType: 'one-way'
+            }
+          ]
+        }
+      ]
+    }
+  }
+]
 l(problems[i].answer) -> problems[i].answer, Check
-l(Check) -> Check, Right, Wrong, count_right, accuracy, count_wrong
-l(New Problem) -> problems[i].a, problems[i].b, Check, Right, Wrong, First Problem, problems[i].answer
-l(created) -> problems[i].a, problems[i].b, Check, Right, Wrong, First Problem, problems[i].answer
+l(Check) -> Right, Wrong, Check, count_right, accuracy, count_wrong
+l(New Problem) -> problems[i].a, First Problem, problems[i].b, problems[i].answer, Check, Right, Wrong
+l(created) -> problems[i].a, First Problem, problems[i].b, problems[i].answer, Check, Right, Wrong
 
 Unique scenarios (A) of up to 3 elements:
 [
@@ -14,80 +750,80 @@ Unique scenarios (A) of up to 3 elements:
   [ 'created', 'New Problem', 'Check' ],
   [ 'created', 'New Problem', 'problems[i].answer', 'Check' ]
 ]
-Scenario: 'created'
+Scenario: ['created']
 	When 'created'
 	Then 'problems[i].a'
+	And 'First Problem'
 	And 'problems[i].b'
+	And 'problems[i].answer'
 	And 'Check'
 	And 'Right'
 	And 'Wrong'
-	And 'First Problem'
-	And 'problems[i].answer'
 
-Scenario: 'created', 'problems[i].answer'
+Scenario: ['created', 'problems[i].answer']
 	Given 'created'
 	When 'problems[i].answer'
 	Then 'problems[i].answer'
 	And 'Check'
 
-Scenario: 'created', 'Check'
+Scenario: ['created', 'Check']
 	Given 'created'
 	When 'Check'
-	Then 'Check'
-	And 'Right'
+	Then 'Right'
 	And 'Wrong'
+	And 'Check'
 	And 'count_right'
 	And 'accuracy'
 	And 'count_wrong'
 
-Scenario: 'created', 'New Problem'
+Scenario: ['created', 'New Problem']
 	Given 'created'
 	When 'New Problem'
 	Then 'problems[i].a'
+	And 'First Problem'
 	And 'problems[i].b'
+	And 'problems[i].answer'
 	And 'Check'
 	And 'Right'
 	And 'Wrong'
-	And 'First Problem'
-	And 'problems[i].answer'
 
-Scenario: 'created', 'problems[i].answer', 'Check'
+Scenario: ['created', 'problems[i].answer', 'Check']
 	Given 'created'
 	And 'problems[i].answer'
 	When 'Check'
-	Then 'Check'
-	And 'Right'
+	Then 'Right'
 	And 'Wrong'
+	And 'Check'
 	And 'count_right'
 	And 'accuracy'
 	And 'count_wrong'
 
-Scenario: 'created', 'New Problem', 'problems[i].answer'
+Scenario: ['created', 'New Problem', 'problems[i].answer']
 	Given 'created'
 	And 'New Problem'
 	When 'problems[i].answer'
 	Then 'problems[i].answer'
 	And 'Check'
 
-Scenario: 'created', 'New Problem', 'Check'
+Scenario: ['created', 'New Problem', 'Check']
 	Given 'created'
 	And 'New Problem'
 	When 'Check'
-	Then 'Check'
-	And 'Right'
+	Then 'Right'
 	And 'Wrong'
+	And 'Check'
 	And 'count_right'
 	And 'accuracy'
 	And 'count_wrong'
 
-Scenario: 'created', 'New Problem', 'problems[i].answer', 'Check'
+Scenario: ['created', 'New Problem', 'problems[i].answer', 'Check']
 	Given 'created'
 	And 'New Problem'
 	And 'problems[i].answer'
 	When 'Check'
-	Then 'Check'
-	And 'Right'
+	Then 'Right'
 	And 'Wrong'
+	And 'Check'
 	And 'count_right'
 	And 'accuracy'
 	And 'count_wrong'
