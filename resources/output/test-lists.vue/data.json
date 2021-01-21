@@ -666,31 +666,6 @@
       "value": "simple"
     },
     {
-      "v": "this.problems[i].a",
-      "w": "this.problems[0].a",
-      "value": "simple"
-    },
-    {
-      "v": "this.problems[i].b",
-      "w": "this.problems[0].b",
-      "value": "simple"
-    },
-    {
-      "v": "this.problems[i].answer",
-      "w": "this.problems[0].answer",
-      "value": "simple"
-    },
-    {
-      "v": "this.problems[i].right",
-      "w": "this.problems[0].right",
-      "value": "simple"
-    },
-    {
-      "v": "this.problems[i].c",
-      "w": "this.problems[0].c",
-      "value": "simple"
-    },
-    {
       "v": "this.problems[0].a",
       "w": "span_7_12_7_40",
       "value": "simple"

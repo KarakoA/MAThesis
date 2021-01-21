@@ -736,8 +736,8 @@
 ]
 l(problems[i].answer) -> problems[i].answer, Check
 l(Check) -> Right, Wrong, Check, count_right, accuracy, count_wrong
-l(New Problem) -> problems[i].a, First Problem, problems[i].b, problems[i].answer, Check, Right, Wrong
-l(created) -> problems[i].a, First Problem, problems[i].b, problems[i].answer, Check, Right, Wrong
+l(New Problem) -> problems[i].a, problems[i].b, problems[i].answer, Check, Right, Wrong, First Problem
+l(created) -> problems[i].a, problems[i].b, problems[i].answer, Check, Right, Wrong, First Problem
 
 Unique scenarios (A) of up to 3 elements:
 [
@@ -753,12 +753,12 @@ Unique scenarios (A) of up to 3 elements:
 Scenario: ['created']
 	When 'created'
 	Then 'problems[i].a'
-	And 'First Problem'
 	And 'problems[i].b'
 	And 'problems[i].answer'
 	And 'Check'
 	And 'Right'
 	And 'Wrong'
+	And 'First Problem'
 
 Scenario: ['created', 'problems[i].answer']
 	Given 'created'
@@ -780,12 +780,12 @@ Scenario: ['created', 'New Problem']
 	Given 'created'
 	When 'New Problem'
 	Then 'problems[i].a'
-	And 'First Problem'
 	And 'problems[i].b'
 	And 'problems[i].answer'
 	And 'Check'
 	And 'Right'
 	And 'Wrong'
+	And 'First Problem'
 
 Scenario: ['created', 'problems[i].answer', 'Check']
 	Given 'created'
