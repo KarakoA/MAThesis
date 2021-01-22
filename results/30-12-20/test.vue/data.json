@@ -1,0 +1,489 @@
+{
+  "options": {
+    "directed": true,
+    "multigraph": false,
+    "compound": true
+  },
+  "nodes": [
+    {
+      "v": "this",
+      "value": {
+        "name": "this",
+        "opts": {
+          "type": "this"
+        }
+      }
+    },
+    {
+      "v": "this.a",
+      "value": {
+        "name": "a",
+        "opts": {
+          "type": "id"
+        }
+      },
+      "parent": "this"
+    },
+    {
+      "v": "this.b",
+      "value": {
+        "name": "b",
+        "opts": {
+          "type": "id"
+        }
+      },
+      "parent": "this"
+    },
+    {
+      "v": "this.c",
+      "value": {
+        "name": "c",
+        "opts": {
+          "type": "id"
+        }
+      },
+      "parent": "this"
+    },
+    {
+      "v": "this.answer",
+      "value": {
+        "name": "answer",
+        "opts": {
+          "type": "id"
+        }
+      },
+      "parent": "this"
+    },
+    {
+      "v": "this.right",
+      "value": {
+        "name": "right",
+        "opts": {
+          "type": "id"
+        }
+      },
+      "parent": "this"
+    },
+    {
+      "v": "this.count_right",
+      "value": {
+        "name": "count_right",
+        "opts": {
+          "type": "id"
+        }
+      },
+      "parent": "this"
+    },
+    {
+      "v": "this.count_wrong",
+      "value": {
+        "name": "count_wrong",
+        "opts": {
+          "type": "id"
+        }
+      },
+      "parent": "this"
+    },
+    {
+      "v": "this.topLevel",
+      "value": {
+        "name": "topLevel",
+        "opts": {
+          "type": "id"
+        }
+      },
+      "parent": "this"
+    },
+    {
+      "v": "this.topLevel.otherLevel",
+      "value": {
+        "name": "otherLevel",
+        "opts": {
+          "type": "id"
+        }
+      },
+      "parent": "this.topLevel"
+    },
+    {
+      "v": "span_5_8_5_28",
+      "value": {
+        "name": "a",
+        "opts": {
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 8
+            },
+            "end": {
+              "line": 5,
+              "column": 28
+            }
+          },
+          "type": "tag"
+        }
+      }
+    },
+    {
+      "v": "span_5_31_5_52",
+      "value": {
+        "name": "b",
+        "opts": {
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 31
+            },
+            "end": {
+              "line": 5,
+              "column": 52
+            }
+          },
+          "type": "tag"
+        }
+      }
+    },
+    {
+      "v": "input_6_14_6_57",
+      "value": {
+        "name": "answer",
+        "opts": {
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 14
+            },
+            "end": {
+              "line": 6,
+              "column": 57
+            }
+          },
+          "type": "tag"
+        }
+      }
+    },
+    {
+      "v": "button_7_8_15_17",
+      "value": {
+        "name": "Check",
+        "opts": {
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 8
+            },
+            "end": {
+              "line": 15,
+              "column": 17
+            }
+          },
+          "type": "tag"
+        }
+      }
+    },
+    {
+      "v": "this.may_check()",
+      "value": {
+        "name": "may_check()",
+        "opts": {
+          "type": "method"
+        }
+      }
+    },
+    {
+      "v": "this.check_answer()",
+      "value": {
+        "name": "check_answer()",
+        "opts": {
+          "type": "method"
+        }
+      }
+    },
+    {
+      "v": "button_16_8_23_17",
+      "value": {
+        "name": "Right",
+        "opts": {
+          "loc": {
+            "start": {
+              "line": 16,
+              "column": 8
+            },
+            "end": {
+              "line": 23,
+              "column": 17
+            }
+          },
+          "type": "tag"
+        }
+      }
+    },
+    {
+      "v": "button_24_8_31_17",
+      "value": {
+        "name": "Wrong",
+        "opts": {
+          "loc": {
+            "start": {
+              "line": 24,
+              "column": 8
+            },
+            "end": {
+              "line": 31,
+              "column": 17
+            }
+          },
+          "type": "tag"
+        }
+      }
+    },
+    {
+      "v": "button_32_8_38_17",
+      "value": {
+        "name": "New Problem",
+        "opts": {
+          "loc": {
+            "start": {
+              "line": 32,
+              "column": 8
+            },
+            "end": {
+              "line": 38,
+              "column": 17
+            }
+          },
+          "type": "tag"
+        }
+      }
+    },
+    {
+      "v": "this.new_problem()",
+      "value": {
+        "name": "new_problem()",
+        "opts": {
+          "type": "method"
+        }
+      }
+    },
+    {
+      "v": "this.add_problem()",
+      "value": {
+        "name": "add_problem()",
+        "opts": {
+          "type": "method"
+        }
+      }
+    },
+    {
+      "v": "span_52_12_52_43",
+      "value": {
+        "name": "count_right",
+        "opts": {
+          "loc": {
+            "start": {
+              "line": 52,
+              "column": 12
+            },
+            "end": {
+              "line": 52,
+              "column": 43
+            }
+          },
+          "type": "tag"
+        }
+      }
+    },
+    {
+      "v": "span_55_12_55_43",
+      "value": {
+        "name": "count_wrong",
+        "opts": {
+          "loc": {
+            "start": {
+              "line": 55,
+              "column": 12
+            },
+            "end": {
+              "line": 55,
+              "column": 43
+            }
+          },
+          "type": "tag"
+        }
+      }
+    },
+    {
+      "v": "this.created",
+      "value": {
+        "name": "created",
+        "opts": {
+          "type": "init"
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "v": "this",
+      "w": "this.a"
+    },
+    {
+      "v": "this",
+      "w": "this.b"
+    },
+    {
+      "v": "this",
+      "w": "this.c"
+    },
+    {
+      "v": "this",
+      "w": "this.answer"
+    },
+    {
+      "v": "this",
+      "w": "this.right"
+    },
+    {
+      "v": "this",
+      "w": "this.count_right"
+    },
+    {
+      "v": "this",
+      "w": "this.count_wrong"
+    },
+    {
+      "v": "this",
+      "w": "this.topLevel"
+    },
+    {
+      "v": "this.topLevel",
+      "w": "this.topLevel.otherLevel"
+    },
+    {
+      "v": "this.a",
+      "w": "span_5_8_5_28"
+    },
+    {
+      "v": "this.b",
+      "w": "span_5_31_5_52"
+    },
+    {
+      "v": "input_6_14_6_57",
+      "w": "this.answer",
+      "value": {
+        "type": "event"
+      }
+    },
+    {
+      "v": "this.answer",
+      "w": "input_6_14_6_57"
+    },
+    {
+      "v": "this.answer",
+      "w": "this.may_check()"
+    },
+    {
+      "v": "this.right",
+      "w": "this.may_check()"
+    },
+    {
+      "v": "this.may_check()",
+      "w": "button_7_8_15_17"
+    },
+    {
+      "v": "this.c",
+      "w": "this.check_answer()"
+    },
+    {
+      "v": "this.answer",
+      "w": "this.check_answer()"
+    },
+    {
+      "v": "this.right",
+      "w": "this.check_answer()"
+    },
+    {
+      "v": "this.check_answer()",
+      "w": "this.right"
+    },
+    {
+      "v": "this.check_answer()",
+      "w": "this.count_right"
+    },
+    {
+      "v": "this.check_answer()",
+      "w": "this.count_wrong"
+    },
+    {
+      "v": "button_7_8_15_17",
+      "w": "this.check_answer()",
+      "value": {
+        "type": "event"
+      }
+    },
+    {
+      "v": "this.right",
+      "w": "button_16_8_23_17"
+    },
+    {
+      "v": "this.right",
+      "w": "button_24_8_31_17"
+    },
+    {
+      "v": "this.new_problem()",
+      "w": "this.add_problem()",
+      "value": {
+        "type": "calls"
+      }
+    },
+    {
+      "v": "button_32_8_38_17",
+      "w": "this.new_problem()",
+      "value": {
+        "type": "event"
+      }
+    },
+    {
+      "v": "this.count_right",
+      "w": "span_52_12_52_43"
+    },
+    {
+      "v": "this.count_wrong",
+      "w": "span_55_12_55_43"
+    },
+    {
+      "v": "this.created",
+      "w": "this.add_problem()",
+      "value": {
+        "type": "calls"
+      }
+    },
+    {
+      "v": "this.c",
+      "w": "this.add_problem()"
+    },
+    {
+      "v": "this.a",
+      "w": "this.add_problem()"
+    },
+    {
+      "v": "this.add_problem()",
+      "w": "this.c"
+    },
+    {
+      "v": "this.add_problem()",
+      "w": "this.a"
+    },
+    {
+      "v": "this.add_problem()",
+      "w": "this.b"
+    },
+    {
+      "v": "this.add_problem()",
+      "w": "this.answer"
+    },
+    {
+      "v": "this.add_problem()",
+      "w": "this.right"
+    }
+  ]
+}

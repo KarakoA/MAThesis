@@ -1,0 +1,82 @@
+l(problems[i].answer) -> problems[i].answer, Check
+l(Check) -> Check, Right, Wrong, count_right_add, accuracy_add, count_wrong_add, count_right_sub, accuracy_sub, count_wrong_sub
+l(New Problem) -> problems[i].a, +, -, problems[i].b, Check, Right, Wrong
+l(created) -> problems[i].a, +, -, problems[i].b, Check, Right, Wrong
+
+Unique scenarios (A) of up to 3 elements:
+[
+  [ 'created' ],
+  [ 'created', 'problems[i].answer' ],
+  [ 'created', 'Check' ],
+  [ 'created', 'New Problem' ],
+  [ 'created', 'problems[i].answer', 'Check' ],
+  [ 'created', 'New Problem', 'Check' ]
+]
+Scenario: 'created'
+	When 'created'
+	Then 'problems[i].a'
+	And '+'
+	And '-'
+	And 'problems[i].b'
+	And 'Check'
+	And 'Right'
+	And 'Wrong'
+
+Scenario: 'created', 'problems[i].answer'
+	Given 'created'
+	When 'problems[i].answer'
+	Then 'problems[i].answer'
+	And 'Check'
+
+Scenario: 'created', 'Check'
+	Given 'created'
+	When 'Check'
+	Then 'Check'
+	And 'Right'
+	And 'Wrong'
+	And 'count_right_add'
+	And 'accuracy_add'
+	And 'count_wrong_add'
+	And 'count_right_sub'
+	And 'accuracy_sub'
+	And 'count_wrong_sub'
+
+Scenario: 'created', 'New Problem'
+	Given 'created'
+	When 'New Problem'
+	Then 'problems[i].a'
+	And '+'
+	And '-'
+	And 'problems[i].b'
+	And 'Check'
+	And 'Right'
+	And 'Wrong'
+
+Scenario: 'created', 'problems[i].answer', 'Check'
+	Given 'created'
+	And 'problems[i].answer'
+	When 'Check'
+	Then 'Check'
+	And 'Right'
+	And 'Wrong'
+	And 'count_right_add'
+	And 'accuracy_add'
+	And 'count_wrong_add'
+	And 'count_right_sub'
+	And 'accuracy_sub'
+	And 'count_wrong_sub'
+
+Scenario: 'created', 'New Problem', 'Check'
+	Given 'created'
+	And 'New Problem'
+	When 'Check'
+	Then 'Check'
+	And 'Right'
+	And 'Wrong'
+	And 'count_right_add'
+	And 'accuracy_add'
+	And 'count_wrong_add'
+	And 'count_right_sub'
+	And 'accuracy_sub'
+	And 'count_wrong_sub'
+
