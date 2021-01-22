@@ -25,13 +25,13 @@
         }
 
         function htmlTag(x) {
-            return `"${x.id}"[label="${x.name}${subline(x.opts.loc)}"];`
+            return `"${x.id}"[label="${x.name}${subline(x.loc)}"];`
         }
 
-        function edge({ v, w, type }) {
-            if (type === "event")
+        function edge({ v, w, label }) {
+            if (label === "event")
                 return `"${v}" -> "${w}"[style=bold];`
-            else if (type === "calls")
+            else if (label === "calls")
                 return `"${v}" -> "${w}"[style=solid];`
             else
                 return `"${v}" -> "${w}"[style=dashed];`
@@ -51,22 +51,28 @@
             .then(data => {
                 let graph = graphlib.json.read(data)
 
-                let nodes = graph.nodes().map(id => { return { id, ...graph.node(id) } })
-                let edges = graph.edges().map(edge => { return { ...edge, ...graph.edge(edge) } })
+                let nodes = graph.nodes().map(id => graph.node(id))
+                let edges = graph.edges().map(edge => { return { ...edge, label: graph.edge(edge) } })
                 let edgesDot = edges.map(edge).join("\n")
 
-                let tags = nodes.filter(x => x.opts?.type === "tag")
+                let tags = nodes.filter(x => x.discriminator === "tag")
                 let tagsDot = tags.map(htmlTag).join("\n")
 
-                let other = nodes.filter(x => x.opts?.type !== "tag" && x.opts?.type !== "init")
+                let other = nodes.filter(x => x.discriminator !== "tag" && x.discriminator !== "init")
                 let otherDot = other.map(simple).join("\n")
 
-                let init = nodes.filter(x => x.opts?.type === "init")
+                let init = nodes.filter(x => x.discriminator === "init")
                 let initDot = init.map(initFormat).join("\n")
 
+                console.log("Tags")
                 console.log(tagsDot)
+                console.log("Other")
+                console.log(otherDot)
+                console.log("Edges")
                 console.log(edgesDot)
+                console.log("Init")
                 console.log(initDot)
+
                 d3.select("#graph").graphviz()
                     .renderDot(
                         `digraph graphname {

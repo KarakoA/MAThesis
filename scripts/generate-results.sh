@@ -13,7 +13,7 @@ mkdir -p $OUT_PATH
 echo "Output Path:"
 echo $OUT_PATH
 
-TEST_FILES_PATH=${INIT_CWD}/src/test-files/
+TEST_FILES_PATH=${INIT_CWD}/resources/test-files/
 TEST_FILES=`ls -p $TEST_FILES_PATH`
 
 
@@ -26,7 +26,7 @@ mkdir -p $OUT_PATH_FILE
 echo "Executing..." npm run generate -s $TEST_FILES_PATH/$FILE $OUT_PATH_FILE/data.json '>' $OUT_PATH_FILE/scenarios.txt
 npm run generate -s $TEST_FILES_PATH/$FILE $OUT_PATH_FILE/data.json > $OUT_PATH_FILE/scenarios.txt
 
-cp src/index.html $OUT_PATH_FILE/index.html
+cp web/index.html $OUT_PATH_FILE/index.html
 cp $TEST_FILES_PATH/$FILE $OUT_PATH_FILE/$FILE
 echo 
 done

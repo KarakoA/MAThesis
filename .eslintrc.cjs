@@ -9,9 +9,15 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: "module",
   },
-  extends: ["eslint:recommended", "plugin:jest/recommended"],
+  parser: "@typescript-eslint/parser",
+  extends: [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:jest/recommended",
+    "plugin:lodash-fp/recommended",
+  ],
 
-  plugins: ["jest"],
+  plugins: ["jest", "@typescript-eslint"],
   rules: {
     "jest/no-disabled-tests": "warn",
     "jest/no-focused-tests": "error",
