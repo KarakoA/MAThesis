@@ -19,14 +19,14 @@ import { EntityType, isMethod, isProperty, method } from "../models/shared";
 
 export function determineNodeName(
   node: AST.VElement,
-  firstBindingName?: string
+  firstBindingName: string
 ): string {
   //simple name, raw string
   const firstVText = node.children.find(
     (x) => x.type === "VText" && x.value.trim()
   ) as AST.VText;
   // if both fail, just the name of the node
-  const name = firstVText?.value.trim() ?? firstBindingName ?? node.name;
+  const name = firstVText?.value.trim() ?? firstBindingName;
   return name;
 }
 
