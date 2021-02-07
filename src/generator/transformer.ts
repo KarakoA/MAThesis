@@ -23,8 +23,6 @@ import {
   MethodNode,
   DataNode,
   InitNode,
-  Edge,
-  isDataNode,
 } from "./models/graph";
 import { TopLevelVariables } from "../parsing/models/top-level-variables";
 import {
@@ -33,6 +31,7 @@ import {
 } from "./models/method-resolver";
 import * as identifier from "../common/models/identifier";
 import { Identifier } from "../common/models/identifier";
+import { lift } from "../common/utils";
 
 export class Transformer {
   graph: ExtendedGraph;
@@ -159,8 +158,12 @@ export class Transformer {
   }
 
   private addEdgesForNumerics() {
-    const numerics = this.graph.numericIndexDataNodes();
-    numerics.forEach((node) => this.connectEdgesOfGenericToNumeric(node));
+    const numericIndexDataNodes = this.graph.numericIndexDataNodes();
+    const parents = _.flatMap((x) => lift(x.parent), numericIndexDataNodes).map(
+      (x) => this.graph.node(x) as DataNode
+    );
+    const parentsUniq = _.uniqWith(_.isEqual, parents);
+    parentsUniq.forEach((x) => this.connectEdgesOfGenericToNumeric(x));
   }
   //#endregion
 
@@ -176,8 +179,10 @@ export class Transformer {
    * Adds nodes for each identifier in identifiers, connects them, and returns the last one added
    * @param ids identifiers
    */
-  private addProperty(id: Property): Node {
-    const nodes = this.identifiersToDataNodes(id.id);
+  private addProperty(id: Property, isWrite = false): Node {
+    const nodes = isWrite
+      ? this.identifiersToDataNodesWrite(id.id)
+      : this.identifiersToDataNodes(id.id);
 
     this.graph.addNodes(nodes);
     this.graph.connect(nodes);
@@ -191,49 +196,57 @@ export class Transformer {
   //#endregion
 
   //#region Edges
-  private connectEdgesOfGenericToNumeric(numeric: DataNode): void {
-    const generic = this.graph.getMatchingGenericNode(numeric);
-    if (!generic) return;
 
-    const leafNodes = this.graph.leafNodes(generic.id);
+  private connect(
+    source: DataNode | undefined,
+    sink: DataNode | undefined
+  ): void {
+    if (source && sink) {
+      this.graph.addEdge({
+        source,
+        sink,
+        label: EdgeType.SIMPLE,
+      });
+    }
+  }
+  private connectEdgesOfGenericToNumeric(node: DataNode): void {
+    const allNumeric = this.graph.numericChildren(node);
+    const generic = this.graph.genericChildNode(node);
 
-    const nodes = leafNodes.map((node) => {
-      const newNode: DataNode = {
-        ...node,
-        id: node.id.replace(generic.id, numeric.id),
-        parent: numeric.id,
+    allNumeric.forEach((numeric) => {
+      // numeric -> generic
+      this.connect(numeric, generic);
+      // numeric.a.b.c -> generic.a.b.c
+      this.connectChildren(numeric, generic);
+      //// node.a.b.c -> nmeric.a.b.c
+      this.connectChildren(node, numeric);
+    });
+  }
+
+  private connectChildren(
+    numeric: DataNode | undefined,
+    generic: DataNode | undefined
+  ): void {
+    if (!numeric || !generic) return;
+
+    const childrenOfNumeric = this.graph.nameChildren(numeric);
+    const childrenOfGeneric = this.graph.nameChildren(generic);
+
+    if (!childrenOfGeneric || !childrenOfNumeric) return;
+
+    const childrenOfGenericNames = childrenOfGeneric.map((x) => x.name);
+
+    const paired = childrenOfGenericNames.map((name) => {
+      return {
+        numeric: _.find((x) => _.isEqual(name, x.name), childrenOfNumeric),
+        generic: _.find((x) => _.isEqual(name, x.name), childrenOfGeneric),
       };
-      return { leafNode: node, newNode: newNode };
     });
 
-    const newOutEdges = _.flatMap(
-      (x) =>
-        this.graph.outEdges(x.leafNode).map((edge) => {
-          return {
-            source: x.newNode,
-            sink: edge.sink,
-            label: edge.label,
-          } as Edge;
-        }),
-      nodes
-    );
-    const newInEdges = _.flatMap(
-      (x) =>
-        this.graph
-          .outEdges(x.leafNode)
-          //except those coming from data nodes
-          .filter((x) => !isDataNode(x.source))
-          .map((edge) => {
-            return {
-              source: edge.source,
-              sink: x.newNode,
-              label: edge.label,
-            } as Edge;
-          }),
-      nodes
-    );
-    const newEdges = newInEdges.concat(newOutEdges);
-    this.graph.addEdges(newEdges);
+    paired.forEach((x) => {
+      this.connect(x.numeric, x.generic);
+      this.connectChildren(x.numeric, x.generic);
+    });
   }
 
   /**
@@ -280,7 +293,7 @@ export class Transformer {
       this.graph.addEdge({ source, sink: node, label: EdgeType.SIMPLE })
     );
 
-    const writeNodes = resolved.writes.map((x) => this.addProperty(x));
+    const writeNodes = resolved.writes.map((x) => this.addProperty(x, true));
     writeNodes.forEach((sink) =>
       this.graph.addEdge({ source: node, sink, label: EdgeType.SIMPLE })
     );
@@ -322,6 +335,11 @@ export class Transformer {
       return node;
     });
     return nodes;
+  }
+
+  private identifiersToDataNodesWrite(ids: Identifiers): DataNode[] {
+    const noGeneric = ids.filter((x) => !identifier.isGenericIndex(x));
+    return this.identifiersToDataNodes(noGeneric);
   }
 
   /**
