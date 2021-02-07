@@ -646,6 +646,11 @@
       "v": "this.problems[0].a",
       "w": "this.problems[i].a",
       "value": "simple"
+    },
+    {
+      "v": "this.problems.right",
+      "w": "this.problems[i].right",
+      "value": "simple"
     }
   ]
 }

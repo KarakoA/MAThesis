@@ -745,6 +745,11 @@
       "v": "this.count_right_sub",
       "w": "this.accuracy_sub",
       "value": "simple"
+    },
+    {
+      "v": "this.problems.right",
+      "w": "this.problems[i].right",
+      "value": "simple"
     }
   ]
 }
