@@ -26,48 +26,48 @@
       "parent": "this"
     },
     {
-      "v": "this.count_right_add",
+      "v": "this.count_right",
       "value": {
-        "id": "this.count_right_add",
+        "id": "this.count_right",
         "type": "name-identifier",
-        "name": "count_right_add",
+        "name": "count_right",
         "parent": "this",
         "discriminator": "data"
       },
       "parent": "this"
     },
     {
-      "v": "this.count_wrong_add",
+      "v": "this.count_wrong",
       "value": {
-        "id": "this.count_wrong_add",
+        "id": "this.count_wrong",
         "type": "name-identifier",
-        "name": "count_wrong_add",
+        "name": "count_wrong",
         "parent": "this",
         "discriminator": "data"
       },
       "parent": "this"
     },
     {
-      "v": "this.count_right_sub",
+      "v": "this.nested",
       "value": {
-        "id": "this.count_right_sub",
+        "id": "this.nested",
         "type": "name-identifier",
-        "name": "count_right_sub",
+        "name": "nested",
         "parent": "this",
         "discriminator": "data"
       },
       "parent": "this"
     },
     {
-      "v": "this.count_wrong_sub",
+      "v": "this.nested.property",
       "value": {
-        "id": "this.count_wrong_sub",
+        "id": "this.nested.property",
         "type": "name-identifier",
-        "name": "count_wrong_sub",
-        "parent": "this",
+        "name": "property",
+        "parent": "this.nested",
         "discriminator": "data"
       },
-      "parent": "this"
+      "parent": "this.nested"
     },
     {
       "v": "this.created",
@@ -118,65 +118,18 @@
       "parent": "this.problems[i]"
     },
     {
-      "v": "span_8_12_8_56",
+      "v": "span_7_43_7_72",
       "value": {
-        "id": "span_8_12_8_56",
-        "name": "+",
-        "loc": {
-          "start": {
-            "line": 8,
-            "column": 12
-          },
-          "end": {
-            "line": 8,
-            "column": 56
-          }
-        },
-        "discriminator": "tag"
-      }
-    },
-    {
-      "v": "this.problems[i].isAddProblem",
-      "value": {
-        "id": "this.problems[i].isAddProblem",
-        "type": "name-identifier",
-        "name": "isAddProblem",
-        "parent": "this.problems[i]",
-        "discriminator": "data"
-      },
-      "parent": "this.problems[i]"
-    },
-    {
-      "v": "span_9_12_9_57",
-      "value": {
-        "id": "span_9_12_9_57",
-        "name": "-",
-        "loc": {
-          "start": {
-            "line": 9,
-            "column": 12
-          },
-          "end": {
-            "line": 9,
-            "column": 57
-          }
-        },
-        "discriminator": "tag"
-      }
-    },
-    {
-      "v": "span_10_12_10_41",
-      "value": {
-        "id": "span_10_12_10_41",
+        "id": "span_7_43_7_72",
         "name": "problems[i].b",
         "loc": {
           "start": {
-            "line": 10,
-            "column": 12
+            "line": 7,
+            "column": 43
           },
           "end": {
-            "line": 10,
-            "column": 41
+            "line": 7,
+            "column": 72
           }
         },
         "discriminator": "tag"
@@ -194,17 +147,17 @@
       "parent": "this.problems[i]"
     },
     {
-      "v": "input_11_18_11_69",
+      "v": "input_8_18_8_69",
       "value": {
-        "id": "input_11_18_11_69",
+        "id": "input_8_18_8_69",
         "name": "problems[i].answer",
         "loc": {
           "start": {
-            "line": 11,
+            "line": 8,
             "column": 18
           },
           "end": {
-            "line": 11,
+            "line": 8,
             "column": 69
           }
         },
@@ -223,17 +176,17 @@
       "parent": "this.problems[i]"
     },
     {
-      "v": "button_12_12_20_21",
+      "v": "button_9_12_17_21",
       "value": {
-        "id": "button_12_12_20_21",
+        "id": "button_9_12_17_21",
         "name": "Check",
         "loc": {
           "start": {
-            "line": 12,
+            "line": 9,
             "column": 12
           },
           "end": {
-            "line": 20,
+            "line": 17,
             "column": 21
           }
         },
@@ -257,17 +210,17 @@
       }
     },
     {
-      "v": "button_21_12_28_21",
+      "v": "button_18_12_25_21",
       "value": {
-        "id": "button_21_12_28_21",
+        "id": "button_18_12_25_21",
         "name": "Right",
         "loc": {
           "start": {
-            "line": 21,
+            "line": 18,
             "column": 12
           },
           "end": {
-            "line": 28,
+            "line": 25,
             "column": 21
           }
         },
@@ -286,17 +239,17 @@
       "parent": "this.problems[i]"
     },
     {
-      "v": "button_29_12_36_21",
+      "v": "button_26_12_33_21",
       "value": {
-        "id": "button_29_12_36_21",
+        "id": "button_26_12_33_21",
         "name": "Wrong",
         "loc": {
           "start": {
-            "line": 29,
+            "line": 26,
             "column": 12
           },
           "end": {
-            "line": 36,
+            "line": 33,
             "column": 21
           }
         },
@@ -304,17 +257,17 @@
       }
     },
     {
-      "v": "button_37_12_43_21",
+      "v": "button_34_12_40_21",
       "value": {
-        "id": "button_37_12_43_21",
+        "id": "button_34_12_40_21",
         "name": "New Problem",
         "loc": {
           "start": {
-            "line": 37,
+            "line": 34,
             "column": 12
           },
           "end": {
-            "line": 43,
+            "line": 40,
             "column": 21
           }
         },
@@ -330,128 +283,106 @@
       }
     },
     {
-      "v": "span_62_12_62_47",
+      "v": "span_57_12_57_43",
       "value": {
-        "id": "span_62_12_62_47",
-        "name": "count_right_add",
+        "id": "span_57_12_57_43",
+        "name": "count_right",
         "loc": {
           "start": {
-            "line": 62,
+            "line": 57,
             "column": 12
           },
           "end": {
-            "line": 62,
-            "column": 47
+            "line": 57,
+            "column": 43
           }
         },
         "discriminator": "tag"
       }
     },
     {
-      "v": "span_65_12_65_47",
+      "v": "span_60_12_60_43",
       "value": {
-        "id": "span_65_12_65_47",
-        "name": "count_wrong_add",
+        "id": "span_60_12_60_43",
+        "name": "count_wrong",
         "loc": {
           "start": {
-            "line": 65,
+            "line": 60,
             "column": 12
           },
           "end": {
-            "line": 65,
-            "column": 47
+            "line": 60,
+            "column": 43
           }
         },
         "discriminator": "tag"
       }
     },
     {
-      "v": "span_68_12_68_44",
+      "v": "span_63_12_63_40",
       "value": {
-        "id": "span_68_12_68_44",
-        "name": "accuracy_add",
+        "id": "span_63_12_63_40",
+        "name": "accuracy",
         "loc": {
           "start": {
-            "line": 68,
+            "line": 63,
             "column": 12
           },
           "end": {
-            "line": 68,
-            "column": 44
+            "line": 63,
+            "column": 40
           }
         },
         "discriminator": "tag"
       }
     },
     {
-      "v": "this.accuracy_add",
+      "v": "this.accuracy",
       "value": {
-        "id": "this.accuracy_add",
-        "name": "accuracy_add",
+        "id": "this.accuracy",
+        "name": "accuracy",
         "discriminator": "method"
       }
     },
     {
-      "v": "span_77_12_77_47",
+      "v": "span_68_4_68_58",
       "value": {
-        "id": "span_77_12_77_47",
-        "name": "count_right_sub",
+        "id": "span_68_4_68_58",
+        "name": "First Problem",
         "loc": {
           "start": {
-            "line": 77,
-            "column": 12
+            "line": 68,
+            "column": 4
           },
           "end": {
-            "line": 77,
-            "column": 47
+            "line": 68,
+            "column": 58
           }
         },
         "discriminator": "tag"
       }
     },
     {
-      "v": "span_80_12_80_47",
+      "v": "this.problems[0]",
       "value": {
-        "id": "span_80_12_80_47",
-        "name": "count_wrong_sub",
-        "loc": {
-          "start": {
-            "line": 80,
-            "column": 12
-          },
-          "end": {
-            "line": 80,
-            "column": 47
-          }
-        },
-        "discriminator": "tag"
-      }
+        "id": "this.problems[0]",
+        "type": "numeric-index",
+        "name": "problems[0]",
+        "parent": "this.problems",
+        "discriminator": "data"
+      },
+      "parent": "this.problems"
     },
     {
-      "v": "span_83_12_83_44",
+      "v": "this.problems[0].a",
       "value": {
-        "id": "span_83_12_83_44",
-        "name": "accuracy_sub",
-        "loc": {
-          "start": {
-            "line": 83,
-            "column": 12
-          },
-          "end": {
-            "line": 83,
-            "column": 44
-          }
-        },
-        "discriminator": "tag"
-      }
-    },
-    {
-      "v": "this.accuracy_sub",
-      "value": {
-        "id": "this.accuracy_sub",
-        "name": "accuracy_sub",
-        "discriminator": "method"
-      }
+        "id": "this.problems[0].a",
+        "type": "name-identifier",
+        "name": "a",
+        "parent": "this.problems[0]",
+        "discriminator": "data"
+      },
+      "parent": "this.problems[0]"
     },
     {
       "v": "this.add_problem()",
@@ -503,22 +434,22 @@
     },
     {
       "v": "this",
-      "w": "this.count_right_add",
+      "w": "this.count_right",
       "value": "simple"
     },
     {
       "v": "this",
-      "w": "this.count_wrong_add",
+      "w": "this.count_wrong",
       "value": "simple"
     },
     {
       "v": "this",
-      "w": "this.count_right_sub",
+      "w": "this.nested",
       "value": "simple"
     },
     {
-      "v": "this",
-      "w": "this.count_wrong_sub",
+      "v": "this.nested",
+      "w": "this.nested.property",
       "value": "simple"
     },
     {
@@ -538,27 +469,12 @@
     },
     {
       "v": "this.problems[i]",
-      "w": "this.problems[i].isAddProblem",
-      "value": "simple"
-    },
-    {
-      "v": "this.problems[i].isAddProblem",
-      "w": "span_8_12_8_56",
-      "value": "simple"
-    },
-    {
-      "v": "this.problems[i].isAddProblem",
-      "w": "span_9_12_9_57",
-      "value": "simple"
-    },
-    {
-      "v": "this.problems[i]",
       "w": "this.problems[i].b",
       "value": "simple"
     },
     {
       "v": "this.problems[i].b",
-      "w": "span_10_12_10_41",
+      "w": "span_7_43_7_72",
       "value": "simple"
     },
     {
@@ -567,22 +483,22 @@
       "value": "simple"
     },
     {
-      "v": "input_11_18_11_69",
+      "v": "input_8_18_8_69",
       "w": "this.problems[i].answer",
       "value": "event"
     },
     {
       "v": "this.problems[i].answer",
-      "w": "input_11_18_11_69",
+      "w": "input_8_18_8_69",
       "value": "simple"
     },
     {
       "v": "this.may_check(this.problems[i])",
-      "w": "button_12_12_20_21",
+      "w": "button_9_12_17_21",
       "value": "simple"
     },
     {
-      "v": "button_12_12_20_21",
+      "v": "button_9_12_17_21",
       "w": "this.check_answer(this.problems[i])",
       "value": "event"
     },
@@ -593,47 +509,47 @@
     },
     {
       "v": "this.problems[i].right",
-      "w": "button_21_12_28_21",
+      "w": "button_18_12_25_21",
       "value": "simple"
     },
     {
       "v": "this.problems[i].right",
-      "w": "button_29_12_36_21",
+      "w": "button_26_12_33_21",
       "value": "simple"
     },
     {
-      "v": "button_37_12_43_21",
+      "v": "button_34_12_40_21",
       "w": "this.new_problem()",
       "value": "event"
     },
     {
-      "v": "this.count_right_add",
-      "w": "span_62_12_62_47",
+      "v": "this.count_right",
+      "w": "span_57_12_57_43",
       "value": "simple"
     },
     {
-      "v": "this.count_wrong_add",
-      "w": "span_65_12_65_47",
+      "v": "this.count_wrong",
+      "w": "span_60_12_60_43",
       "value": "simple"
     },
     {
-      "v": "this.accuracy_add",
-      "w": "span_68_12_68_44",
+      "v": "this.accuracy",
+      "w": "span_63_12_63_40",
       "value": "simple"
     },
     {
-      "v": "this.count_right_sub",
-      "w": "span_77_12_77_47",
+      "v": "this.problems",
+      "w": "this.problems[0]",
       "value": "simple"
     },
     {
-      "v": "this.count_wrong_sub",
-      "w": "span_80_12_80_47",
+      "v": "this.problems[0]",
+      "w": "this.problems[0].a",
       "value": "simple"
     },
     {
-      "v": "this.accuracy_sub",
-      "w": "span_83_12_83_44",
+      "v": "this.problems[0].a",
+      "w": "span_68_4_68_58",
       "value": "simple"
     },
     {
@@ -682,11 +598,6 @@
       "value": "simple"
     },
     {
-      "v": "this.problems[i].isAddProblem",
-      "w": "this.check_answer(this.problems[i])",
-      "value": "simple"
-    },
-    {
       "v": "this.problems[i].right",
       "w": "this.check_answer(this.problems[i])",
       "value": "simple"
@@ -703,22 +614,12 @@
     },
     {
       "v": "this.check_answer(this.problems[i])",
-      "w": "this.count_right_add",
+      "w": "this.count_right",
       "value": "simple"
     },
     {
       "v": "this.check_answer(this.problems[i])",
-      "w": "this.count_wrong_add",
-      "value": "simple"
-    },
-    {
-      "v": "this.check_answer(this.problems[i])",
-      "w": "this.count_right_sub",
-      "value": "simple"
-    },
-    {
-      "v": "this.check_answer(this.problems[i])",
-      "w": "this.count_wrong_sub",
+      "w": "this.count_wrong",
       "value": "simple"
     },
     {
@@ -727,23 +628,28 @@
       "value": "calls"
     },
     {
-      "v": "this.count_wrong_add",
-      "w": "this.accuracy_add",
+      "v": "this.count_wrong",
+      "w": "this.accuracy",
       "value": "simple"
     },
     {
-      "v": "this.count_right_add",
-      "w": "this.accuracy_add",
+      "v": "this.count_right",
+      "w": "this.accuracy",
       "value": "simple"
     },
     {
-      "v": "this.count_wrong_sub",
-      "w": "this.accuracy_sub",
+      "v": "this.problems[0]",
+      "w": "this.problems[i]",
       "value": "simple"
     },
     {
-      "v": "this.count_right_sub",
-      "w": "this.accuracy_sub",
+      "v": "this.problems[0].a",
+      "w": "this.problems[i].a",
+      "value": "simple"
+    },
+    {
+      "v": "this.problems.right",
+      "w": "this.problems[i].right",
       "value": "simple"
     }
   ]

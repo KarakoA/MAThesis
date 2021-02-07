@@ -225,12 +225,12 @@ export class ExtendedGraph {
   /**
    * Returns all data nodes, which are numeric indices.
    */
-  numericIndexDataNodes(): DataNode[] {
-    const numerics = _.filter(
-      (x) => isDataNode(x) && isNumericIndex(x),
+  IndexDataNodes(): DataNode[] {
+    const indexes = _.filter(
+      (x) => isDataNode(x) && (isNumericIndex(x) || isGenericIndex(x)),
       this.nodes()
     ).map((x) => x as DataNode);
-    return numerics;
+    return indexes;
   }
   //#endregion
 

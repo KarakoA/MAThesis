@@ -933,7 +933,7 @@
   }
 ]
 l(problems[i].answer) -> problems[i].answer, Check
-l(Check) -> Right, Wrong, Check, count_right_add, accuracy_add, count_wrong_add, count_right_sub, accuracy_sub, count_wrong_sub
+l(Check) -> count_right_add, accuracy_add, count_wrong_add, count_right_sub, accuracy_sub, count_wrong_sub
 l(New Problem) -> problems[i].a, +, -, problems[i].b, problems[i].answer, Check, Right, Wrong
 l(created) -> problems[i].a, +, -, problems[i].b, problems[i].answer, Check, Right, Wrong
 
@@ -968,10 +968,7 @@ Scenario: ['created', 'problems[i].answer']
 Scenario: ['created', 'Check']
 	Given 'created'
 	When 'Check'
-	Then 'Right'
-	And 'Wrong'
-	And 'Check'
-	And 'count_right_add'
+	Then 'count_right_add'
 	And 'accuracy_add'
 	And 'count_wrong_add'
 	And 'count_right_sub'
@@ -994,10 +991,7 @@ Scenario: ['created', 'problems[i].answer', 'Check']
 	Given 'created'
 	And 'problems[i].answer'
 	When 'Check'
-	Then 'Right'
-	And 'Wrong'
-	And 'Check'
-	And 'count_right_add'
+	Then 'count_right_add'
 	And 'accuracy_add'
 	And 'count_wrong_add'
 	And 'count_right_sub'
@@ -1015,10 +1009,7 @@ Scenario: ['created', 'New Problem', 'Check']
 	Given 'created'
 	And 'New Problem'
 	When 'Check'
-	Then 'Right'
-	And 'Wrong'
-	And 'Check'
-	And 'count_right_add'
+	Then 'count_right_add'
 	And 'accuracy_add'
 	And 'count_wrong_add'
 	And 'count_right_sub'
@@ -1030,10 +1021,7 @@ Scenario: ['created', 'New Problem', 'problems[i].answer', 'Check']
 	And 'New Problem'
 	And 'problems[i].answer'
 	When 'Check'
-	Then 'Right'
-	And 'Wrong'
-	And 'Check'
-	And 'count_right_add'
+	Then 'count_right_add'
 	And 'accuracy_add'
 	And 'count_wrong_add'
 	And 'count_right_sub'

@@ -158,7 +158,7 @@ export class Transformer {
   }
 
   private addEdgesForNumerics() {
-    const numericIndexDataNodes = this.graph.numericIndexDataNodes();
+    const numericIndexDataNodes = this.graph.IndexDataNodes();
     const parents = _.flatMap((x) => lift(x.parent), numericIndexDataNodes).map(
       (x) => this.graph.node(x) as DataNode
     );
@@ -218,9 +218,12 @@ export class Transformer {
       this.connect(numeric, generic);
       // numeric.a.b.c -> generic.a.b.c
       this.connectChildren(numeric, generic);
-      //// node.a.b.c -> nmeric.a.b.c
+      // node.a.b.c -> numeric.a.b.c
       this.connectChildren(node, numeric);
     });
+
+    // node.a.b.c -> generic.a.b.c
+    this.connectChildren(node, generic);
   }
 
   private connectChildren(

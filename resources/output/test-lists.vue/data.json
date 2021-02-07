@@ -415,48 +415,15 @@
       "parent": "this.problems[i]"
     },
     {
-      "v": "this.problems[0].b",
+      "v": "this.problems.right",
       "value": {
-        "id": "this.problems[0].b",
-        "type": "name-identifier",
-        "name": "b",
-        "parent": "this.problems[0]",
-        "discriminator": "data"
-      },
-      "parent": "this.problems[0]"
-    },
-    {
-      "v": "this.problems[0].answer",
-      "value": {
-        "id": "this.problems[0].answer",
-        "type": "name-identifier",
-        "name": "answer",
-        "parent": "this.problems[0]",
-        "discriminator": "data"
-      },
-      "parent": "this.problems[0]"
-    },
-    {
-      "v": "this.problems[0].right",
-      "value": {
-        "id": "this.problems[0].right",
+        "id": "this.problems.right",
         "type": "name-identifier",
         "name": "right",
-        "parent": "this.problems[0]",
+        "parent": "this.problems",
         "discriminator": "data"
       },
-      "parent": "this.problems[0]"
-    },
-    {
-      "v": "this.problems[0].c",
-      "value": {
-        "id": "this.problems[0].c",
-        "type": "name-identifier",
-        "name": "c",
-        "parent": "this.problems[0]",
-        "discriminator": "data"
-      },
-      "parent": "this.problems[0]"
+      "parent": "this.problems"
     }
   ],
   "edges": [
@@ -636,8 +603,13 @@
       "value": "simple"
     },
     {
+      "v": "this.problems",
+      "w": "this.problems.right",
+      "value": "simple"
+    },
+    {
       "v": "this.check_answer(this.problems[i])",
-      "w": "this.problems[i].right",
+      "w": "this.problems.right",
       "value": "simple"
     },
     {
@@ -666,53 +638,13 @@
       "value": "simple"
     },
     {
+      "v": "this.problems[0]",
+      "w": "this.problems[i]",
+      "value": "simple"
+    },
+    {
       "v": "this.problems[0].a",
-      "w": "span_7_12_7_40",
-      "value": "simple"
-    },
-    {
-      "v": "this.problems[0].b",
-      "w": "span_7_43_7_72",
-      "value": "simple"
-    },
-    {
-      "v": "this.problems[0].answer",
-      "w": "input_8_18_8_69",
-      "value": "simple"
-    },
-    {
-      "v": "this.problems[0].answer",
-      "w": "this.may_check(this.problems[i])",
-      "value": "simple"
-    },
-    {
-      "v": "this.problems[0].answer",
-      "w": "this.check_answer(this.problems[i])",
-      "value": "simple"
-    },
-    {
-      "v": "this.problems[0].right",
-      "w": "button_18_12_25_21",
-      "value": "simple"
-    },
-    {
-      "v": "this.problems[0].right",
-      "w": "button_26_12_33_21",
-      "value": "simple"
-    },
-    {
-      "v": "this.problems[0].right",
-      "w": "this.may_check(this.problems[i])",
-      "value": "simple"
-    },
-    {
-      "v": "this.problems[0].right",
-      "w": "this.check_answer(this.problems[i])",
-      "value": "simple"
-    },
-    {
-      "v": "this.problems[0].c",
-      "w": "this.check_answer(this.problems[i])",
+      "w": "this.problems[i].a",
       "value": "simple"
     }
   ]
