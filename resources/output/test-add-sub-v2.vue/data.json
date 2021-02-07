@@ -500,6 +500,17 @@
         "discriminator": "data"
       },
       "parent": "this.problems[i]"
+    },
+    {
+      "v": "this.problems.right",
+      "value": {
+        "id": "this.problems.right",
+        "type": "name-identifier",
+        "name": "right",
+        "parent": "this.problems",
+        "discriminator": "data"
+      },
+      "parent": "this.problems"
     }
   ],
   "edges": [
@@ -714,8 +725,13 @@
       "value": "simple"
     },
     {
+      "v": "this.problems",
+      "w": "this.problems.right",
+      "value": "simple"
+    },
+    {
       "v": "this.check_answer(this.problems[i])",
-      "w": "this.problems[i].right",
+      "w": "this.problems.right",
       "value": "simple"
     },
     {
@@ -766,6 +782,11 @@
     {
       "v": "this.count_right_sub",
       "w": "this.accuracy_sub",
+      "value": "simple"
+    },
+    {
+      "v": "this.problems.right",
+      "w": "this.problems[i].right",
       "value": "simple"
     }
   ]

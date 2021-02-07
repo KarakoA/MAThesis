@@ -8,6 +8,7 @@ import {
   IsInitNode,
   isGenericIndex,
   isNumericIndex,
+  InitNode,
 } from "./models/graph";
 import _ from "lodash/fp";
 import { lift, JSObject } from "../common/utils";
@@ -159,22 +160,7 @@ export class ExtendedGraph {
   }
 
   /**
-   * Returns the leaf nodes starting from the given node.
-   * They can be obtained via recursively calling .children on the children of the node until nodes
-   * with no children are reached. Those are the leaf nodes
-   * @param node node
-   */
-  leafNodes(node: string | DataNode): DataNode[] {
-    const directChildren = this.children(node);
-    if (_.isEmpty(directChildren)) {
-      return [this.getDataNode(node)];
-    }
-
-    return _.flatMap((x) => this.leafNodes(x), directChildren);
-  }
-
-  /**
-   * Returns the generic node matching the given numeric one.
+   * Returns the generic child node.
    * A generic node can have multiple numeric nodes, but a numeric node can
    * have only one generic one.
    *
@@ -184,21 +170,26 @@ export class ExtendedGraph {
    * @param numeric numeric node
    * @example the generic node to this.problems[0] is this.problems[i].
    */
-  getMatchingGenericNode(numeric: DataNode): DataNode | undefined {
-    //get the parent of the numeric node
-    const parent = numeric.parent;
-    // should always be defined since a numeric index is always proceeded by a named identifier
-    if (!parent) throw new Error(`Parent of ${numeric.id} is not defined!`);
-
-    //get all children of the parent
-    const childDataNode = this.children(parent);
+  genericChildNode(node: DataNode): DataNode | undefined {
+    //get all children of the node
+    const childDataNode = this.children(node);
 
     const generic = childDataNode.filter(isGenericIndex);
     if (generic.length > 1)
       throw new Error(
-        `There can be only one matching generic node! Found multiple for ${numeric.id}`
+        `There can be only one generic node! Found multiple for ${node.id}`
       );
     return _.head(generic);
+  }
+
+  numericChildren(node: DataNode): DataNode[] {
+    return this.children(node).filter(isNumericIndex);
+  }
+
+  nameChildren(node: DataNode): DataNode[] {
+    return this.children(node).filter(
+      (x) => !(isGenericIndex(x) || isNumericIndex(x))
+    );
   }
   //#endregion
 
@@ -222,7 +213,7 @@ export class ExtendedGraph {
   /**
    * Returns the init node or throws an exception if there is none or there is more than one.
    */
-  init(): Node {
+  init(): InitNode {
     const initNodes = _.filter(IsInitNode, this.nodes());
     if (initNodes.length != 1)
       throw new Error(
@@ -234,12 +225,12 @@ export class ExtendedGraph {
   /**
    * Returns all data nodes, which are numeric indices.
    */
-  numericIndexDataNodes(): DataNode[] {
-    const numerics = _.filter(
-      (x) => isDataNode(x) && isNumericIndex(x),
+  IndexDataNodes(): DataNode[] {
+    const indexes = _.filter(
+      (x) => isDataNode(x) && (isNumericIndex(x) || isGenericIndex(x)),
       this.nodes()
     ).map((x) => x as DataNode);
-    return numerics;
+    return indexes;
   }
   //#endregion
 
