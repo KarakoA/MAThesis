@@ -8,7 +8,6 @@ import {
   isMethodNode,
 } from "../generator/models/graph";
 import { lift, nonNull } from "../common/utils";
-import { isMethod } from "../parsing/models/shared";
 
 type ScenarioSet = Scenario[];
 
