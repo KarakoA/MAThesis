@@ -1,4 +1,3 @@
-import { IdentifierType } from "../common/models/identifier";
 import { ExtendedGraph, serialize, deserialize } from "./graph";
 import { tag, data, edge } from "./models/graph";
 describe("ExtendedGraph", () => {

@@ -10,7 +10,7 @@ module.exports = {
   plugins: ["vue"],
   rules: {
     "template-bindings": 1,
-    "top-level-variables": 1,
+    "top-level-properties": 1,
     methods: 1,
   },
 };

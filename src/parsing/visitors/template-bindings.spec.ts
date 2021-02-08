@@ -148,7 +148,7 @@ describe("Bindings", () => {
     });
 
     describe("expressions", () => {
-      test("containing multiple variables", async () => {
+      test("containing multiple properties", async () => {
         const tag = `<div v-if="VAR1 || VAR2"></div>`;
         const actual = await parse(tag);
         const expected = [
@@ -169,7 +169,7 @@ describe("Bindings", () => {
         expect(actual).toStrictEqual(expected);
       });
 
-      test("containing the same variables multiple times results in only one binding", async () => {
+      test("containing the same properties multiple times results in only one binding", async () => {
         const tag = `<div v-if="VAR1 || VAR1"> {{VAR1}}</div>`;
         const actual = await parse(tag);
         const expected = [

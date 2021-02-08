@@ -1,7 +1,7 @@
 import { named, ThisInstance as This } from "../../common/models/identifier";
 import { ESLinter } from "../eslinter";
 import { property } from "../models/shared";
-import { TopLevelVariables } from "../models/top-level-variables";
+import { TopLevelProperties } from "../models/top-level-properties";
 
 const code = `<template></template><script>
 export default {
@@ -28,14 +28,14 @@ export default {
 
 const linter = new ESLinter();
 
-let parsed: TopLevelVariables;
+let parsed: TopLevelProperties;
 beforeAll(async () => {
   const result = await linter.lintCode(code);
   parsed = result.topLevel.topLevel;
 });
 
-describe("Parsing top level variables", () => {
-  test("includes simple variables", () => {
+describe("Parsing top level properties", () => {
+  test("includes simple properties", () => {
     const expected = [
       property(This, named("a")),
       property(This, named("b")),

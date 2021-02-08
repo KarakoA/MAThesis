@@ -1,16 +1,16 @@
 import { prefixThis } from "../../common/models/identifiers";
 import { EntityType } from "../models/shared";
 import {
-  TopLevelVariables,
-  TopLevelVariablesResult,
-} from "../models/top-level-variables";
+  TopLevelProperties,
+  TopLevelPropertiesResult,
+} from "../models/top-level-properties";
 import { AST, IdentifiersFromTopLevelObject } from "../utils";
 
-export class TopLevelVariablesBuilder {
-  build(node: AST.ESLintObjectExpression): TopLevelVariablesResult {
+export class TopLevelPropertiesBuilder {
+  build(node: AST.ESLintObjectExpression): TopLevelPropertiesResult {
     const id = IdentifiersFromTopLevelObject(node);
 
-    const topLevel: TopLevelVariables = id.map((id) => {
+    const topLevel: TopLevelProperties = id.map((id) => {
       return { id: prefixThis(id), discriminator: EntityType.PROPERTY };
     });
 

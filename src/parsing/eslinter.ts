@@ -2,9 +2,9 @@ import { ESLint, Linter } from "eslint";
 import path from "path";
 import { Result } from "./models/result";
 import { NAME as BINDINGS_NAME } from "./visitors/template-bindings";
-import { NAME as TOP_LEVEL_NAME } from "./visitors/top-level-variables";
+import { NAME as TOP_LEVEL_NAME } from "./visitors/top-level-properties";
 import { NAME as METHODS_NAME } from "./visitors/methods";
-import { TopLevelVariablesResult } from "./models/top-level-variables";
+import { TopLevelPropertiesResult } from "./models/top-level-properties";
 import { BindingsResult } from "./models/template-bindings";
 import { MethodsResult } from "./models/methods";
 export class ESLinter {
@@ -52,7 +52,7 @@ export class ESLinter {
       ?.message;
 
     const methods: MethodsResult = methodsJSON ? JSON.parse(methodsJSON) : [];
-    const topLevel: TopLevelVariablesResult = topLevelJSON
+    const topLevel: TopLevelPropertiesResult = topLevelJSON
       ? JSON.parse(topLevelJSON)
       : [];
     const bindings: BindingsResult = bindingsJSON

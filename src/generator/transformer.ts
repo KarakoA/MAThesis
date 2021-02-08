@@ -24,7 +24,7 @@ import {
   DataNode,
   InitNode,
 } from "./models/graph";
-import { TopLevelVariables } from "../parsing/models/top-level-variables";
+import { TopLevelProperties } from "../parsing/models/top-level-properties";
 import {
   CalledMethod,
   ResolvedMethodDefintition,
@@ -41,7 +41,7 @@ export class Transformer {
 
   bindings: Binding[];
   methods: MethodDefinitions;
-  topLevel: TopLevelVariables;
+  topLevel: TopLevelProperties;
   init?: MethodDefinition;
 
   constructor(visitorsResult: Result) {
@@ -62,7 +62,7 @@ export class Transformer {
 
   //#region Compute
   compute(): ExtendedGraph {
-    this.addTopLevelVariables();
+    this.addTopLevelProperties();
     this.addInit();
     this.addBindings();
     this.addIndirectlyCalledMethods();
@@ -72,7 +72,7 @@ export class Transformer {
     return this.graph;
   }
 
-  private addTopLevelVariables(): void {
+  private addTopLevelProperties(): void {
     this.topLevel.forEach((topLevel) => this.addProperty(topLevel));
   }
 

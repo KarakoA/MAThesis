@@ -1,13 +1,13 @@
 import { MethodsResult } from "./methods";
 import { BindingsResult } from "./template-bindings";
-import { TopLevelVariablesResult } from "./top-level-variables";
+import { TopLevelPropertiesResult } from "./top-level-properties";
 export class Result {
   fileName: string;
-  topLevel: TopLevelVariablesResult;
+  topLevel: TopLevelPropertiesResult;
   methods: MethodsResult;
   bindings: BindingsResult;
   constructor(
-    topLevel: TopLevelVariablesResult,
+    topLevel: TopLevelPropertiesResult,
     methods: MethodsResult,
     bindings: BindingsResult,
     fileName: string

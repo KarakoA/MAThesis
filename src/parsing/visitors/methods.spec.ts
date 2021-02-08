@@ -150,7 +150,7 @@ describe("Methods", () => {
 
     describe("with non-empty body", () => {
       describe("'reads' succeds when reading", () => {
-        test("a single variable", async () => {
+        test("a single property", async () => {
           const methods = `a(){let q = a}`;
           const actual = await parse(methods);
           expect(actual).toStrictEqual([
@@ -164,7 +164,7 @@ describe("Methods", () => {
           ]);
         });
 
-        test("multiple variables", async () => {
+        test("multiple properties", async () => {
           const methods = `a(){
             const q = this.a
             this.b
@@ -181,7 +181,7 @@ describe("Methods", () => {
           ]);
         });
 
-        test("index variables", async () => {
+        test("index properties", async () => {
           const methods = `a(){let q = a[i][1]}`;
           const actual = await parse(methods);
           expect(actual).toStrictEqual([
@@ -195,7 +195,7 @@ describe("Methods", () => {
           ]);
         });
 
-        test("multiple variables as an expression on the same line", async () => {
+        test("multiple properties as an expression on the same line", async () => {
           const methods = `a(){const q = this.a + this.b}`;
           const actual = await parse(methods);
           expect(actual).toStrictEqual([
@@ -209,7 +209,7 @@ describe("Methods", () => {
           ]);
         });
 
-        test("multiple nested variables as an expression on the same line", async () => {
+        test("multiple nested properties as an expression on the same line", async () => {
           const methods = `a(){const q = this.a.b.c + this.d.e.f}`;
           const actual = await parse(methods);
           expect(actual).toStrictEqual([
@@ -240,7 +240,7 @@ describe("Methods", () => {
           ]);
         });
         describe("not contain", () => {
-          test("variables written to", async () => {
+          test("properties written to", async () => {
             const methods = `a(){this.a = 3}`;
             const actual = await parse(methods);
             expect(actual).toStrictEqual([
@@ -283,7 +283,7 @@ describe("Methods", () => {
       });
 
       describe("'writes' succeds when writing", () => {
-        test("a single variable", async () => {
+        test("a single property", async () => {
           const methods = `a(){a = 3}`;
           const actual = await parse(methods);
           expect(actual).toStrictEqual([
@@ -297,7 +297,7 @@ describe("Methods", () => {
           ]);
         });
 
-        test("multiple variables", async () => {
+        test("multiple properties", async () => {
           const methods = `a(){
                        this.a = 23
             this.b = 2
@@ -314,7 +314,7 @@ describe("Methods", () => {
           ]);
         });
 
-        test("index variables", async () => {
+        test("index properties", async () => {
           const methods = `a(){a[i][1] = 7}`;
           const actual = await parse(methods);
           expect(actual).toStrictEqual([
@@ -328,7 +328,7 @@ describe("Methods", () => {
           ]);
         });
 
-        test("multiple variables as an expression on the same line", async () => {
+        test("multiple properties as an expression on the same line", async () => {
           const methods = `a(){this.a=3, this.b = 4}`;
           const actual = await parse(methods);
           expect(actual).toStrictEqual([
@@ -342,7 +342,7 @@ describe("Methods", () => {
           ]);
         });
 
-        test("multiple nested variables as an expression on the same line", async () => {
+        test("multiple nested properties as an expression on the same line", async () => {
           const methods = `a(){this.a.b.c=3,this.d.e.f = 4}`;
           const actual = await parse(methods);
           expect(actual).toStrictEqual([
@@ -369,7 +369,7 @@ describe("Methods", () => {
           ]);
         });
         describe("not contain", () => {
-          test("variables read from", async () => {
+          test("properties read from", async () => {
             const methods = `a(){this.a }`;
             const actual = await parse(methods);
             expect(actual).toStrictEqual([
@@ -445,7 +445,7 @@ describe("Methods", () => {
           ]);
         });
 
-        test("method calls on index variables", async () => {
+        test("method calls on index properties", async () => {
           const methods = `a(){let q = a[i][1].some_method()}`;
           const actual = await parse(methods);
           expect(actual).toStrictEqual([
@@ -599,7 +599,7 @@ describe("Methods", () => {
           ]);
         });
         describe("not contain", () => {
-          test("variables read from", async () => {
+          test("properties read from", async () => {
             const methods = `a(){this.a }`;
             const actual = await parse(methods);
             expect(actual).toStrictEqual([
@@ -612,7 +612,7 @@ describe("Methods", () => {
               },
             ]);
           });
-          test("variables written to", async () => {
+          test("properties written to", async () => {
             const methods = `a(){this.q = 3}`;
             const actual = await parse(methods);
             expect(actual).toStrictEqual([

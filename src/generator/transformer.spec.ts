@@ -16,7 +16,7 @@ import {
 import { Result } from "../parsing/models/result";
 import { method, init, EdgeType, NodeType } from "./models/graph";
 import { Binding, BindingType, Tag } from "../parsing/models/template-bindings";
-import { TopLevelVariables } from "../parsing/models/top-level-variables";
+import { TopLevelProperties } from "../parsing/models/top-level-properties";
 import { Identifiers } from "../common/models/identifiers";
 
 describe("Transformer when computing", () => {
@@ -51,7 +51,7 @@ describe("Transformer when computing", () => {
     init: MethodDefinition | undefined = undefined,
     bindings: Binding[] = [],
     computed: MethodDefinitions = [],
-    topLevel: TopLevelVariables = []
+    topLevel: TopLevelProperties = []
   ): Result {
     return {
       topLevel: { topLevel },
@@ -70,7 +70,7 @@ describe("Transformer when computing", () => {
     computed: MethodDefinitions = [],
     accesses: Entity,
     bindingType: BindingType = BindingType.ONE_WAY,
-    topLevel: TopLevelVariables = []
+    topLevel: TopLevelProperties = []
   ): Result {
     return template(
       methods,
@@ -325,7 +325,7 @@ describe("Transformer when computing", () => {
           });
         });
 
-        test("on defined top level variables work correctly", () => {
+        test("on defined top level properties work correctly", () => {
           const data = templateWithMethods(
             p.method([This, named("problems"), named("push")])
           );
@@ -334,7 +334,7 @@ describe("Transformer when computing", () => {
             label: BindingType.EVENT,
           });
         });
-        test("on lazy top level variables work correctly", () => {
+        test("on lazy top level properties work correctly", () => {
           const data = templateWithMethods(
             p.method([This, named("problems"), named("latest"), named("push")])
           );
@@ -373,7 +373,7 @@ describe("Transformer when computing", () => {
   });
 
   describe("top level", () => {
-    function templateTopLevel(topLevel: TopLevelVariables) {
+    function templateTopLevel(topLevel: TopLevelProperties) {
       return template(
         [],
         methodDef([This, named("created")]),

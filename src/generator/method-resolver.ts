@@ -7,9 +7,9 @@ import {
   MethodsResult,
 } from "../parsing/models/methods";
 import {
-  TopLevelVariablesResult,
-  TopLevelVariables,
-} from "../parsing/models/top-level-variables";
+  TopLevelPropertiesResult,
+  TopLevelProperties,
+} from "../parsing/models/top-level-properties";
 import {
   Entity,
   isMethod,
@@ -29,11 +29,11 @@ import { lift } from "../common/utils";
 
 export class MethodResolver {
   methods: MethodDefinitions;
-  topLevel: TopLevelVariables;
+  topLevel: TopLevelProperties;
 
   handled: [identifiers.Identifiers, ResolvedMethodDefintition][];
 
-  constructor(methods: MethodsResult, topLevel: TopLevelVariablesResult) {
+  constructor(methods: MethodsResult, topLevel: TopLevelPropertiesResult) {
     this.methods = [...methods.computed, ...methods.methods];
     if (methods.init) this.methods.push(methods.init);
     this.topLevel = topLevel.topLevel;
