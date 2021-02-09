@@ -62,7 +62,7 @@ export class Transformer {
 
   //#region Compute
   compute(): ExtendedGraph {
-    this.addTopLevelProperties();
+    //this.addTopLevelProperties();
     this.addInit();
     this.addBindings();
     this.addIndirectlyCalledMethods();
