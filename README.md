@@ -1,6 +1,6 @@
 # Automatic Interaction Diagram Generation of Vue.js-based Web Applications
 This repository holds the source code for my master's thesis on the topic "Automatic Interaction Diagram Generation of Vue.js-based Web Applications"
-# Deployment
+## Deployment
 
 1. Install dependencies
 ```bash
@@ -18,4 +18,40 @@ npm run serve
 4. Observe interaction diagram in browser
 ```bash
 firefox localhost:8000
+```
+
+## Generating a results snapshot
+See this [README](/results) for more details.
+## NPM run commands overview
+Lint the project
+```bash 
+npm run lint
+```
+Run TypeScript type checker
+```bash
+npm run type-check
+```
+Execute unit tests
+```bash
+npm run test
+```
+Execute regression tests
+```bash
+npm run test:regression
+```
+Execute the main application
+```bash
+npm run generate
+```
+Start a server to view interaction diagram in browser
+```bash
+npm run serve
+```
+Create a snapshot for each file in `resources/test-files`
+```bash
+npm run create-results
+```
+View all snapshots in browser `resources/test-files`
+```bash
+npm run results
 ```
