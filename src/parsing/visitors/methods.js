@@ -13,21 +13,20 @@ export function create(context) {
   return context.parserServices.defineTemplateBodyVisitor(
     {},
     {
-      //TODO more qualified for ALL access (specify back to root to ensure top level)
 
       //start of init
-      "Property[key.name = created]"(node) {
+      "ExportDefaultDeclaration > ObjectExpression > Property[key.name = created]"(node) {
         builder.newMethod(node, MethodType.INIT);
       },
 
       //start of any method
-      "Property[key.name = methods] Property[value.type=FunctionExpression]"(
+      "ExportDefaultDeclaration > ObjectExpression > Property[key.name = methods] Property[value.type=FunctionExpression]"(
         node
       ) {
         builder.newMethod(node, MethodType.METHOD);
       },
       //start of computed
-      "Property[key.name = computed] Property[value.type=FunctionExpression]"(
+      "ExportDefaultDeclaration > ObjectExpression > Property[key.name = computed] Property[value.type=FunctionExpression]"(
         node
       ) {
         builder.newMethod(node, MethodType.COMPUTED);
@@ -38,32 +37,32 @@ export function create(context) {
         builder.nodeExited();
       },
       //writes left side of assignment expression
-      ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) AssignmentExpression"(
+      "ExportDefaultDeclaration > ObjectExpression > :matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) AssignmentExpression"(
         node
       ) {
         builder.identifierOrExpressionNew(node.left, AccessType.WRITES);
       },
       //method calls
-      ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) CallExpression "(
+      "ExportDefaultDeclaration > ObjectExpression > :matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) CallExpression "(
         node
       ) {
         // if (utils.isRootNameNode(node))
         builder.identifierOrExpressionNew(node, AccessType.CALLS);
       },
       //declares
-      ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) VariableDeclarator"(
+      "ExportDefaultDeclaration > ObjectExpression > :matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) VariableDeclarator"(
         node
       ) {
         builder.identifierOrExpressionNew(node.id, AccessType.DECLARES);
       },
       //all expressions
-      ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) FunctionExpression :matches(MemberExpression, Identifier)"(
+      "ExportDefaultDeclaration > ObjectExpression > :matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) FunctionExpression :matches(MemberExpression, Identifier)"(
         node
       ) {
         if (utils.isRootNameOrCallExpression(node))
           builder.identifierOrExpressionNew(node, AccessType.ALL);
       },
-      ":matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) FunctionExpression Property[method = false]"(
+      "ExportDefaultDeclaration > ObjectExpression > :matches(Property[key.name = methods], Property[key.name = created],Property[key.name = computed]) FunctionExpression Property[method = false]"(
         node
       ) {
         builder.identifierOrExpressionNew(node.key, AccessType.OBJECT_PROPERTY);

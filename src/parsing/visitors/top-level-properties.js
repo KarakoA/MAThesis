@@ -8,7 +8,7 @@ export function create(context) {
     {},
     {
       //V - top level properties (properties within data )
-      "Property[key.name = data]  ReturnStatement > ObjectExpression"(node) {
+      "ExportDefaultDeclaration > ObjectExpression > Property[key.name = data]  ReturnStatement > ObjectExpression"(node) {
         const result = new TopLevelPropertiesBuilder().build(node);
         const json = JSON.stringify(result);
         context.report({ node: node, message: json });
