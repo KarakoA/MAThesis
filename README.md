@@ -8,7 +8,7 @@ npm install
 ```
 2. Generate interaction diagram graph
 ```bash
-npm run generate -- [file to parse] [output graph path] [scenario depth]
+npm run generate -- [file to parse] [output graph path] [depth]
 ```
 
 3. Start server in order to view interaction diagram
