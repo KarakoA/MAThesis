@@ -159,6 +159,13 @@ export class ExtendedGraph {
     return _.filter(isDataNode, children);
   }
 
+  parents(nodes: DataNode[]): DataNode[] {
+    const parents = _.flatMap((x) => lift(x.parent), nodes).map(
+      (x) => this.graph.node(x) as DataNode
+    );
+    const parentsUniq = _.uniqWith(_.isEqual, parents);
+    return parentsUniq;
+  }
   /**
    * Returns the generic child node.
    * A generic node can have multiple numeric nodes, but a numeric node can

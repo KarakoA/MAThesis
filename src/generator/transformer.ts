@@ -31,7 +31,6 @@ import {
 } from "./models/method-resolver";
 import * as identifier from "../common/models/identifier";
 import { Identifier } from "../common/models/identifier";
-import { lift } from "../common/utils";
 
 export class Transformer {
   graph: ExtendedGraph;
@@ -159,11 +158,8 @@ export class Transformer {
 
   private addEdgesForNumerics() {
     const numericIndexDataNodes = this.graph.IndexDataNodes();
-    const parents = _.flatMap((x) => lift(x.parent), numericIndexDataNodes).map(
-      (x) => this.graph.node(x) as DataNode
-    );
-    const parentsUniq = _.uniqWith(_.isEqual, parents);
-    parentsUniq.forEach((x) => this.connectEdgesOfGenericToNumeric(x));
+    const parents = this.graph.parents(numericIndexDataNodes);
+    parents.forEach((x) => this.connectEdgesOfGenericToNumeric(x));
   }
   //#endregion
 

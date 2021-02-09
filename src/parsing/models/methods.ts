@@ -1,5 +1,6 @@
 import { Identifiers } from "../../common/models/identifiers";
 import { Method, Property } from "./shared";
+
 export interface MethodDefinition {
   id: Identifiers;
   args: ReadonlyArray<Property>;
@@ -8,13 +9,13 @@ export interface MethodDefinition {
   calls: ReadonlyArray<Method>;
 }
 
+export type MethodDefinitions = Array<MethodDefinition>;
+
 export interface MethodsResult {
   init?: MethodDefinition;
   computed: MethodDefinitions;
   methods: MethodDefinitions;
 }
-
-export type MethodDefinitions = Array<MethodDefinition>;
 
 //#region Factory methods
 export function methodDef(
