@@ -23,7 +23,7 @@ class Entry {
 
 export function computeAndPrintScenarios(
   graph: ExtendedGraph,
-  depth = 3
+  depth = 4
 ): void {
   const initNode = graph.init();
   const init = new Entry(graph, initNode);
@@ -36,31 +36,16 @@ export function computeAndPrintScenarios(
   const clickableNodes = _.uniqWith(_.isEqual, eventEdgeSources);
   const clickable = clickableNodes.map((node) => new Entry(graph, node));
 
-  const scenarios = createScenarios(init, clickable, depth);
-  const uniqScenarios = uniqueScenarios(scenarios);
+  const scenarios = _.flatten(createScenarios(init, clickable, depth));
 
   [...clickable, init]
     .map((x) => `l(${x.name}) -> ${x.updates.join(", ")}`)
     .map((x) => console.log(x));
   console.log();
   console.log(`Unique scenarios (A) of up to ${depth} elements:`);
-  console.log(uniqScenarios.map((x) => x.map((x) => x.name)));
+  console.log(scenarios.map((x) => x.map((x) => x.name)));
 
-  uniqScenarios.map(print);
-}
-
-function uniqueScenarios(scenarios: ScenarioSet[]): Scenario[] {
-  const deduplicatedScenarios = _.flatten(scenarios).map(deduplicate);
-  const uniqScenarios = _.uniqWith(_.isEqual, deduplicatedScenarios);
-  return uniqScenarios;
-}
-function deduplicate(scenario: Scenario): Scenario {
-  const result = _.reduce(
-    (x: Scenario, y) => (_.isEqual(_.last(x), y) ? x : x.concat(y)),
-    [],
-    scenario
-  );
-  return result;
+  scenarios.map(print);
 }
 
 function createScenarios(
@@ -73,7 +58,7 @@ function createScenarios(
   const isClickable = function (name: string): Entry | undefined {
     return _.find((x) => x.name === name, clickable);
   };
-  for (let i = 0; i <= depth; i++) {
+  for (let i = 0; i < depth; i++) {
     prev = createScenarioSet(init, clickable, prev, isClickable, i);
     scenarios.push(prev);
   }
@@ -97,7 +82,8 @@ function createScenarioSet(
     const last = nonNull(_.last(prevScenario));
 
     const clickables = _.flatMap((x) => lift(isClickable(x)), last.updates);
-    return clickables.map((x) => prevScenario.concat(x));
+    const clickableNeqLast = clickables.filter((x) => !_.isEqual(x, last));
+    return clickableNeqLast.map((x) => prevScenario.concat(x));
   }, prev);
 }
 
