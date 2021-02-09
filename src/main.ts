@@ -12,13 +12,14 @@ async function main() {
   const args = process.argv.slice(2);
   const file = args[0] ?? "./resources/test-files/test-add-sub-v2.vue";
   const outPath = args[1] ?? "./web/data.json";
+  const depth = Number(args[2]) ?? 4;
   const results = await new ESLinter().lintFiles([file]);
   //console.log(results);
   const transformer = new Transformer(results[0]);
 
   const graph = transformer.compute();
 
-  computeAndPrintScenarios(graph);
+  computeAndPrintScenarios(graph, depth);
 
   const graphJSON = serialize(graph);
   fs.writeFileSync(outPath, JSON.stringify(graphJSON, null, 2));
