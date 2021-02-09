@@ -22,7 +22,8 @@ firefox localhost:8000
 
 ## Generating a results snapshot
 See this [README](/results) for more details.
-## NPM run commands overview
+
+## Commands overview
 Lint the project
 ```bash 
 npm run lint
@@ -51,7 +52,7 @@ Create a snapshot for each file in `resources/test-files`
 ```bash
 npm run create-results
 ```
-View all snapshots in browser `resources/test-files`
+Start a server to view all snapshots in the browser
 ```bash
 npm run results
 ```
