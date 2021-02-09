@@ -66,7 +66,7 @@ export class Transformer {
     this.addBindings();
     this.addIndirectlyCalledMethods();
     //must be called after all edges have been added
-    this.addEdgesForNumerics();
+    this.addEdgesForLists();
 
     return this.graph;
   }
@@ -156,10 +156,10 @@ export class Transformer {
     });
   }
 
-  private addEdgesForNumerics() {
+  private addEdgesForLists() {
     const numericIndexDataNodes = this.graph.IndexDataNodes();
     const parents = this.graph.parents(numericIndexDataNodes);
-    parents.forEach((x) => this.connectEdgesOfGenericToNumeric(x));
+    parents.forEach((x) => this.connectListsAndTheirProperties(x));
   }
   //#endregion
 
@@ -205,7 +205,7 @@ export class Transformer {
       });
     }
   }
-  private connectEdgesOfGenericToNumeric(node: DataNode): void {
+  private connectListsAndTheirProperties(node: DataNode): void {
     const allNumeric = this.graph.numericChildren(node);
     const generic = this.graph.genericChildNode(node);
 
