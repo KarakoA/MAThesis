@@ -75,7 +75,6 @@ export default {
       right: undefined,
       count_right: 0,
       count_wrong: 0,
-      topLevel: { otherLevel: 0 },
     };
   },
   created: function () {
