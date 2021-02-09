@@ -6,92 +6,6 @@
   },
   "nodes": [
     {
-      "v": "this",
-      "value": {
-        "id": "this",
-        "type": "this",
-        "name": "this",
-        "discriminator": "data"
-      }
-    },
-    {
-      "v": "this.a",
-      "value": {
-        "id": "this.a",
-        "type": "name-identifier",
-        "name": "a",
-        "parent": "this",
-        "discriminator": "data"
-      },
-      "parent": "this"
-    },
-    {
-      "v": "this.b",
-      "value": {
-        "id": "this.b",
-        "type": "name-identifier",
-        "name": "b",
-        "parent": "this",
-        "discriminator": "data"
-      },
-      "parent": "this"
-    },
-    {
-      "v": "this.c",
-      "value": {
-        "id": "this.c",
-        "type": "name-identifier",
-        "name": "c",
-        "parent": "this",
-        "discriminator": "data"
-      },
-      "parent": "this"
-    },
-    {
-      "v": "this.answer",
-      "value": {
-        "id": "this.answer",
-        "type": "name-identifier",
-        "name": "answer",
-        "parent": "this",
-        "discriminator": "data"
-      },
-      "parent": "this"
-    },
-    {
-      "v": "this.right",
-      "value": {
-        "id": "this.right",
-        "type": "name-identifier",
-        "name": "right",
-        "parent": "this",
-        "discriminator": "data"
-      },
-      "parent": "this"
-    },
-    {
-      "v": "this.count_right",
-      "value": {
-        "id": "this.count_right",
-        "type": "name-identifier",
-        "name": "count_right",
-        "parent": "this",
-        "discriminator": "data"
-      },
-      "parent": "this"
-    },
-    {
-      "v": "this.count_wrong",
-      "value": {
-        "id": "this.count_wrong",
-        "type": "name-identifier",
-        "name": "count_wrong",
-        "parent": "this",
-        "discriminator": "data"
-      },
-      "parent": "this"
-    },
-    {
       "v": "this.created",
       "value": {
         "id": "this.created",
@@ -118,6 +32,26 @@
       }
     },
     {
+      "v": "this",
+      "value": {
+        "id": "this",
+        "type": "this",
+        "name": "this",
+        "discriminator": "data"
+      }
+    },
+    {
+      "v": "this.a",
+      "value": {
+        "id": "this.a",
+        "type": "name-identifier",
+        "name": "a",
+        "parent": "this",
+        "discriminator": "data"
+      },
+      "parent": "this"
+    },
+    {
       "v": "span_5_31_5_52",
       "value": {
         "id": "span_5_31_5_52",
@@ -136,6 +70,17 @@
       }
     },
     {
+      "v": "this.b",
+      "value": {
+        "id": "this.b",
+        "type": "name-identifier",
+        "name": "b",
+        "parent": "this",
+        "discriminator": "data"
+      },
+      "parent": "this"
+    },
+    {
       "v": "input_6_14_6_57",
       "value": {
         "id": "input_6_14_6_57",
@@ -152,6 +97,17 @@
         },
         "discriminator": "tag"
       }
+    },
+    {
+      "v": "this.answer",
+      "value": {
+        "id": "this.answer",
+        "type": "name-identifier",
+        "name": "answer",
+        "parent": "this",
+        "discriminator": "data"
+      },
+      "parent": "this"
     },
     {
       "v": "button_7_8_15_17",
@@ -204,6 +160,17 @@
         },
         "discriminator": "tag"
       }
+    },
+    {
+      "v": "this.right",
+      "value": {
+        "id": "this.right",
+        "type": "name-identifier",
+        "name": "right",
+        "parent": "this",
+        "discriminator": "data"
+      },
+      "parent": "this"
     },
     {
       "v": "button_24_8_31_17",
@@ -268,6 +235,17 @@
       }
     },
     {
+      "v": "this.count_right",
+      "value": {
+        "id": "this.count_right",
+        "type": "name-identifier",
+        "name": "count_right",
+        "parent": "this",
+        "discriminator": "data"
+      },
+      "parent": "this"
+    },
+    {
       "v": "span_56_12_56_43",
       "value": {
         "id": "span_56_12_56_43",
@@ -284,6 +262,17 @@
         },
         "discriminator": "tag"
       }
+    },
+    {
+      "v": "this.count_wrong",
+      "value": {
+        "id": "this.count_wrong",
+        "type": "name-identifier",
+        "name": "count_wrong",
+        "parent": "this",
+        "discriminator": "data"
+      },
+      "parent": "this"
     },
     {
       "v": "span_59_12_59_40",
@@ -318,6 +307,17 @@
         "name": "add_problem()",
         "discriminator": "method"
       }
+    },
+    {
+      "v": "this.c",
+      "value": {
+        "id": "this.c",
+        "type": "name-identifier",
+        "name": "c",
+        "parent": "this",
+        "discriminator": "data"
+      },
+      "parent": "this"
     }
   ],
   "edges": [
@@ -327,43 +327,23 @@
       "value": "simple"
     },
     {
-      "v": "this",
-      "w": "this.b",
-      "value": "simple"
-    },
-    {
-      "v": "this",
-      "w": "this.c",
-      "value": "simple"
-    },
-    {
-      "v": "this",
-      "w": "this.answer",
-      "value": "simple"
-    },
-    {
-      "v": "this",
-      "w": "this.right",
-      "value": "simple"
-    },
-    {
-      "v": "this",
-      "w": "this.count_right",
-      "value": "simple"
-    },
-    {
-      "v": "this",
-      "w": "this.count_wrong",
-      "value": "simple"
-    },
-    {
       "v": "this.a",
       "w": "span_5_8_5_28",
       "value": "simple"
     },
     {
+      "v": "this",
+      "w": "this.b",
+      "value": "simple"
+    },
+    {
       "v": "this.b",
       "w": "span_5_31_5_52",
+      "value": "simple"
+    },
+    {
+      "v": "this",
+      "w": "this.answer",
       "value": "simple"
     },
     {
@@ -387,6 +367,11 @@
       "value": "event"
     },
     {
+      "v": "this",
+      "w": "this.right",
+      "value": "simple"
+    },
+    {
       "v": "this.right",
       "w": "button_16_8_23_17",
       "value": "simple"
@@ -402,8 +387,18 @@
       "value": "event"
     },
     {
+      "v": "this",
+      "w": "this.count_right",
+      "value": "simple"
+    },
+    {
       "v": "this.count_right",
       "w": "span_53_12_53_43",
+      "value": "simple"
+    },
+    {
+      "v": "this",
+      "w": "this.count_wrong",
       "value": "simple"
     },
     {
@@ -420,6 +415,11 @@
       "v": "this.created",
       "w": "this.add_problem()",
       "value": "calls"
+    },
+    {
+      "v": "this",
+      "w": "this.c",
+      "value": "simple"
     },
     {
       "v": "this.c",
