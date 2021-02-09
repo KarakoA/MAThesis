@@ -3,7 +3,7 @@ l(Check) -> Right, Wrong, Check, count_right_add, accuracy_add, count_wrong_add,
 l(New Problem) -> problems[i].a, +, -, problems[i].b, problems[i].answer, Check, Right, Wrong
 l(created) -> problems[i].a, +, -, problems[i].b, problems[i].answer, Check, Right, Wrong
 
-Unique scenarios (A) of up to 3 elements:
+Unique scenarios (A) of up to 4 elements:
 [
   [ 'created' ],
   [ 'created', 'problems[i].answer' ],
