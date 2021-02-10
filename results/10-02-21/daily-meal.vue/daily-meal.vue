@@ -5,7 +5,7 @@
       <li v-for="meal in meals" :key="meal.id">
         <div style="margin-left: 5px; margin-top: 20px">
           <div> {{meal.name}}</div> 
-          <div> Price: {{meal.price}} Euro </div>
+          <div>Price {{meal.price}} Euro </div>
         </div>
       </li>
     </ul>
@@ -39,15 +39,26 @@ export default {
   methods: {
     init() {
       this.meals = [
-        {name:"Soup",  id:0, price: 2 },
+        {name:"Soup",  id:0, price: 1 },
         {name:"Salad", id:1, price: 2 },
         {name:"Steak", id:2, price: 7 },
       ]
-      this.mealOfTheDay = this.meals[0]
+      this.new_day();
     },
     new_day:function(){
       this.isFriday = !this.isFriday
-      this.mealOfTheDay = this.isFriday? this.meals[0] : this.meals[1]
+      if(this.isFriday){
+        this.meals[0].price = this.meals[0].price * 2
+
+        this.meals[1].price = this.meals[1].price / 2
+        this.mealOfTheDay= this.meals[1]
+      }
+      else {
+        this.meals[1].price = this.meals[1].price * 2
+
+        this.meals[0].price = this.meals[0].price / 2
+        this.mealOfTheDay = this.meals[0]
+      }
     },
     discount_all:function(){
     for (var i = 0; i < this.meals.length; i++) {

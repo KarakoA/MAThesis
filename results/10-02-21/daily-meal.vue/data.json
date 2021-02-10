@@ -74,10 +74,10 @@
       "parent": "this.meals[i]"
     },
     {
-      "v": "div_8_10_8_49",
+      "v": "div_8_10_8_47",
       "value": {
-        "id": "div_8_10_8_49",
-        "name": "Price:",
+        "id": "div_8_10_8_47",
+        "name": "Price",
         "loc": {
           "start": {
             "line": 8,
@@ -85,7 +85,7 @@
           },
           "end": {
             "line": 8,
-            "column": 49
+            "column": 47
           }
         },
         "discriminator": "tag"
@@ -243,17 +243,6 @@
       }
     },
     {
-      "v": "this.meals[0]",
-      "value": {
-        "id": "this.meals[0]",
-        "type": "numeric-index",
-        "name": "meals[0]",
-        "parent": "this.meals",
-        "discriminator": "data"
-      },
-      "parent": "this.meals"
-    },
-    {
       "v": "this.isFriday",
       "value": {
         "id": "this.isFriday",
@@ -274,6 +263,39 @@
         "discriminator": "data"
       },
       "parent": "this.meals"
+    },
+    {
+      "v": "this.meals[1].price",
+      "value": {
+        "id": "this.meals[1].price",
+        "type": "name-identifier",
+        "name": "price",
+        "parent": "this.meals[1]",
+        "discriminator": "data"
+      },
+      "parent": "this.meals[1]"
+    },
+    {
+      "v": "this.meals[0]",
+      "value": {
+        "id": "this.meals[0]",
+        "type": "numeric-index",
+        "name": "meals[0]",
+        "parent": "this.meals",
+        "discriminator": "data"
+      },
+      "parent": "this.meals"
+    },
+    {
+      "v": "this.meals[0].price",
+      "value": {
+        "id": "this.meals[0].price",
+        "type": "name-identifier",
+        "name": "price",
+        "parent": "this.meals[0]",
+        "discriminator": "data"
+      },
+      "parent": "this.meals[0]"
     },
     {
       "v": "this.meals.length",
@@ -326,7 +348,7 @@
     },
     {
       "v": "this.meals[i].price",
-      "w": "div_8_10_8_49",
+      "w": "div_8_10_8_47",
       "value": "simple"
     },
     {
@@ -375,24 +397,14 @@
       "value": "calls"
     },
     {
-      "v": "this.meals",
-      "w": "this.meals[0]",
-      "value": "simple"
-    },
-    {
-      "v": "this.meals[0]",
-      "w": "this.init()",
-      "value": "simple"
-    },
-    {
       "v": "this.init()",
       "w": "this.meals",
       "value": "simple"
     },
     {
       "v": "this.init()",
-      "w": "this.mealOfTheDay",
-      "value": "simple"
+      "w": "this.new_day()",
+      "value": "calls"
     },
     {
       "v": "this",
@@ -405,12 +417,22 @@
       "value": "simple"
     },
     {
-      "v": "this.isFriday",
-      "w": "this.new_day()",
+      "v": "this.meals[1]",
+      "w": "this.meals[1].price",
+      "value": "simple"
+    },
+    {
+      "v": "this.meals",
+      "w": "this.meals[0]",
       "value": "simple"
     },
     {
       "v": "this.meals[0]",
+      "w": "this.meals[0].price",
+      "value": "simple"
+    },
+    {
+      "v": "this.isFriday",
       "w": "this.new_day()",
       "value": "simple"
     },
@@ -420,8 +442,33 @@
       "value": "simple"
     },
     {
+      "v": "this.meals[1].price",
+      "w": "this.new_day()",
+      "value": "simple"
+    },
+    {
+      "v": "this.meals[0].price",
+      "w": "this.new_day()",
+      "value": "simple"
+    },
+    {
+      "v": "this.meals[0]",
+      "w": "this.new_day()",
+      "value": "simple"
+    },
+    {
       "v": "this.new_day()",
       "w": "this.isFriday",
+      "value": "simple"
+    },
+    {
+      "v": "this.new_day()",
+      "w": "this.meals[0].price",
+      "value": "simple"
+    },
+    {
+      "v": "this.new_day()",
+      "w": "this.meals[1].price",
       "value": "simple"
     },
     {
@@ -470,13 +517,33 @@
       "value": "simple"
     },
     {
+      "v": "this.meals[1]",
+      "w": "this.meals[i]",
+      "value": "simple"
+    },
+    {
+      "v": "this.meals[1].price",
+      "w": "this.meals[i].price",
+      "value": "simple"
+    },
+    {
+      "v": "this.meals.price",
+      "w": "this.meals[1].price",
+      "value": "simple"
+    },
+    {
       "v": "this.meals[0]",
       "w": "this.meals[i]",
       "value": "simple"
     },
     {
-      "v": "this.meals[1]",
-      "w": "this.meals[i]",
+      "v": "this.meals[0].price",
+      "w": "this.meals[i].price",
+      "value": "simple"
+    },
+    {
+      "v": "this.meals.price",
+      "w": "this.meals[0].price",
       "value": "simple"
     },
     {
