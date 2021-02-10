@@ -12,13 +12,9 @@ Unique scenarios (A) of up to 4 elements:
   [ 'created', 'Check' ],
   [ 'created', 'New Problem' ],
   [ 'created', 'problems[i].answer', 'Check' ],
-  [ 'created', 'problems[i].answer', 'Check' ],
   [ 'created', 'Check', 'Check' ],
-  [ 'created', 'Check', 'Check' ],
-  [ 'created', 'New Problem', 'Check' ],
   [ 'created', 'New Problem', 'Check' ],
   [ 'created', 'New Problem', 'problems[i].answer' ],
-  [ 'created', 'New Problem', 'problems[i].answer', 'Check' ],
   [ 'created', 'New Problem', 'problems[i].answer', 'Check' ]
 ]
 Scenario: ['created']
@@ -87,45 +83,9 @@ Scenario: ['created', 'problems[i].answer', 'Check']
 	And 'accuracy_add'
 	And 'count_wrong_add'
 
-Scenario: ['created', 'problems[i].answer', 'Check']
-	Given 'created'
-	And 'problems[i].answer'
-	When 'Check'
-	Then 'Right'
-	And 'Wrong'
-	And 'Check'
-	And 'Check'
-	And 'count_right_add'
-	And 'accuracy_add'
-	And 'count_wrong_add'
-
 Scenario: ['created', 'Check', 'Check']
 	Given 'created'
 	And 'Check'
-	When 'Check'
-	Then 'Right'
-	And 'Wrong'
-	And 'Check'
-	And 'Check'
-	And 'count_right_add'
-	And 'accuracy_add'
-	And 'count_wrong_add'
-
-Scenario: ['created', 'Check', 'Check']
-	Given 'created'
-	And 'Check'
-	When 'Check'
-	Then 'Right'
-	And 'Wrong'
-	And 'Check'
-	And 'Check'
-	And 'count_right_add'
-	And 'accuracy_add'
-	And 'count_wrong_add'
-
-Scenario: ['created', 'New Problem', 'Check']
-	Given 'created'
-	And 'New Problem'
 	When 'Check'
 	Then 'Right'
 	And 'Wrong'
@@ -154,19 +114,6 @@ Scenario: ['created', 'New Problem', 'problems[i].answer']
 	Then 'problems[i].answer'
 	And 'Check'
 	And 'Check'
-
-Scenario: ['created', 'New Problem', 'problems[i].answer', 'Check']
-	Given 'created'
-	And 'New Problem'
-	And 'problems[i].answer'
-	When 'Check'
-	Then 'Right'
-	And 'Wrong'
-	And 'Check'
-	And 'Check'
-	And 'count_right_add'
-	And 'accuracy_add'
-	And 'count_wrong_add'
 
 Scenario: ['created', 'New Problem', 'problems[i].answer', 'Check']
 	Given 'created'

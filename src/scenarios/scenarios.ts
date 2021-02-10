@@ -36,7 +36,10 @@ export function computeAndPrintScenarios(
   const clickableNodes = _.uniqWith(_.isEqual, eventEdgeSources);
   const clickable = clickableNodes.map((node) => new Entry(graph, node));
 
-  const scenarios = _.flatten(createScenarios(init, clickable, depth));
+  const scenarios = _.uniqWith(
+    _.isEqual,
+    _.flatten(createScenarios(init, clickable, depth))
+  );
 
   [...clickable, init]
     .map((x) => `l(${x.name}) -> ${x.updates.join(", ")}`)

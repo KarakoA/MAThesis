@@ -6,8 +6,7 @@ Unique scenarios (A) of up to 4 elements:
 [
   [ 'created' ],
   [ 'created', 'New Day' ],
-  [ 'created', 'Discount all' ],
-  [ 'created' ]
+  [ 'created', 'Discount all' ]
 ]
 Scenario: ['created']
 	When 'created'
@@ -26,11 +25,4 @@ Scenario: ['created', 'Discount all']
 	When 'Discount all'
 	Then 'Best steak in town -'
 	And 'Price:'
-
-Scenario: ['created']
-	When 'created'
-	Then 'meals[i].name'
-	And 'Price:'
-	And 'Best steak in town -'
-	And 'Meal of the day -'
 
