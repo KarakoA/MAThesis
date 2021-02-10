@@ -10,11 +10,11 @@ util.inspect.defaultOptions.depth = 13;
 
 async function main() {
   const args = process.argv.slice(2);
-  const file = args[0] ?? "./resources/test-files/test-add-sub-v3.vue";
+  const file = args[0] ?? "./resources/test-files/test.vue";
   const outPath = args[1] ?? "./web/data.json";
   const depth = Number(args[2] ?? 4);
   const results = await new ESLinter().lintFiles([file]);
-  //console.log(results);
+  // console.log(results);
   const transformer = new Transformer(results[0]);
 
   const graph = transformer.compute();
