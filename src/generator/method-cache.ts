@@ -2,13 +2,13 @@ import { isProperty, Method, Property } from "../parsing/models/shared";
 import { MethodResolver } from "./method-resolver";
 import {
   CalledMethod,
-  ResolvedMethodDefintition,
+  ResolvedMethodDefinition,
 } from "./models/method-resolver";
 import _ from "lodash/fp";
 import { render } from "../common/models/identifiers";
 export class MethodCache {
   resolver: MethodResolver;
-  result: ResolvedMethodDefintition[];
+  result: ResolvedMethodDefinition[];
   done: (Method | CalledMethod)[];
   constructor(resolver: MethodResolver) {
     this.resolver = resolver;
@@ -16,11 +16,11 @@ export class MethodCache {
     this.done = [];
   }
 
-  allCalledMethods(): ReadonlyArray<ResolvedMethodDefintition> {
+  allCalledMethods(): ReadonlyArray<ResolvedMethodDefinition> {
     return this.result;
   }
 
-  called(e: Method): ResolvedMethodDefintition | Property {
+  called(e: Method): ResolvedMethodDefinition | Property {
     const resolved = this.calledRec(e);
     if (!resolved) throw new Error(`Failed to resolve "${render(e.id)}" !`);
     return resolved;
@@ -30,7 +30,7 @@ export class MethodCache {
   }
   private calledRec(
     e: Method | CalledMethod
-  ): ResolvedMethodDefintition | Property | undefined {
+  ): ResolvedMethodDefinition | Property | undefined {
     const resolved = this.resolver.called(e);
     this.done.push(e);
     if (!resolved) return undefined;

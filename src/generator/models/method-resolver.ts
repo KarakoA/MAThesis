@@ -10,7 +10,7 @@ export type ResolvedArgument =
   | GeneralisedArgument.METHOD
   | GeneralisedArgument.OTHER;
 
-export interface ResolvedMethodDefintition {
+export interface ResolvedMethodDefinition {
   id: Identifiers;
   args: ReadonlyArray<ResolvedArgument>;
   reads: ReadonlyArray<Property>;

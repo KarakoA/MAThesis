@@ -349,7 +349,6 @@ describe("Bindings", () => {
         {
           tag: expect.objectContaining({
             name: "problems[i].a",
-            position: "i",
           }),
           values: [
             {
@@ -368,7 +367,6 @@ describe("Bindings", () => {
         {
           tag: expect.objectContaining({
             name: "problems[i][j].a",
-            position: "i",
           }),
           values: [
             {
@@ -393,7 +391,6 @@ describe("Bindings", () => {
         {
           tag: expect.objectContaining({
             name: "problems[i][j].a",
-            position: "i",
           }),
           values: [
             {
@@ -426,7 +423,6 @@ describe("Bindings", () => {
         {
           tag: expect.objectContaining({
             name: "schools[i][j].capacity",
-            position: "i",
           }),
           values: [
             {
@@ -461,7 +457,6 @@ describe("Bindings", () => {
         {
           tag: expect.objectContaining({
             name: "schools[i][0].name",
-            position: "i",
           }),
           values: [
             {
@@ -478,8 +473,6 @@ describe("Bindings", () => {
         {
           tag: expect.objectContaining({
             name: "schools[i].problems[i].a",
-            //TODO check do I need the j here or not?
-            position: "i",
           }),
           values: [
             {

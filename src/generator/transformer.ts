@@ -27,7 +27,7 @@ import {
 import { TopLevelProperties } from "../parsing/models/top-level-properties";
 import {
   CalledMethod,
-  ResolvedMethodDefintition,
+  ResolvedMethodDefinition,
 } from "./models/method-resolver";
 import * as identifier from "../common/models/identifier";
 import { Identifier } from "../common/models/identifier";
@@ -283,10 +283,7 @@ export class Transformer {
     }
   }
 
-  private addEdgesMethod(
-    node: Node,
-    resolved: ResolvedMethodDefintition
-  ): void {
+  private addEdgesMethod(node: Node, resolved: ResolvedMethodDefinition): void {
     const readNodes = resolved.reads.map((x) => this.addProperty(x));
     readNodes.forEach((source) =>
       this.graph.addEdge({ source, sink: node, label: EdgeType.SIMPLE })
@@ -349,7 +346,7 @@ export class Transformer {
    * @param isComputed if the method is a computed property
    */
   private nodeFromMethod(
-    method: ResolvedMethodDefintition | CalledMethod
+    method: ResolvedMethodDefinition | CalledMethod
   ): MethodNode | InitNode {
     if (this.isInit(method.id)) {
       return {

@@ -12,7 +12,6 @@ export interface Tag {
   id: string;
   loc: Location;
   name: string;
-  position?: string;
 }
 
 export interface BindingValue {

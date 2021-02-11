@@ -129,13 +129,8 @@ export class BindingsBuilder {
       const firstBindingName = render(this.latest[0].item.id);
 
       const name = determineNodeName(node, firstBindingName);
-      //TODO could apply the substitution on it for more info, but maybe don't even need this at all, will see
-      //let position = this.VForReplacement[0];
-      //TODO for nested that's wrong. need 'i','j', k etc
-      // is position still used? I found a better way
 
-      const position = this.VForReplacement.length == 0 ? undefined : "i";
-      const tag: Tag = { id, loc: node.loc, name, position };
+      const tag: Tag = { id, loc: node.loc, name };
       this.bindings.push({
         tag: tag,
         values: _.uniqWith(

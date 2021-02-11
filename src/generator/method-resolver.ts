@@ -19,7 +19,7 @@ import {
   Property,
 } from "../parsing/models/shared";
 import {
-  ResolvedMethodDefintition,
+  ResolvedMethodDefinition,
   ResolvedArgument,
   CalledMethod,
   isCalledMethod,
@@ -31,7 +31,7 @@ export class MethodResolver {
   methods: MethodDefinitions;
   topLevel: TopLevelProperties;
 
-  handled: [identifiers.Identifiers, ResolvedMethodDefintition][];
+  handled: [identifiers.Identifiers, ResolvedMethodDefinition][];
 
   constructor(methods: MethodsResult, topLevel: TopLevelPropertiesResult) {
     this.methods = [...methods.computed, ...methods.methods];
@@ -50,7 +50,7 @@ export class MethodResolver {
    */
   called(
     called: Method | CalledMethod
-  ): ResolvedMethodDefintition | Property | undefined {
+  ): ResolvedMethodDefinition | Property | undefined {
     let method: MethodDefinition;
     let resolvedArgs: ReadonlyArray<ResolvedArgument>;
     if (isMethod(called)) {
