@@ -9,15 +9,22 @@ import {
 } from "../generator/models/graph";
 import { lift, nonNull } from "../common/utils";
 
+interface InternalNode {
+  name: string;
+  id: string;
+}
+
 type ScenarioSet = Scenario[];
 
 type Scenario = Entry[];
 class Entry {
-  name: string;
-  updates: string[];
+  node: InternalNode;
+  updates: InternalNode[];
   constructor(graph: ExtendedGraph, node: Node) {
-    this.name = node.name;
-    this.updates = l(graph, node).map((x) => x.name);
+    this.node = { name: node.name, id: node.id };
+    this.updates = l(graph, node).map((x) => {
+      return { name: x.name, id: x.id };
+    });
   }
 }
 
@@ -42,11 +49,13 @@ export function computeAndPrintScenarios(
   );
 
   [...clickable, init]
-    .map((x) => `l(${x.name}) -> ${x.updates.join(", ")}`)
+    .map(
+      (x) => `l(${x.node.name}) -> ${x.updates.map((x) => x.name).join(", ")}`
+    )
     .map((x) => console.log(x));
   console.log();
   console.log(`Unique scenarios (A) of up to ${depth} elements:`);
-  console.log(scenarios.map((x) => x.map((x) => x.name)));
+  console.log(scenarios.map((x) => x.map((x) => x.node.name)));
 
   scenarios.map(print);
 }
@@ -58,8 +67,8 @@ function createScenarios(
 ): ScenarioSet[] {
   let prev: ScenarioSet = [];
   const scenarios: ScenarioSet[] = [];
-  const isClickable = function (name: string): Entry | undefined {
-    return _.find((x) => x.name === name, clickable);
+  const isClickable = function (node: InternalNode): Entry | undefined {
+    return _.find((x) => x.node.id === node.id, clickable);
   };
   for (let i = 0; i < depth; i++) {
     prev = createScenarioSet(init, clickable, prev, isClickable, i);
@@ -71,7 +80,7 @@ function createScenarioSet(
   init: Entry,
   clickable: Entry[],
   prev: ScenarioSet,
-  isClickable: (x: string) => Entry | undefined,
+  isClickable: (x: InternalNode) => Entry | undefined,
   i: number
 ): ScenarioSet {
   //initially only init
@@ -91,7 +100,7 @@ function createScenarioSet(
 }
 
 function print(scenario: Scenario): void {
-  console.log(`Scenario: ['${scenario.map((x) => x.name).join("', '")}']`);
+  console.log(`Scenario: ['${scenario.map((x) => x.node.name).join("', '")}']`);
 
   const given = computeGiven(scenario);
   if (_.head(given)) console.log(`\tGiven '${_.head(given)}'`);
@@ -108,13 +117,13 @@ function print(scenario: Scenario): void {
 
 function computeGiven(scenario: Scenario): string[] {
   const exceptLast = _.dropRight(1, scenario);
-  return exceptLast.map((x) => x.name);
+  return exceptLast.map((x) => x.node.name);
 }
 function computeWhen(scenario: Scenario): string {
-  return nonNull(_.last(scenario)).name;
+  return nonNull(_.last(scenario)).node.name;
 }
 function computeThen(scenario: Scenario): string[] {
-  return nonNull(_.last(scenario)).updates;
+  return nonNull(_.last(scenario)).updates.map((x) => x.name);
 }
 
 function nodeTriggerableByEvent(graph: ExtendedGraph, node: Node): boolean {
